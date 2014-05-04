@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an atomic role.
  */
@@ -42,31 +45,40 @@ public class AtomicRole extends Role implements DLPredicate {
         else
             return InverseRole.create(this);
     }
+    @Nullable
     public Atom getRoleAssertion(Term term0,Term term1) {
         return Atom.create(this,term0,term1);
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return prefixes.abbreviateIRI(m_iri);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<AtomicRole> s_interningManager=new InterningManager<AtomicRole>() {
-        protected boolean equal(AtomicRole object1,AtomicRole object2) {
+        protected boolean equal(@Nonnull AtomicRole object1, @Nonnull AtomicRole object2) {
             return object1.m_iri.equals(object2.m_iri);
         }
-        protected int getHashCode(AtomicRole object) {
+        protected int getHashCode(@Nonnull AtomicRole object) {
             return object.m_iri.hashCode();
         }
     };
 
+    @Nullable
     public static AtomicRole create(String iri) {
         return s_interningManager.intern(new AtomicRole(iri));
     }
 
+    @Nullable
     public static final AtomicRole TOP_OBJECT_ROLE=create("http://www.w3.org/2002/07/owl#topObjectProperty");
+    @Nullable
     public static final AtomicRole BOTTOM_OBJECT_ROLE=create("http://www.w3.org/2002/07/owl#bottomObjectProperty");
+    @Nullable
     public static final AtomicRole TOP_DATA_ROLE=create("http://www.w3.org/2002/07/owl#topDataProperty");
+    @Nullable
     public static final AtomicRole BOTTOM_DATA_ROLE=create("http://www.w3.org/2002/07/owl#bottomDataProperty");
 }

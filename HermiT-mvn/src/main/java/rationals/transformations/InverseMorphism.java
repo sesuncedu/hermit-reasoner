@@ -46,6 +46,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A general  class for applying inverse morphism on rational sets.
  * <p>
@@ -68,7 +70,7 @@ public class InverseMorphism implements UnaryTransformation {
 
     private Map morph;
 
-    public InverseMorphism(Map m) {
+    public InverseMorphism(@Nonnull Map m) {
         this.morph = inverse(m);
     }
     
@@ -77,7 +79,8 @@ public class InverseMorphism implements UnaryTransformation {
      * The key are letters (Object) and the values 
      * are sets of letters (Set).
      */
-    private Map inverse(Map m) {
+    @Nonnull
+    private Map inverse(@Nonnull Map m) {
     	Map inv = new HashMap();
     	for(Iterator i = m.entrySet().iterator();i.hasNext();) {
     		Map.Entry e  = (Map.Entry)i.next();
@@ -96,7 +99,8 @@ public class InverseMorphism implements UnaryTransformation {
 	/* (non-Javadoc)
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton b = new Automaton();
         /* state map */
         Map stm = new HashMap();

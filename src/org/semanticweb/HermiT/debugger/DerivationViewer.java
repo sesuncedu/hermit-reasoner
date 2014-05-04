@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -46,10 +47,12 @@ import org.semanticweb.HermiT.Prefixes;
 @SuppressWarnings("serial")
 public class DerivationViewer extends JFrame {
     protected final Prefixes m_prefixes;
+    @Nonnull
     protected final DerivationTreeTreeModel m_derivationTreeTreeModel;
+    @Nonnull
     protected final JTree m_derivationTree;
 
-    public DerivationViewer(Prefixes prefixes,DerivationHistory.Fact root) {
+    public DerivationViewer(Prefixes prefixes, @Nonnull DerivationHistory.Fact root) {
         super("Derivation tree for "+root.toString(prefixes));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         m_prefixes=prefixes;
@@ -82,6 +85,7 @@ public class DerivationViewer extends JFrame {
     protected static class DerivationTreeTreeModel implements TreeModel,Serializable {
         private static final long serialVersionUID=9210217812084186766L;
 
+        @Nonnull
         protected final EventListenerList m_eventListeners;
         protected final DerivationHistory.Fact m_root;
 
@@ -105,7 +109,7 @@ public class DerivationViewer extends JFrame {
             DerivationHistory.Derivation derivation=parentFact.getDerivation();
             return derivation.getNumberOfPremises();
         }
-        public int getIndexOfChild(Object parent,Object child) {
+        public int getIndexOfChild(Object parent, @Nonnull Object child) {
             DerivationHistory.Fact parentFact=(DerivationHistory.Fact)parent;
             DerivationHistory.Derivation derivation=parentFact.getDerivation();
             for (int index=0;index<derivation.getNumberOfPremises();index++)
@@ -155,7 +159,7 @@ public class DerivationViewer extends JFrame {
         public int getIconWidth() {
             return HEIGHT;
         }
-        public void paintIcon(Component c,Graphics g,int x,int y) {
+        public void paintIcon(Component c, @Nonnull Graphics g,int x,int y) {
             Color oldColor=g.getColor();
             g.setColor(m_background);
             g.fillOval(x+2,y+2,x+WIDTH-2,y+HEIGHT-2);
@@ -183,6 +187,7 @@ public class DerivationViewer extends JFrame {
 
     protected class DerivationTreeCellRenderer extends DefaultTreeCellRenderer {
 
+        @Nonnull
         public Component getTreeCellRendererComponent(JTree tree,Object value,boolean selected,boolean expanded,boolean leaf,int row,boolean hasFocus) {
             DerivationHistory.Fact fact=(DerivationHistory.Fact)value;
             DerivationHistory.Derivation derivation=fact.getDerivation();

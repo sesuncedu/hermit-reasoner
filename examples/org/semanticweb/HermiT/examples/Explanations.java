@@ -18,6 +18,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import com.clarkparsia.owlapi.explanation.BlackBoxExplanation;
 import com.clarkparsia.owlapi.explanation.HSTExplanationGenerator;
 
+import javax.annotation.Nonnull;
+
 public class Explanations {
 
     public static void main(String[] args) throws Exception {
@@ -81,7 +83,8 @@ public class Explanations {
         // Ok, here we go. Let's see why the ontology is inconsistent. 
         System.out.println("Computing explanations for the inconsistency...");
         factory=new Reasoner.ReasonerFactory() {
-            protected OWLReasoner createHermiTOWLReasoner(org.semanticweb.HermiT.Configuration configuration,OWLOntology ontology) {
+            @Nonnull
+            protected OWLReasoner createHermiTOWLReasoner(@Nonnull org.semanticweb.HermiT.Configuration configuration,OWLOntology ontology) {
                 // don't throw an exception since otherwise we cannot compte explanations 
                 configuration.throwInconsistentOntologyException=false;
                 return new Reasoner(configuration,ontology);

@@ -23,6 +23,8 @@ import org.semanticweb.HermiT.blocking.BlockingStrategy;
 import org.semanticweb.HermiT.model.AtLeast;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 /**
  * Strategy for expanding all existentials on the oldest node in the tableau with unexpanded existentials.
  * This usually closely approximates a breadth-first expansion. (Existentials introduced onto parent nodes
@@ -38,7 +40,7 @@ public class CreationOrderStrategy extends AbstractExpansionStrategy implements 
     public boolean isDeterministic() {
         return true;
     }
-    protected void expandExistential(AtLeast atLeast,Node forNode) {
+    protected void expandExistential(@Nonnull AtLeast atLeast, @Nonnull Node forNode) {
         m_existentialExpansionManager.expand(atLeast,forNode);
         m_existentialExpansionManager.markExistentialProcessed(atLeast,forNode);
     }

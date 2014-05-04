@@ -28,12 +28,15 @@ import org.semanticweb.HermiT.datatypes.UnsupportedFacetException;
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+
 public class BooleanDatatypeHandler implements DatatypeHandler {
     protected static final String XSD_BOOLEAN=Prefixes.s_semanticWebPrefixes.get("xsd:")+"boolean";
     protected static final ValueSpaceSubset BOOLEAN_ALL=new BooleanAll();
     protected static final ValueSpaceSubset EMPTY=new BooleanNone();
     protected final static Set<String> s_managedDatatypeURIs=Collections.singleton(XSD_BOOLEAN);
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_managedDatatypeURIs;
     }
@@ -47,22 +50,25 @@ public class BooleanDatatypeHandler implements DatatypeHandler {
         else
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert XSD_BOOLEAN.equals(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()>0)
             throw new UnsupportedFacetException("The xsd:boolean datatype does not provide any facets, but the ontology contains a restriction on boolean with facets: "+this.toString());
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_BOOLEAN.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return BOOLEAN_ALL;
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_BOOLEAN.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return BOOLEAN_ALL;
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_BOOLEAN.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return EMPTY;
@@ -86,7 +92,7 @@ public class BooleanDatatypeHandler implements DatatypeHandler {
         public boolean containsDataValue(Object dataValue) {
             return Boolean.FALSE.equals(dataValue) || Boolean.TRUE.equals(dataValue);
         }
-        public void enumerateDataValues(Collection<Object> dataValues) {
+        public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
             dataValues.add(Boolean.FALSE);
             dataValues.add(Boolean.TRUE);
         }

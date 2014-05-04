@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 public final class TupleIndex implements Serializable {
@@ -26,6 +27,7 @@ public final class TupleIndex implements Serializable {
     protected static final int BUCKET_OFFSET=1;
 
     protected final int[] m_indexingSequence;
+    @Nonnull
     protected final TrieNodeManager m_trieNodeManager;
     protected int m_root;
     protected int[] m_buckets;
@@ -124,7 +126,7 @@ public final class TupleIndex implements Serializable {
         }
         throw new IllegalStateException("Internal error: should be able to remove the child node.");
     }
-    protected int getChildNode(int parent,Object object) {
+    protected int getChildNode(int parent, @Nonnull Object object) {
         int bucketIndex=getIndexFor(object.hashCode()+parent,m_bucketsLengthMinusOne);
         int child=m_buckets[bucketIndex]-BUCKET_OFFSET;
         while (child!=-1) {
@@ -134,7 +136,7 @@ public final class TupleIndex implements Serializable {
         }
         return -1;
     }
-    protected int getChildNodeAddIfNecessary(int parent,Object object) {
+    protected int getChildNodeAddIfNecessary(int parent, @Nonnull Object object) {
         int hashCode=object.hashCode()+parent;
         int bucketIndex=getIndexFor(hashCode,m_bucketsLengthMinusOne);
         int child=m_buckets[bucketIndex]-BUCKET_OFFSET;
@@ -287,6 +289,7 @@ public final class TupleIndex implements Serializable {
     public static class TupleIndexRetrieval implements Serializable {
         private static final long serialVersionUID=3052986474027614595L;
 
+        @Nonnull
         protected final TupleIndex m_tupleIndex;
         protected final Object[] m_bindingsBuffer;
         protected final int[] m_selectionIndices;
@@ -294,7 +297,7 @@ public final class TupleIndex implements Serializable {
         protected final int m_indexingSequenceLength;
         protected int m_currentTrieNode;
 
-        public TupleIndexRetrieval(TupleIndex tupleIndex,Object[] bindingsBuffer,int[] selectionIndices) {
+        public TupleIndexRetrieval(@Nonnull TupleIndex tupleIndex,Object[] bindingsBuffer,int[] selectionIndices) {
             m_tupleIndex=tupleIndex;
             m_bindingsBuffer=bindingsBuffer;
             m_selectionIndices=selectionIndices;

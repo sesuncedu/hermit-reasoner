@@ -26,10 +26,13 @@ import java.util.Set;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.Individual;
 
+import javax.annotation.Nonnull;
+
 public class RoleElementManager {
     
     public static final String LB=System.getProperty("line.separator");
     
+    @Nonnull
     protected final Map<AtomicRole,RoleElement> m_roleToElement;
 
     
@@ -45,6 +48,7 @@ public class RoleElementManager {
             return element;
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         for (AtomicRole role : m_roleToElement.keySet()) {
@@ -99,7 +103,7 @@ public class RoleElementManager {
             }
             return successors.add(individual2);
         }
-        public boolean addKnowns(Individual individual, Set<Individual> individuals) {
+        public boolean addKnowns(Individual individual, @Nonnull Set<Individual> individuals) {
             Set<Individual> successors=m_knownRelations.get(individual);
             if (successors==null) {
                 successors=new HashSet<Individual>();
@@ -135,7 +139,7 @@ public class RoleElementManager {
             }
             return removed;
         }
-        public boolean addPossibles(Individual individual, Set<Individual> individuals) {
+        public boolean addPossibles(Individual individual, @Nonnull Set<Individual> individuals) {
             Set<Individual> successors=m_possibleRelations.get(individual);
             if (successors==null) {
                 successors=new HashSet<Individual>();
@@ -143,6 +147,7 @@ public class RoleElementManager {
             }
             return successors.addAll(individuals);
         }
+        @Nonnull
         public String toString() {
             StringBuffer buffer=new StringBuffer();
             buffer.append(m_role);

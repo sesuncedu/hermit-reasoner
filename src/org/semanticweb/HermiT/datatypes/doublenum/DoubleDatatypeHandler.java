@@ -30,6 +30,9 @@ import org.semanticweb.HermiT.datatypes.UnsupportedFacetException;
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class DoubleDatatypeHandler implements DatatypeHandler {
     protected static final String XSD_NS=Prefixes.s_semanticWebPrefixes.get("xsd:");
     protected static final String XSD_DOUBLE=XSD_NS+"double";
@@ -44,10 +47,11 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
         s_supportedFacetURIs.add(XSD_NS+"maxExclusive");
     }
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_managedDatatypeURIs;
     }
-    public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
+    public Object parseLiteral(@Nonnull String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert XSD_DOUBLE.equals(datatypeURI);
         try {
             return Double.parseDouble(lexicalForm);
@@ -58,7 +62,7 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
         }
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert XSD_DOUBLE.equals(datatypeRestriction.getDatatypeURI());
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
             String facetURI=datatypeRestriction.getFacetURI(index);
@@ -69,7 +73,8 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
                 throw new UnsupportedFacetException("The '"+facetURI+"' facet takes only doubles as values when used on an xsd:double datatype, but the ontology contains a datatype restriction "+this.toString());
         }
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_DOUBLE.equals(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return DOUBLE_ENTIRE;
@@ -81,7 +86,8 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
                 return new NoNaNDoubleSubset(interval);
         }
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_DOUBLE.equals(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0 || valueSpaceSubset==EMPTY_SUBSET)
             return valueSpaceSubset;
@@ -108,7 +114,7 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
             }
         }
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert XSD_DOUBLE.equals(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0 || valueSpaceSubset==EMPTY_SUBSET)
             return EMPTY_SUBSET;
@@ -157,7 +163,8 @@ public class DoubleDatatypeHandler implements DatatypeHandler {
             }
         }
     }
-    protected DoubleInterval getIntervalFor(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    protected DoubleInterval getIntervalFor(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert datatypeRestriction.getNumberOfFacetRestrictions()!=0;
         double lowerBoundInclusive=Double.NEGATIVE_INFINITY;
         double upperBoundInclusive=Double.POSITIVE_INFINITY;

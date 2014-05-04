@@ -52,6 +52,9 @@ import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.util.AutoIRIMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class CommandLine {
 
     @SuppressWarnings("serial")
@@ -82,7 +85,7 @@ public class CommandLine {
     }
 
     static protected class DumpPrefixesAction implements Action {
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit,StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             output.println("Prefixes:");
             for (Map.Entry<String,String> e : hermit.getPrefixes().getPrefixIRIsByPrefixName().entrySet()) {
                 output.println("\t"+e.getKey()+"\t"+e.getValue());
@@ -97,7 +100,7 @@ public class CommandLine {
         public DumpClausesAction(String fileName) {
             file=fileName;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
             if (file!=null) {
                 if (file.equals("-")) {
                     output=new PrintWriter(System.out);
@@ -138,7 +141,7 @@ public class CommandLine {
             this.prettyPrint=prettyPrint;
             this.outputLocation=outputLocation;
         }
-        public void run(Reasoner hermit, StatusOutput status, PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit, @Nonnull StatusOutput status, @Nullable PrintWriter output,boolean ignoreOntologyPrefixes) {
             Set<InferenceType> inferences=new HashSet<InferenceType>();
             if (classifyClasses)
                 inferences.add(InferenceType.CLASS_HIERARCHY);
@@ -167,7 +170,7 @@ public class CommandLine {
         public SatisfiabilityAction(String c) {
             conceptName=c;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit, @Nonnull StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             status.log(2,"Checking satisfiability of '"+conceptName+"'");
             Prefixes prefixes=hermit.getPrefixes();
             String conceptUri=prefixes.canBeExpanded(conceptName) ? prefixes.expandAbbreviatedIRI(conceptName) : conceptName;
@@ -191,7 +194,7 @@ public class CommandLine {
             conceptName=name;
             all=getAll;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit, @Nonnull StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             status.log(2,"Finding supers of '"+conceptName+"'");
             Prefixes prefixes=hermit.getPrefixes();
             String conceptUri=prefixes.canBeExpanded(conceptName) ? prefixes.expandAbbreviatedIRI(conceptName) :conceptName;
@@ -233,7 +236,7 @@ public class CommandLine {
             conceptName=name;
             all=getAll;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit, @Nonnull StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             status.log(2,"Finding subs of '"+conceptName+"'");
             Prefixes prefixes=hermit.getPrefixes();
             String conceptUri=prefixes.canBeExpanded(conceptName) ? prefixes.expandAbbreviatedIRI(conceptName) : conceptName;
@@ -273,7 +276,7 @@ public class CommandLine {
         public EquivalentsAction(String name) {
             conceptName=name;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(@Nonnull Reasoner hermit, @Nonnull StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             status.log(2,"Finding equivalents of '"+conceptName+"'");
             Prefixes prefixes=hermit.getPrefixes();
             String conceptUri=prefixes.canBeExpanded(conceptName) ? prefixes.expandAbbreviatedIRI(conceptName) : conceptName;
@@ -309,7 +312,7 @@ public class CommandLine {
         public EntailsAction(Configuration config,IRI conclusionIRI) {
             this.conclusionIRI=conclusionIRI;
         }
-        public void run(Reasoner hermit,StatusOutput status,PrintWriter output,boolean ignoreOntologyPrefixes) {
+        public void run(Reasoner hermit, @Nonnull StatusOutput status, @Nonnull PrintWriter output,boolean ignoreOntologyPrefixes) {
             status.log(2,"Checking whether the loaded ontology entails the conclusion ontology");
             OWLOntologyManager m=OWLManager.createOWLOntologyManager();
             try {
@@ -429,7 +432,7 @@ public class CommandLine {
         new Option(kDumpClauses,"dump-clauses",kInternals,false,"FILE","output DL-clauses to FILE (default stdout)")
     };
 
-    public static void main(String[] argv) {
+    public static void main(@Nonnull String[] argv) {
         try {
             int verbosity=1;
             boolean ignoreOntologyPrefixes=false;
@@ -827,7 +830,8 @@ class Option {
         metavar=inMetavar;
         help=inHelp;
     }
-    public static LongOpt[] createLongOpts(Option[] opts) {
+    @Nonnull
+    public static LongOpt[] createLongOpts(@Nonnull Option[] opts) {
         LongOpt[] out=new LongOpt[opts.length];
         for (int i=0;i<opts.length;++i) {
             out[i]=new LongOpt(opts[i].longStr,(opts[i].arg==Arg.NONE ? LongOpt.NO_ARGUMENT : opts[i].arg==Arg.OPTIONAL ? LongOpt.OPTIONAL_ARGUMENT : LongOpt.REQUIRED_ARGUMENT),null,opts[i].optChar);
@@ -835,13 +839,15 @@ class Option {
         return out;
     }
 
+    @Nonnull
     public String getLongOptExampleStr() {
         if (longStr==null||longStr.equals(""))
             return "";
         return new String("--"+longStr+(arg==Arg.NONE ? "" : arg==Arg.OPTIONAL ? "[="+metavar+"]" : "="+metavar));
     }
 
-    public static String formatOptionHelp(Option[] opts) {
+    @Nonnull
+    public static String formatOptionHelp(@Nonnull Option[] opts) {
         StringBuffer out=new StringBuffer();
         int fieldWidth=0;
         for (Option o : opts) {
@@ -886,7 +892,8 @@ class Option {
         return out.toString();
     }
 
-    public static String formatOptionsString(Option[] opts) {
+    @Nonnull
+    public static String formatOptionsString(@Nonnull Option[] opts) {
         StringBuffer out=new StringBuffer();
         for (Option o : opts) {
             if (o.optChar<256) {
@@ -906,7 +913,8 @@ class Option {
         return out.toString();
     }
 
-    protected static String breakLines(String str,int lineWidth,int indent) {
+    @Nonnull
+    protected static String breakLines(@Nonnull String str,int lineWidth,int indent) {
         StringBuffer out=new StringBuffer();
         BreakIterator i=BreakIterator.getLineInstance();
         i.setText(str);

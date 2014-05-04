@@ -10,6 +10,8 @@ import rationals.State;
 import rationals.Transition;
 import rationals.properties.ContainsEpsilon;
 
+import javax.annotation.Nonnull;
+
 /**
  * A transformation that normalizes a given Automaton.
  * <p>
@@ -27,7 +29,7 @@ import rationals.properties.ContainsEpsilon;
  */
 public class Normalizer implements UnaryTransformation {
 
-    public Automaton transform(Automaton a) {
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton b = new Automaton();
         State ni = b.addState(true, false);
         State nt = b.addState(false, true);

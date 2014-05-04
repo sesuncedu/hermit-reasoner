@@ -22,16 +22,21 @@ import org.semanticweb.HermiT.model.AtLeastConcept;
 import org.semanticweb.HermiT.model.AtomicNegationConcept;
 import org.semanticweb.HermiT.model.DLPredicate;
 
+import javax.annotation.Nonnull;
+
 public final class GroundDisjunctionHeader {
+    @Nonnull
     protected final DLPredicate[] m_dlPredicates;
+    @Nonnull
     protected final int[] m_disjunctStart;
     protected final int m_hashCode;
+    @Nonnull
     protected final DisjunctIndexWithBacktrackings[] m_disjunctIndexesWithBacktrackings;
     protected final int m_firstAtLeastPositiveIndex;
     protected final int m_firstAtLeastNegativeIndex;
     protected GroundDisjunctionHeader m_nextEntry;
 
-    protected GroundDisjunctionHeader(DLPredicate[] dlPredicates,int hashCode,GroundDisjunctionHeader nextEntry) {
+    protected GroundDisjunctionHeader(@Nonnull DLPredicate[] dlPredicates,int hashCode,GroundDisjunctionHeader nextEntry) {
         m_dlPredicates=dlPredicates;
         m_disjunctStart=new int[m_dlPredicates.length];
         int argumentsSize=0;
@@ -75,7 +80,7 @@ public final class GroundDisjunctionHeader {
             else
                 m_disjunctIndexesWithBacktrackings[nextAtomicDisjunct++]=new DisjunctIndexWithBacktrackings(index);
     }
-    protected boolean isEqual(DLPredicate[] dlPredicates) {
+    protected boolean isEqual(@Nonnull DLPredicate[] dlPredicates) {
         if (m_dlPredicates.length!=dlPredicates.length)
             return false;
         for (int index=m_dlPredicates.length-1;index>=0;--index)
@@ -83,6 +88,7 @@ public final class GroundDisjunctionHeader {
                 return false;
         return true;
     }
+    @Nonnull
     public int[] getSortedDisjunctIndexes() {
         int[] sortedDisjunctIndexes=new int[m_disjunctIndexesWithBacktrackings.length];
         for (int index=m_disjunctIndexesWithBacktrackings.length-1;index>=0;--index)
@@ -112,6 +118,7 @@ public final class GroundDisjunctionHeader {
             }
         }
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         for (int disjunctIndex=0;disjunctIndex<m_dlPredicates.length;disjunctIndex++) {
@@ -129,6 +136,7 @@ public final class GroundDisjunctionHeader {
         }
         return buffer.toString();
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }

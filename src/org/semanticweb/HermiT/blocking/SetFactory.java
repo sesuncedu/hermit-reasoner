@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.blocking;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -74,7 +76,7 @@ public class SetFactory<E> implements Serializable {
         }
         return size;
     }
-    public void addReference(Set<E> set) {
+    public void addReference(@Nonnull Set<E> set) {
         ((Entry)set).m_referenceCount++;
     }
     public void removeReference(Set<E> set) {
@@ -85,10 +87,11 @@ public class SetFactory<E> implements Serializable {
             leaveEntry(entry);
         }
     }
-    public void makePermanent(Set<E> set) {
+    public void makePermanent(@Nonnull Set<E> set) {
         ((Entry)set).m_permanent=true;
     }
-    public Set<E> getSet(List<E> elements) {
+    @Nullable
+    public Set<E> getSet(@Nonnull List<E> elements) {
         int hashCode=0;
         for (int index=elements.size()-1;index>=0;--index)
             hashCode+=elements.get(index).hashCode();
@@ -129,7 +132,7 @@ public class SetFactory<E> implements Serializable {
         m_entries=newEntries;
         m_resizeThreshold=(int)(0.75*m_entries.length);
     }
-    protected void removeEntry(Entry<E> entry) {
+    protected void removeEntry(@Nonnull Entry<E> entry) {
         if (entry.m_nextEntry!=null)
             entry.m_nextEntry.m_previousEntry=entry.m_previousEntry;
         if (entry.m_previousEntry!=null)
@@ -158,7 +161,7 @@ public class SetFactory<E> implements Serializable {
             return entry;
         }
     }
-    protected void leaveEntry(Entry<E> entry) {
+    protected void leaveEntry(@Nonnull Entry<E> entry) {
         entry.m_nextEntry=m_unusedEntries[entry.size()];
         entry.m_previousEntry=null;
         m_unusedEntries[entry.size()]=entry;
@@ -172,7 +175,9 @@ public class SetFactory<E> implements Serializable {
 
         protected T[] m_table;
         protected int m_hashCode;
+        @Nullable
         protected Entry<T> m_previousEntry;
+        @Nullable
         protected Entry<T> m_nextEntry;
         protected int m_referenceCount;
         protected boolean m_permanent;
@@ -181,7 +186,7 @@ public class SetFactory<E> implements Serializable {
             m_hashCode=0;
             m_table=(T[])new Object[size];
         }
-        public void initialize(List<T> elements,int hashCode) {
+        public void initialize(@Nonnull List<T> elements,int hashCode) {
             elements.toArray(m_table);
             m_hashCode=hashCode;
         }
@@ -191,7 +196,7 @@ public class SetFactory<E> implements Serializable {
         public boolean add(T object) {
             throw new UnsupportedOperationException();
         }
-        public boolean equalsTo(List<T> elements) {
+        public boolean equalsTo(@Nonnull List<T> elements) {
             if (m_table.length!=elements.size())
                 return false;
             for (int index=m_table.length-1;index>=0;--index)
@@ -199,7 +204,7 @@ public class SetFactory<E> implements Serializable {
                     return false;
             return true;
         }
-        public boolean addAll(Collection<? extends T> c) {
+        public boolean addAll(@Nonnull Collection<? extends T> c) {
             throw new UnsupportedOperationException();
         }
         public boolean contains(Object o) {
@@ -208,7 +213,7 @@ public class SetFactory<E> implements Serializable {
                     return true;
             return false;
         }
-        public boolean containsAll(Collection<?> c) {
+        public boolean containsAll(@Nonnull Collection<?> c) {
             for (Object object : c)
                 if (!contains(object))
                     return false;
@@ -217,25 +222,28 @@ public class SetFactory<E> implements Serializable {
         public boolean isEmpty() {
             return m_table.length==0;
         }
+        @Nonnull
         public Iterator<T> iterator() {
             return new EntryIterator();
         }
         public boolean remove(Object o) {
             throw new UnsupportedOperationException();
         }
-        public boolean removeAll(Collection<?> c) {
+        public boolean removeAll(@Nonnull Collection<?> c) {
             throw new UnsupportedOperationException();
         }
-        public boolean retainAll(Collection<?> c) {
+        public boolean retainAll(@Nonnull Collection<?> c) {
             throw new UnsupportedOperationException();
         }
         public int size() {
             return m_table.length;
         }
+        @Nonnull
         public Object[] toArray() {
             return m_table.clone();
         }
-        public <E> E[] toArray(E[] a) {
+        @Nonnull
+        public <E> E[] toArray(@Nonnull E[] a) {
             System.arraycopy(m_table,0,a,0,m_table.length);
             return a;
         }

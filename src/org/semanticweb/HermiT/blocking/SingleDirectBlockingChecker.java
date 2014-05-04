@@ -31,10 +31,15 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.NodeType;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serializable {
     private static final long serialVersionUID=9093753046859877016L;
 
+    @Nonnull
     protected final SetFactory<AtomicConcept> m_atomicConceptsSetFactory;
+    @Nonnull
     protected final List<AtomicConcept> m_atomicConceptsBuffer;
     protected Tableau m_tableau;
     protected ExtensionTable.Retrieval m_binaryTableSearch1Bound;
@@ -43,7 +48,7 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
         m_atomicConceptsSetFactory=new SetFactory<AtomicConcept>();
         m_atomicConceptsBuffer=new ArrayList<AtomicConcept>();
     }
-    public void initialize(Tableau tableau) {
+    public void initialize(@Nonnull Tableau tableau) {
         m_tableau=tableau;
         m_binaryTableSearch1Bound=tableau.getExtensionManager().getBinaryExtensionTable().createRetrieval(new boolean[] { false,true },ExtensionTable.View.TOTAL);
     }
@@ -51,37 +56,38 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
         m_atomicConceptsSetFactory.clearNonpermanent();
         m_binaryTableSearch1Bound.clear();
     }
-    public boolean isBlockedBy(Node blocker,Node blocked) {
+    public boolean isBlockedBy(@Nonnull Node blocker, @Nonnull Node blocked) {
         return
             !blocker.isBlocked() &&
             blocker.getNodeType()==NodeType.TREE_NODE &&
             blocked.getNodeType()==NodeType.TREE_NODE &&
             ((SingleBlockingObject)blocker.getBlockingObject()).getAtomicConceptsLabel()==((SingleBlockingObject)blocked.getBlockingObject()).getAtomicConceptsLabel();
     }
-    public int blockingHashCode(Node node) {
+    public int blockingHashCode(@Nonnull Node node) {
         return ((SingleBlockingObject)node.getBlockingObject()).m_atomicConceptsLabelHashCode;
     }
-    public boolean canBeBlocker(Node node) {
+    public boolean canBeBlocker(@Nonnull Node node) {
         return node.getNodeType()==NodeType.TREE_NODE;
     }
-    public boolean canBeBlocked(Node node) {
+    public boolean canBeBlocked(@Nonnull Node node) {
         return node.getNodeType()==NodeType.TREE_NODE;
     }
-    public boolean hasBlockingInfoChanged(Node node) {
+    public boolean hasBlockingInfoChanged(@Nonnull Node node) {
         return ((SingleBlockingObject)node.getBlockingObject()).m_hasChanged;
     }
-    public void clearBlockingInfoChanged(Node node) {
+    public void clearBlockingInfoChanged(@Nonnull Node node) {
         ((SingleBlockingObject)node.getBlockingObject()).m_hasChanged=false;
     }
-    public void nodeInitialized(Node node) {
+    public void nodeInitialized(@Nonnull Node node) {
         if (node.getBlockingObject()==null)
             node.setBlockingObject(new SingleBlockingObject(node));
         ((SingleBlockingObject)node.getBlockingObject()).initialize();
     }
-    public void nodeDestroyed(Node node) {
+    public void nodeDestroyed(@Nonnull Node node) {
         ((SingleBlockingObject)node.getBlockingObject()).destroy();
     }
-    public Node assertionAdded(Concept concept,Node node,boolean isCore) {
+    @Nullable
+    public Node assertionAdded(Concept concept, @Nonnull Node node,boolean isCore) {
         if (concept instanceof AtomicConcept) {
             ((SingleBlockingObject)node.getBlockingObject()).addAtomicConcept((AtomicConcept)concept);
             return node;
@@ -89,7 +95,8 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
         else
             return null;
     }
-    public Node assertionRemoved(Concept concept,Node node,boolean isCore) {
+    @Nullable
+    public Node assertionRemoved(Concept concept, @Nonnull Node node,boolean isCore) {
         if (concept instanceof AtomicConcept) {
             ((SingleBlockingObject)node.getBlockingObject()).removeAtomicConcept((AtomicConcept)concept);
             return node;
@@ -97,27 +104,35 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
         else
             return null;
     }
+    @Nullable
     public Node assertionAdded(DataRange range,Node node,boolean isCore) {
         return null;
     }
+    @Nullable
     public Node assertionRemoved(DataRange range,Node node,boolean isCore) {
         return null;
     }
+    @Nullable
     public Node assertionAdded(AtomicRole atomicRole,Node nodeFrom,Node nodeTo,boolean isCore) {
         return null;
     }
+    @Nullable
     public Node assertionRemoved(AtomicRole atomicRole,Node nodeFrom,Node nodeTo,boolean isCore) {
         return null;
     }
+    @Nullable
     public Node nodesMerged(Node mergeFrom,Node mergeInto) {
         return null;
     }
+    @Nullable
     public Node nodesUnmerged(Node mergeFrom,Node mergeInto) {
         return null;
     }
-    public BlockingSignature getBlockingSignatureFor(Node node) {
+    @Nonnull
+    public BlockingSignature getBlockingSignatureFor(@Nonnull Node node) {
         return new SingleBlockingSignature(this,node);
     }
+    @Nullable
     protected Set<AtomicConcept> fetchAtomicConceptsLabel(Node node) {
         m_atomicConceptsBuffer.clear();
         m_binaryTableSearch1Bound.getBindingsBuffer()[1]=node;
@@ -145,6 +160,7 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
 
         protected final Node m_node;
         protected boolean m_hasChanged;
+        @Nullable
         protected Set<AtomicConcept> m_atomicConceptsLabel;
         protected int m_atomicConceptsLabelHashCode;
 
@@ -162,6 +178,7 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
                 m_atomicConceptsLabel=null;
             }
         }
+        @Nullable
         public Set<AtomicConcept> getAtomicConceptsLabel() {
             if (m_atomicConceptsLabel==null) {
                 m_atomicConceptsLabel=SingleDirectBlockingChecker.this.fetchAtomicConceptsLabel(m_node);
@@ -169,7 +186,7 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
             }
             return m_atomicConceptsLabel;
         }
-        public void addAtomicConcept(AtomicConcept atomicConcept) {
+        public void addAtomicConcept(@Nonnull AtomicConcept atomicConcept) {
             if (m_atomicConceptsLabel!=null) {
                 // invalidate, recompute real label later if necessary
                 m_atomicConceptsSetFactory.removeReference(m_atomicConceptsLabel);
@@ -178,7 +195,7 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
             m_atomicConceptsLabelHashCode+=atomicConcept.hashCode();
             m_hasChanged=true;
         }
-        public void removeAtomicConcept(AtomicConcept atomicConcept) {
+        public void removeAtomicConcept(@Nonnull AtomicConcept atomicConcept) {
             if (m_atomicConceptsLabel!=null) {
                 // invalidate, recompute real label later if necessary
                 m_atomicConceptsSetFactory.removeReference(m_atomicConceptsLabel);
@@ -192,13 +209,14 @@ public class SingleDirectBlockingChecker implements DirectBlockingChecker,Serial
     protected static class SingleBlockingSignature extends BlockingSignature implements Serializable {
         private static final long serialVersionUID=-7349489846772132258L;
 
+        @Nullable
         protected final Set<AtomicConcept> m_atomicConceptsLabel;
 
-        public SingleBlockingSignature(SingleDirectBlockingChecker checker,Node node) {
+        public SingleBlockingSignature(@Nonnull SingleDirectBlockingChecker checker, @Nonnull Node node) {
             m_atomicConceptsLabel=((SingleBlockingObject)node.getBlockingObject()).getAtomicConceptsLabel();
             checker.m_atomicConceptsSetFactory.makePermanent(m_atomicConceptsLabel);
         }
-        public boolean blocksNode(Node node) {
+        public boolean blocksNode(@Nonnull Node node) {
             return ((SingleBlockingObject)node.getBlockingObject()).getAtomicConceptsLabel()==m_atomicConceptsLabel;
         }
         public int hashCode() {

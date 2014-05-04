@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an individual in a DL clause.
  */
@@ -36,21 +39,25 @@ public class Individual extends Term {
     public boolean isAnonymous() {
         return m_uri.startsWith("internal:anonymous#");
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return prefixes.abbreviateIRI(m_uri);
     }
 
+    @Nonnull
     protected static InterningManager<Individual> s_interningManager=new InterningManager<Individual>() {
-        protected boolean equal(Individual object1,Individual object2) {
+        protected boolean equal(@Nonnull Individual object1, @Nonnull Individual object2) {
             return object1.m_uri.equals(object2.m_uri);
         }
-        protected int getHashCode(Individual object) {
+        protected int getHashCode(@Nonnull Individual object) {
             return object.m_uri.hashCode();
         }
     };
@@ -60,12 +67,15 @@ public class Individual extends Term {
         will be returned on each call (allowing for fast equality testing).
         It is the caller's responsibility to normalize the given URI---this
         function treats the argument as a raw string. */
+    @Nullable
     public static Individual create(String uri) {
         return s_interningManager.intern(new Individual(uri));
     }
+    @Nullable
     public static Individual createAnonymous(String id) {
         return create(getAnonymousURI(id));
     }
+    @Nonnull
     public static String getAnonymousURI(String id) {
         return "internal:anonymous#"+id;
     }

@@ -61,26 +61,41 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class InstanceManager {
     public static final int thresholdForAdditionalAxioms=10000;
 
     protected final InterruptFlag m_interruptFlag;
     protected final Reasoner m_reasoner;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final Individual[] m_individuals;
+    @Nonnull
     protected final HashSet<AtomicRole> m_complexRoles;
+    @Nonnull
     protected final Map<AtomicConcept,AtomicConceptElement> m_conceptToElement;
+    @Nullable
     protected final AtomicConcept m_topConcept;
+    @Nullable
     protected final AtomicConcept m_bottomConcept;
+    @Nullable
     protected Hierarchy<AtomicConcept> m_currentConceptHierarchy;
+    @Nonnull
     protected final RoleElementManager m_roleElementManager;
     protected final RoleElement m_topRoleElement;
     protected final RoleElement m_bottomRoleElement;
+    @Nullable
     protected Hierarchy<RoleElement> m_currentRoleHierarchy;
     protected final boolean m_usesInverseRoles;
+    @Nonnull
     protected final Map<Individual, Node> m_nodesForIndividuals;
+    @Nonnull
     protected final Map<Node,Individual> m_individualsForNodes;
+    @Nonnull
     protected final Map<Node,Set<Node>> m_canonicalNodeToDetMergedNodes;
+    @Nonnull
     protected final Map<Node,Set<Node>> m_canonicalNodeToNonDetMergedNodes;
     protected boolean m_isInconsistent;
     protected boolean m_realizationCompleted;
@@ -91,7 +106,9 @@ public class InstanceManager {
     protected boolean m_propertiesInitialised;
     protected boolean m_readingOffFoundPossibleConceptInstance;
     protected boolean m_readingOffFoundPossiblePropertyInstance;
+    @Nonnull
     protected final Map<Individual,Set<Individual>> m_individualToEquivalenceClass;
+    @Nullable
     protected Map<Set<Individual>,Set<Set<Individual>>> m_individualToPossibleEquivalenceClass;
     protected final ExtensionTable.Retrieval m_binaryRetrieval0Bound;
     protected final ExtensionTable.Retrieval m_binaryRetrieval1Bound;
@@ -101,7 +118,7 @@ public class InstanceManager {
     protected final ExtensionTable.Retrieval m_ternaryRetrieval012Bound;
     protected int m_currentIndividualIndex=0;
 
-    public InstanceManager(InterruptFlag interruptFlag,Reasoner reasoner,Hierarchy<AtomicConcept> atomicConceptHierarchy,Hierarchy<Role> objectRoleHierarchy) {
+    public InstanceManager(InterruptFlag interruptFlag,Reasoner reasoner, @Nullable Hierarchy<AtomicConcept> atomicConceptHierarchy, @Nullable Hierarchy<Role> objectRoleHierarchy) {
         m_interruptFlag=interruptFlag;
         m_interruptFlag.startTask();
         try {
@@ -197,15 +214,15 @@ public class InstanceManager {
             m_interruptFlag.endTask();
         }
     }
-    protected void addKnownConceptSubsumption(Graph<AtomicConcept> knownSubsumptions,AtomicConcept subConcept,AtomicConcept superConcept) {
+    protected void addKnownConceptSubsumption(@Nonnull Graph<AtomicConcept> knownSubsumptions,AtomicConcept subConcept,AtomicConcept superConcept) {
         knownSubsumptions.addEdge(subConcept,superConcept);
     }
-    protected void addKnownRoleSubsumption(Graph<Role> knownSubsumptions,Role subRole,Role superRole) {
+    protected void addKnownRoleSubsumption(@Nonnull Graph<Role> knownSubsumptions, @Nonnull Role subRole, @Nonnull Role superRole) {
         knownSubsumptions.addEdge(subRole,superRole);
         if (m_usesInverseRoles)
             knownSubsumptions.addEdge(subRole.getInverse(),superRole.getInverse());
     }
-    protected void updateKnownSubsumptionsUsingToldSubsumers(Set<DLClause> dlClauses, Graph<AtomicConcept> knownConceptSubsumptions,Set<AtomicConcept> concepts,Graph<Role> knownRoleSubsumptions,Set<Role> roles) {
+    protected void updateKnownSubsumptionsUsingToldSubsumers(@Nonnull Set<DLClause> dlClauses, @Nullable Graph<AtomicConcept> knownConceptSubsumptions, @Nonnull Set<AtomicConcept> concepts, @Nullable Graph<Role> knownRoleSubsumptions, @Nonnull Set<Role> roles) {
         boolean requiresConceptSubsumers=knownConceptSubsumptions!=null;
         boolean requiresRoleSubsumers=knownRoleSubsumptions!=null;
         if (requiresConceptSubsumers || requiresRoleSubsumers) {
@@ -236,7 +253,8 @@ public class InstanceManager {
             }
         }
     }
-    protected Hierarchy<AtomicConcept> buildTransitivelyReducedConceptHierarchy(Graph<AtomicConcept> knownSubsumptions) {
+    @Nonnull
+    protected Hierarchy<AtomicConcept> buildTransitivelyReducedConceptHierarchy(@Nonnull Graph<AtomicConcept> knownSubsumptions) {
         final Map<AtomicConcept,GraphNode<AtomicConcept>> allSubsumers=new HashMap<AtomicConcept,GraphNode<AtomicConcept>>();
         for (AtomicConcept element : knownSubsumptions.getElements())
             allSubsumers.put(element,new GraphNode<AtomicConcept>(element,knownSubsumptions.getSuccessors(element)));
@@ -298,7 +316,8 @@ public class InstanceManager {
             m_usesClassifiedConceptHierarchy=true;
         }
     }
-    protected Hierarchy<RoleElement> buildTransitivelyReducedRoleHierarchy(Graph<Role> knownSubsumptions) {
+    @Nonnull
+    protected Hierarchy<RoleElement> buildTransitivelyReducedRoleHierarchy(@Nonnull Graph<Role> knownSubsumptions) {
         final Map<Role,GraphNode<Role>> allSubsumers=new HashMap<Role,GraphNode<Role>>();
         for (Role role : knownSubsumptions.getElements())
             allSubsumers.put(role,new GraphNode<Role>(role,knownSubsumptions.getSuccessors(role)));
@@ -311,7 +330,8 @@ public class InstanceManager {
      * @param roleHierarchy
      * @return a hierarchy containing role element nodes and no inverses
      */
-    protected Hierarchy<RoleElement> transformRoleHierarchy(final Hierarchy<Role> roleHierarchy) {
+    @Nonnull
+    protected Hierarchy<RoleElement> transformRoleHierarchy(@Nonnull final Hierarchy<Role> roleHierarchy) {
         Hierarchy<AtomicRole> newHierarchy=removeInverses(roleHierarchy);
         Hierarchy.Transformer<Role,RoleElement> transformer=new Hierarchy.Transformer<Role,RoleElement>() {
             public RoleElement transform(Role role) {
@@ -320,7 +340,7 @@ public class InstanceManager {
                     throw new IllegalArgumentException("Internal error: The instance manager should only use atomic roles, but here we got a hierarchy element for an inverse role:" + role);
                 return m_roleElementManager.getRoleElement((AtomicRole)role);
             }
-            public RoleElement determineRepresentative(Role oldRepresentative,Set<RoleElement> newEquivalentElements) {
+            public RoleElement determineRepresentative(Role oldRepresentative, @Nonnull Set<RoleElement> newEquivalentElements) {
                 RoleElement representative=transform(oldRepresentative);
                 for (RoleElement newEquiv : newEquivalentElements) {
                     if (!newEquiv.equals(representative)) {
@@ -348,7 +368,8 @@ public class InstanceManager {
         };
         return newHierarchy.transform(transformer,null);
     }
-    protected Hierarchy<AtomicRole> removeInverses(Hierarchy<Role> hierarchy) {
+    @Nonnull
+    protected Hierarchy<AtomicRole> removeInverses(@Nonnull Hierarchy<Role> hierarchy) {
         final Map<AtomicRole,GraphNode<AtomicRole>> allSubsumers=new HashMap<AtomicRole,GraphNode<AtomicRole>>();
         Set<AtomicRole> toProcess=new HashSet<AtomicRole>();
         Set<AtomicRole> visited=new HashSet<AtomicRole>();
@@ -376,7 +397,7 @@ public class InstanceManager {
         }
         return newHierarchy;
     }
-    public void setToClassifiedRoleHierarchy(final Hierarchy<Role> roleHierarchy) {
+    public void setToClassifiedRoleHierarchy(@Nonnull final Hierarchy<Role> roleHierarchy) {
         m_currentRoleHierarchy=transformRoleHierarchy(roleHierarchy);
         // clean up known and possibles
         if (m_propertiesInitialised && m_individuals.length>0) {
@@ -422,7 +443,7 @@ public class InstanceManager {
         }
         m_usesClassifiedObjectRoleHierarchy=true;
     }
-    protected void findNextHierarchyNodeWithAtomic(Set<AtomicRole> atomicRepresentatives, HierarchyNode<Role> current) {
+    protected void findNextHierarchyNodeWithAtomic(@Nonnull Set<AtomicRole> atomicRepresentatives, @Nonnull HierarchyNode<Role> current) {
         for (HierarchyNode<Role> successor : current.getParentNodes()) {
             Set<AtomicRole> suitable=new HashSet<AtomicRole>();
             for (Role role : successor.getEquivalentElements()) {
@@ -435,7 +456,8 @@ public class InstanceManager {
                 findNextHierarchyNodeWithAtomic(atomicRepresentatives, successor);
         }
     }
-    public OWLAxiom[] getAxiomsForReadingOffCompexProperties(OWLDataFactory factory, ReasonerProgressMonitor monitor, int completedSteps, int steps) {
+    @Nonnull
+    public OWLAxiom[] getAxiomsForReadingOffCompexProperties(@Nonnull OWLDataFactory factory, @Nullable ReasonerProgressMonitor monitor, int completedSteps, int steps) {
         if (m_complexRoles.size()>0) {
             int noAdditionalAxioms=0;
             List<OWLAxiom> additionalAxioms=new ArrayList<OWLAxiom>();
@@ -492,7 +514,7 @@ public class InstanceManager {
             }
         }
     }
-    protected int readOffClassInstancesByIndividual(Tableau tableau, ReasonerProgressMonitor monitor, int completedSteps, int steps) {
+    protected int readOffClassInstancesByIndividual(Tableau tableau, @Nullable ReasonerProgressMonitor monitor, int completedSteps, int steps) {
         for (Individual ind : m_individuals) {
             Node nodeForIndividual=m_nodesForIndividuals.get(ind);
             // read of concept instances and normal role instances only once, we don't slice that
@@ -534,7 +556,7 @@ public class InstanceManager {
         }
         return completedSteps;
     }
-    protected int readOffPropertyInstancesByIndividual(Tableau tableau,Map<Node,Individual> individualsForNodes, ReasonerProgressMonitor monitor, int completedSteps, int steps, int startIndividualIndex) {
+    protected int readOffPropertyInstancesByIndividual(Tableau tableau,Map<Node,Individual> individualsForNodes, @Nullable ReasonerProgressMonitor monitor, int completedSteps, int steps, int startIndividualIndex) {
         // first round we go over all individuals
         int endIndex=(startIndividualIndex==0) ? m_individuals.length : m_currentIndividualIndex;
         for (int index=startIndividualIndex;index<endIndex;index++) {
@@ -608,7 +630,7 @@ public class InstanceManager {
             m_interruptFlag.checkInterrupt();
         }
     }
-    protected boolean readOffTypes(Individual ind, Node nodeForIndividual) {
+    protected boolean readOffTypes(Individual ind, @Nonnull Node nodeForIndividual) {
         boolean hasBeenAdded=false;
         m_binaryRetrieval1Bound.getBindingsBuffer()[1]=nodeForIndividual.getCanonicalNode();
         m_binaryRetrieval1Bound.open();
@@ -702,7 +724,7 @@ public class InstanceManager {
             m_ternaryRetrieval1Bound.next();
         }
     }
-    protected int readOffComplexRoleSuccessors(Individual ind, Node nodeForIndividual, ReasonerProgressMonitor monitor, int completedSteps, int steps) {
+    protected int readOffComplexRoleSuccessors(@Nonnull Individual ind, Node nodeForIndividual, @Nullable ReasonerProgressMonitor monitor, int completedSteps, int steps) {
         String indIRI=ind.getIRI();
         AtomicConcept conceptForRole;
         for (AtomicRole atomicRole : m_complexRoles) {
@@ -747,7 +769,7 @@ public class InstanceManager {
         }
         return completedSteps;
     }
-    protected void addKnownConceptInstance(HierarchyNode<AtomicConcept> currentNode, AtomicConceptElement element, Individual instance) {
+    protected void addKnownConceptInstance(@Nonnull HierarchyNode<AtomicConcept> currentNode, @Nonnull AtomicConceptElement element, Individual instance) {
         Set<HierarchyNode<AtomicConcept>> nodes=currentNode.getDescendantNodes();
         for (HierarchyNode<AtomicConcept> node : nodes) {
             AtomicConceptElement descendantElement=m_conceptToElement.get(node.getRepresentative());
@@ -766,7 +788,7 @@ public class InstanceManager {
             }
         }
     }
-    protected void addPossibleConceptInstance(HierarchyNode<AtomicConcept> currentNode, AtomicConceptElement element, Individual instance) {
+    protected void addPossibleConceptInstance(@Nonnull HierarchyNode<AtomicConcept> currentNode, @Nonnull AtomicConceptElement element, Individual instance) {
         Set<HierarchyNode<AtomicConcept>> nodes=currentNode.getDescendantNodes();
         for (HierarchyNode<AtomicConcept> node : nodes) {
             AtomicConceptElement descendantElement=m_conceptToElement.get(node.getRepresentative());
@@ -787,7 +809,7 @@ public class InstanceManager {
             m_interruptFlag.checkInterrupt();
         }
     }
-    protected void addKnownRoleInstance(RoleElement element, Individual individual1, Individual individual2) {
+    protected void addKnownRoleInstance(@Nonnull RoleElement element, Individual individual1, Individual individual2) {
         if (!element.equals(m_topRoleElement)) {
             HierarchyNode<RoleElement> currentNode=m_currentRoleHierarchy.getNodeForElement(element);
             Set<HierarchyNode<RoleElement>> nodes=currentNode.getDescendantNodes();
@@ -807,7 +829,7 @@ public class InstanceManager {
             }
         }
     }
-    protected void addPossibleRoleInstance(RoleElement element, Individual individual1, Individual individual2) {
+    protected void addPossibleRoleInstance(@Nonnull RoleElement element, Individual individual1, Individual individual2) {
         if (!element.equals(m_topRoleElement)) {
             HierarchyNode<RoleElement> currentNode=m_currentRoleHierarchy.getNodeForElement(element);
             Set<HierarchyNode<RoleElement>> nodes=currentNode.getDescendantNodes();
@@ -839,7 +861,7 @@ public class InstanceManager {
         m_currentConceptHierarchy=null;
         m_currentRoleHierarchy=null;
     }
-    public void realize(ReasonerProgressMonitor monitor) {
+    public void realize(@Nullable ReasonerProgressMonitor monitor) {
         assert m_usesClassifiedConceptHierarchy==true;
         if (m_readingOffFoundPossibleConceptInstance && !m_realizationCompleted) {
             if (monitor!=null)
@@ -893,7 +915,7 @@ public class InstanceManager {
         }
         m_realizationCompleted=true;
     }
-    public void realizeObjectRoles(ReasonerProgressMonitor monitor) {
+    public void realizeObjectRoles(@Nullable ReasonerProgressMonitor monitor) {
         if (m_readingOffFoundPossiblePropertyInstance && !m_roleRealizationCompleted) {
             if (monitor!=null)
                 monitor.reasonerTaskStarted("Computing instances for all object properties...");
@@ -939,6 +961,7 @@ public class InstanceManager {
         }
         m_roleRealizationCompleted=true;
     }
+    @Nonnull
     public Set<HierarchyNode<AtomicConcept>> getTypes(Individual individual,boolean direct) {
         if (m_isInconsistent)
             return Collections.singleton(m_currentConceptHierarchy.m_bottomNode);
@@ -1005,7 +1028,7 @@ public class InstanceManager {
             return false;
         return hasType(individual, node, direct);
     }
-    public boolean hasType(Individual individual,HierarchyNode<AtomicConcept> node,boolean direct) {
+    public boolean hasType(Individual individual, @Nonnull HierarchyNode<AtomicConcept> node,boolean direct) {
         assert !direct || m_usesClassifiedConceptHierarchy;
         AtomicConcept representative=node.getRepresentative();
         if (representative==m_bottomConcept)
@@ -1039,6 +1062,7 @@ public class InstanceManager {
                     return true;
         return false;
     }
+    @Nonnull
     public Set<Individual> getInstances(AtomicConcept atomicConcept, boolean direct) {
         Set<Individual> result=new HashSet<Individual>();
         HierarchyNode<AtomicConcept> node=m_currentConceptHierarchy.getNodeForElement(atomicConcept);
@@ -1046,7 +1070,8 @@ public class InstanceManager {
         getInstancesForNode(node,result,direct);
         return result;
     }
-    public Set<Individual> getInstances(HierarchyNode<AtomicConcept> node,boolean direct) {
+    @Nonnull
+    public Set<Individual> getInstances(@Nonnull HierarchyNode<AtomicConcept> node,boolean direct) {
         Set<Individual> result=new HashSet<Individual>();
         HierarchyNode<AtomicConcept> nodeFromCurrentHierarchy=m_currentConceptHierarchy.getNodeForElement(node.m_representative);
         if (nodeFromCurrentHierarchy==null) {
@@ -1061,7 +1086,7 @@ public class InstanceManager {
             getInstancesForNode(nodeFromCurrentHierarchy, result, direct);
         return result;
     }
-    protected void getInstancesForNode(HierarchyNode<AtomicConcept> node,Set<Individual> result,boolean direct) {
+    protected void getInstancesForNode(@Nonnull HierarchyNode<AtomicConcept> node, @Nonnull Set<Individual> result,boolean direct) {
         assert !direct || m_usesClassifiedConceptHierarchy;
         AtomicConcept representative=node.getRepresentative();
         if (!direct && representative.equals(m_topConcept)) {
@@ -1122,7 +1147,7 @@ public class InstanceManager {
             return false;
         return hasObjectRoleRelationship(currentNode, individual1, individual2);
     }
-    public boolean hasObjectRoleRelationship(HierarchyNode<RoleElement> node,Individual individual1,Individual individual2) {
+    public boolean hasObjectRoleRelationship(@Nonnull HierarchyNode<RoleElement> node,Individual individual1,Individual individual2) {
         RoleElement representativeElement=node.getRepresentative();
         if (representativeElement.isKnown(individual1, individual2) || representativeElement.equals(m_topRoleElement))
             return true;
@@ -1144,6 +1169,7 @@ public class InstanceManager {
                     return true;
         return false;
     }
+    @Nonnull
     public Map<Individual,Set<Individual>> getObjectPropertyInstances(AtomicRole role) {
         Map<Individual,Set<Individual>> result=new HashMap<Individual, Set<Individual>>();
         HierarchyNode<RoleElement> node=m_currentRoleHierarchy.getNodeForElement(m_roleElementManager.getRoleElement(role));
@@ -1152,7 +1178,7 @@ public class InstanceManager {
         getObjectPropertyInstances(node,result);
         return result;
     }
-    protected void getObjectPropertyInstances(HierarchyNode<RoleElement> node,Map<Individual,Set<Individual>> result) {
+    protected void getObjectPropertyInstances(@Nonnull HierarchyNode<RoleElement> node, @Nonnull Map<Individual,Set<Individual>> result) {
         RoleElement representativeElement=node.getRepresentative();
         if (representativeElement.equals(m_topRoleElement) || m_isInconsistent) {
             Set<Individual> allResultRelevantIndividuals=new HashSet<Individual>();
@@ -1194,19 +1220,21 @@ public class InstanceManager {
         for (HierarchyNode<RoleElement> child : node.getChildNodes())
             getObjectPropertyInstances(child, result);
     }
+    @Nonnull
     public Set<Individual> getObjectPropertyValues(AtomicRole role,Individual individual) {
         Set<Individual> result=new HashSet<Individual>();
         HierarchyNode<RoleElement> node=m_currentRoleHierarchy.getNodeForElement(m_roleElementManager.getRoleElement(role));;
         getObjectPropertyValues(node,individual, result);
         return result;
     }
+    @Nonnull
     public Set<Individual> getObjectPropertySubjects(AtomicRole role,Individual individual) {
         Set<Individual> result=new HashSet<Individual>();
         HierarchyNode<RoleElement> node=m_currentRoleHierarchy.getNodeForElement(m_roleElementManager.getRoleElement(role));
         getObjectPropertySubjects(node, individual, result);
         return result;
     }
-    protected void getObjectPropertySubjects(HierarchyNode<RoleElement> node, Individual object, Set<Individual> result) {
+    protected void getObjectPropertySubjects(@Nonnull HierarchyNode<RoleElement> node, Individual object, @Nonnull Set<Individual> result) {
         RoleElement representativeElement=node.getRepresentative();
         if (representativeElement.equals(m_topRoleElement) || m_isInconsistent) {
             for (Individual ind : m_individuals)
@@ -1232,7 +1260,7 @@ public class InstanceManager {
         for (HierarchyNode<RoleElement> child : node.getChildNodes())
             getObjectPropertySubjects(child, object, result);
     }
-    protected void getObjectPropertyValues(HierarchyNode<RoleElement> node, Individual subject, Set<Individual> result) {
+    protected void getObjectPropertyValues(@Nonnull HierarchyNode<RoleElement> node, Individual subject, @Nonnull Set<Individual> result) {
         RoleElement representativeElement=node.getRepresentative();
         if (representativeElement.equals(m_topRoleElement) || m_isInconsistent) {
             for (Individual ind : m_individuals)
@@ -1302,7 +1330,7 @@ public class InstanceManager {
     public boolean isSameIndividual(Individual individual1, Individual individual2) {
         return (!m_reasoner.getTableau().isSatisfiable(true,false,Collections.singleton(Atom.create(Inequality.INSTANCE,individual1,individual2)),null,null,null,null,new ReasoningTaskDescription(true,"is {0} same as {1}",individual1,individual2)));
     }
-    public void computeSameAsEquivalenceClasses(ReasonerProgressMonitor progressMonitor) {
+    public void computeSameAsEquivalenceClasses(@Nullable ReasonerProgressMonitor progressMonitor) {
         if (!m_individualToPossibleEquivalenceClass.isEmpty()) {
             int steps=m_individualToPossibleEquivalenceClass.keySet().size();
             if (steps>0 && progressMonitor!=null)
@@ -1355,7 +1383,7 @@ public class InstanceManager {
         }
         return result;
     }
-    protected static boolean isResultRelevantIndividual(Individual individual) {
+    protected static boolean isResultRelevantIndividual(@Nonnull Individual individual) {
         return !individual.isAnonymous() && !Prefixes.isInternalIRI(individual.getIRI());
     }
     public boolean realizationCompleted() {
@@ -1376,6 +1404,7 @@ public class InstanceManager {
     public int getCurrentIndividualIndex() {
         return m_currentIndividualIndex;
     }
+    @Nonnull
     public Map<Individual, Node> getNodesForIndividuals() {
         return m_nodesForIndividuals;
     }

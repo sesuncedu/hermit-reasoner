@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.datatypes.owlreal;
 
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -55,7 +56,7 @@ public class BigRational extends Number implements Comparable<BigRational> {
             return false;
         }
     }
-    public int compareTo(BigRational that) {
+    public int compareTo(@Nonnull BigRational that) {
         return m_numerator.multiply(that.m_denominator).compareTo(m_denominator.multiply(that.m_numerator));
     }
     public boolean equals(Object that) {
@@ -69,6 +70,7 @@ public class BigRational extends Number implements Comparable<BigRational> {
     public int hashCode() {
         return m_numerator.hashCode()*3+m_denominator.hashCode();
     }
+    @Nonnull
     public String toString() {
         return m_numerator.toString()+"/"+m_denominator.toString();
     }

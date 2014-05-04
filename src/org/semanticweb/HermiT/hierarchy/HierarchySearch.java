@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.hierarchy;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,7 +27,7 @@ import java.util.Queue;
 import java.util.Set;
 
 public class HierarchySearch {
-    public static <E> HierarchyNode<E> findPosition(Relation<E> hierarchyRelation,E element,HierarchyNode<E> topNode,HierarchyNode<E> bottomNode) {
+    public static <E> HierarchyNode<E> findPosition(@Nonnull Relation<E> hierarchyRelation,E element,HierarchyNode<E> topNode,HierarchyNode<E> bottomNode) {
         Set<HierarchyNode<E>> parentNodes=findParents(hierarchyRelation,element,topNode);
         Set<HierarchyNode<E>> childNodes=findChildren(hierarchyRelation,element,bottomNode,parentNodes);
         if (parentNodes.equals(childNodes)) {
@@ -39,21 +40,23 @@ public class HierarchySearch {
             return new HierarchyNode<E>(element,equivalentElements,parentNodes,childNodes);
         }
     }
-    protected static <E> Set<HierarchyNode<E>> findParents(final Relation<E> hierarchyRelation,final E element,HierarchyNode<E> topNode) {
+    @Nonnull
+    protected static <E> Set<HierarchyNode<E>> findParents(@Nonnull final Relation<E> hierarchyRelation,final E element,HierarchyNode<E> topNode) {
         return search(
             new SearchPredicate<HierarchyNode<E>>() {
-                public Set<HierarchyNode<E>> getSuccessorElements(HierarchyNode<E> u) {
+                public Set<HierarchyNode<E>> getSuccessorElements(@Nonnull HierarchyNode<E> u) {
                     return u.m_childNodes;
                 }
-                public Set<HierarchyNode<E>> getPredecessorElements(HierarchyNode<E> u) {
+                public Set<HierarchyNode<E>> getPredecessorElements(@Nonnull HierarchyNode<E> u) {
                     return u.m_parentNodes;
                 }
-                public boolean trueOf(HierarchyNode<E> u) {
+                public boolean trueOf(@Nonnull HierarchyNode<E> u) {
                     return hierarchyRelation.doesSubsume(u.getRepresentative(),element);
                 }
             },Collections.singleton(topNode),null);
     }
-    protected static <E> Set<HierarchyNode<E>> findChildren(final Relation<E> hierarchyRelation,final E element,HierarchyNode<E> bottomNode,Set<HierarchyNode<E>> parentNodes) {
+    @Nonnull
+    protected static <E> Set<HierarchyNode<E>> findChildren(@Nonnull final Relation<E> hierarchyRelation,final E element,HierarchyNode<E> bottomNode, @Nonnull Set<HierarchyNode<E>> parentNodes) {
         if (parentNodes.size()==1 && hierarchyRelation.doesSubsume(element,parentNodes.iterator().next().getRepresentative()))
             return parentNodes;
         else {
@@ -96,13 +99,13 @@ public class HierarchySearch {
             else {
                 return search(
                     new SearchPredicate<HierarchyNode<E>>() {
-                        public Set<HierarchyNode<E>> getSuccessorElements(HierarchyNode<E> u) {
+                        public Set<HierarchyNode<E>> getSuccessorElements(@Nonnull HierarchyNode<E> u) {
                             return u.m_parentNodes;
                         }
-                        public Set<HierarchyNode<E>> getPredecessorElements(HierarchyNode<E> u) {
+                        public Set<HierarchyNode<E>> getPredecessorElements(@Nonnull HierarchyNode<E> u) {
                             return u.m_childNodes;
                         }
-                        public boolean trueOf(HierarchyNode<E> u) {
+                        public boolean trueOf(@Nonnull HierarchyNode<E> u) {
                             return hierarchyRelation.doesSubsume(element,u.getRepresentative());
                         }
                     },aboveBottomNodes,marked);
@@ -110,7 +113,8 @@ public class HierarchySearch {
         }
     }
 
-    public static <U> Set<U> search(SearchPredicate<U> searchPredicate,Collection<U> startSearch,Set<U> possibilities) {
+    @Nonnull
+    public static <U> Set<U> search(@Nonnull SearchPredicate<U> searchPredicate, @Nonnull Collection<U> startSearch,Set<U> possibilities) {
         SearchCache<U> cache=new SearchCache<U>(searchPredicate,possibilities);
         Set<U> result=new HashSet<U>();
         Set<U> visited=new HashSet<U>(startSearch);
@@ -144,7 +148,9 @@ public class HierarchySearch {
     protected static final class SearchCache<U> {
         protected final SearchPredicate<U> m_searchPredicate;
         protected final Set<U> m_possibilities;
+        @Nonnull
         protected final Set<U> m_positives;
+        @Nonnull
         protected final Set<U> m_negatives;
 
         public SearchCache(SearchPredicate<U> f,Set<U> possibilities) {

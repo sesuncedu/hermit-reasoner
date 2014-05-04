@@ -37,6 +37,9 @@ package rationals.expr;
 
 import rationals.algebra.SemiRing;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A letter expression is simply a wrapper over any object. 
  * Note that the semantics of equals and hashcode must be properly
@@ -50,6 +53,7 @@ public class Letter extends RationalExpr {
 
     private Object label;
 
+    @Nullable
     public static final Letter epsilon = new Letter(null) {
 
         public boolean equals(Object o) {
@@ -61,6 +65,7 @@ public class Letter extends RationalExpr {
             return s2;
         }
         
+        @Nonnull
         public String toString() {
             return "1";
         }

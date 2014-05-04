@@ -49,6 +49,9 @@ import rationals.Transition;
 import rationals.properties.isNormalized;
 import rationals.transformations.Normalizer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This Converter takes an Automaton and generates an equivalent Regular
  * expression.
@@ -63,6 +66,7 @@ import rationals.transformations.Normalizer;
  */
 public class ToRExpression implements ToString {
 
+    @Nonnull
     private Map /* < Key, String > */keys = new HashMap();
 
     /*
@@ -70,7 +74,8 @@ public class ToRExpression implements ToString {
      * 
      * @see rationals.converters.ToString#toString(rationals.Automaton)
      */
-    public String toString(Automaton a) {
+    @Nonnull
+    public String toString(@Nullable Automaton a) {
         if(a == null)
             return "0";
         Automaton ret = (Automaton)a.clone();

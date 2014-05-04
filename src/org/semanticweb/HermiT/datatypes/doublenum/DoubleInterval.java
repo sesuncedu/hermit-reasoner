@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.doublenum;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class DoubleInterval {
@@ -31,7 +33,8 @@ public class DoubleInterval {
     /**
      * Computes the intersection of this interval with the supplied one. If the two intervals do not intersect, the result is null.
      */
-    public DoubleInterval intersectWith(DoubleInterval that) {
+    @Nullable
+    public DoubleInterval intersectWith(@Nonnull DoubleInterval that) {
         // This code uses the assumption no bound in either interval contains NaN.
         double newLowerBoundInclusive;
         if (isSmallerEqual(m_lowerBoundInclusive,that.m_lowerBoundInclusive))
@@ -61,7 +64,7 @@ public class DoubleInterval {
     public boolean contains(double value) {
         return contains(m_lowerBoundInclusive,m_upperBoundInclusive,value);
     }
-    public void enumerateNumbers(Collection<Object> numbers) {
+    public void enumerateNumbers(@Nonnull Collection<Object> numbers) {
         // We know that the interval is not empty; hence, neither bound is NaN.
         double number=m_lowerBoundInclusive;
         while (!areIdentical(number,m_upperBoundInclusive)) {
@@ -70,6 +73,7 @@ public class DoubleInterval {
         }
         numbers.add(m_upperBoundInclusive);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("DOUBLE[");

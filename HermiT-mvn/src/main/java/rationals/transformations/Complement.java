@@ -48,6 +48,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A transformation that computes the complement of an automaton.
  * <p>
@@ -64,7 +66,8 @@ public class Complement implements UnaryTransformation {
      * 
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton ret = new Automaton();
         List todo = new ArrayList();
         Map sm = new HashMap();

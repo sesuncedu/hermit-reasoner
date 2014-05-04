@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.binarydata;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class BinaryDataLengthInterval {
@@ -33,7 +35,8 @@ public class BinaryDataLengthInterval {
     /**
      * Computes the intersection of this interval with the supplied one. If the two intervals do not intersect, the result is null.
      */
-    public BinaryDataLengthInterval intersectWith(BinaryDataLengthInterval that) {
+    @Nullable
+    public BinaryDataLengthInterval intersectWith(@Nonnull BinaryDataLengthInterval that) {
         if (m_binaryDataType!=that.m_binaryDataType)
             return null;
         int newMinLength=Math.max(m_minLength,that.m_minLength);
@@ -74,10 +77,10 @@ public class BinaryDataLengthInterval {
             return total;
         }
     }
-    public boolean contains(BinaryData value) {
+    public boolean contains(@Nonnull BinaryData value) {
         return m_binaryDataType==value.getBinaryDataType() && m_minLength<=value.getNumberOfBytes() && value.getNumberOfBytes()<=m_maxLength;
     }
-    public void enumerateValues(Collection<Object> values) {
+    public void enumerateValues(@Nonnull Collection<Object> values) {
         if (m_maxLength==Integer.MAX_VALUE)
             throw new IllegalStateException("Internal error: the data range is infinite!");
         if (m_minLength==0)
@@ -85,7 +88,7 @@ public class BinaryDataLengthInterval {
         byte[] temp=new byte[m_maxLength];
         processPosition(temp,values,0);
     }
-    protected void processPosition(byte[] temp,Collection<Object> values,int position) {
+    protected void processPosition(@Nonnull byte[] temp, @Nonnull Collection<Object> values,int position) {
         if (position<m_maxLength) {
             for (int b=0;b<=255;b++) {
                 temp[position]=(byte)b;
@@ -98,6 +101,7 @@ public class BinaryDataLengthInterval {
             }
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append(m_binaryDataType.toString());

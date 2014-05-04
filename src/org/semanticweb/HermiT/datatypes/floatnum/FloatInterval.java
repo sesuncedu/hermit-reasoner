@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.floatnum;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class FloatInterval {
@@ -31,7 +33,8 @@ public class FloatInterval {
     /**
      * Computes the intersection of this interval with the supplied one. If the two intervals do not intersect, the result is null.
      */
-    public FloatInterval intersectWith(FloatInterval that) {
+    @Nullable
+    public FloatInterval intersectWith(@Nonnull FloatInterval that) {
         // This code uses the assumption no bound in either interval contains NaN.
         float newLowerBoundInclusive;
         if (isSmallerEqual(m_lowerBoundInclusive,that.m_lowerBoundInclusive))
@@ -61,7 +64,7 @@ public class FloatInterval {
     public boolean contains(float value) {
         return contains(m_lowerBoundInclusive,m_upperBoundInclusive,value);
     }
-    public void enumerateNumbers(Collection<Object> numbers) {
+    public void enumerateNumbers(@Nonnull Collection<Object> numbers) {
         // We know that the interval is not empty; hence, neither bound is NaN.
         float number=m_lowerBoundInclusive;
         while (!areIdentical(number,m_upperBoundInclusive)) {
@@ -70,6 +73,7 @@ public class FloatInterval {
         }
         numbers.add(m_upperBoundInclusive);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("FLOAT[");

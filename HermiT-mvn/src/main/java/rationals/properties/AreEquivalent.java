@@ -38,6 +38,8 @@ package rationals.properties;
 
 import rationals.Automaton;
 
+import javax.annotation.Nonnull;
+
 /**
  * Tests that two automata are equivalent according to some equivalence relation
  * between states.
@@ -73,7 +75,7 @@ public class AreEquivalent implements BinaryTest {
      * @see rationals.tests.BinaryTest#test(rationals.Automaton,
      *      rationals.Automaton)
      */
-    public boolean test(Automaton a, Automaton b) {
+    public boolean test(@Nonnull Automaton a, @Nonnull Automaton b) {
         relation.setAutomata(a, b);
         return relation.equivalence(a.initials(), b.initials());
     }

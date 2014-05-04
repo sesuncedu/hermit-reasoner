@@ -24,22 +24,26 @@ import org.semanticweb.HermiT.debugger.Debugger;
 import org.semanticweb.HermiT.debugger.Printing;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ShowNodeCommand extends AbstractCommand {
 
     public ShowNodeCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showNode";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "nodeID","prints information about the given node" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showNode nodeID");
         writer.println("    Prints information about the node for the given node ID.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Node ID is missing.");
             return;

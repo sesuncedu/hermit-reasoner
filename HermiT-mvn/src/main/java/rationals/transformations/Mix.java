@@ -15,6 +15,8 @@ import rationals.State;
 import rationals.Synchronization;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class implements the mix - ie: synchronization product - operator
  * between two automatas.
@@ -61,7 +63,8 @@ public class Mix implements BinaryTransformation {
      *  (non-Javadoc)
      * @see rationals.transformations.BinaryTransformation#transform(rationals.Automaton, rationals.Automaton)
      */
-    public Automaton transform(Automaton a, Automaton b) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a, @Nonnull Automaton b) {
         Automaton ret = new Automaton();
         Set alph = synchronization.synchronizable(a.alphabet(), b.alphabet());
         /* check alphabets */

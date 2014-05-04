@@ -35,6 +35,9 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class DeterministicClassification {
     protected final Tableau m_tableau;
     protected final ClassificationProgressMonitor m_progressMonitor;
@@ -49,6 +52,7 @@ public class DeterministicClassification {
         m_bottomElement=bottomElement;
         m_elements=elements;
     }
+    @Nonnull
     public Hierarchy<AtomicConcept> classify() {
         if (!m_tableau.isDeterministic())
             throw new IllegalStateException("Internal error: DeterministicClassificationManager can be used only with a deterministic tableau.");
@@ -80,7 +84,8 @@ public class DeterministicClassification {
         }
         return buildHierarchy(m_topElement,m_bottomElement,allSubsumers);
     }
-    public static <T> Hierarchy<T> buildHierarchy(T topElement,T bottomElement,Map<T,GraphNode<T>> graphNodes) {
+    @Nonnull
+    public static <T> Hierarchy<T> buildHierarchy(T topElement,T bottomElement, @Nonnull Map<T,GraphNode<T>> graphNodes) {
         HierarchyNode<T> topNode=new HierarchyNode<T>(topElement);
         HierarchyNode<T> bottomNode=new HierarchyNode<T>(bottomElement);
         Hierarchy<T> hierarchy=new Hierarchy<T>(topNode,bottomNode);
@@ -118,7 +123,7 @@ public class DeterministicClassification {
         }
         return hierarchy;
     }
-    protected static <T> void visit(Stack<GraphNode<T>> stack,DFSIndex dfsIndex,Map<T,GraphNode<T>> graphNodes,GraphNode<T> graphNode,Hierarchy<T> hierarchy,List<HierarchyNode<T>> topologicalOrder) {
+    protected static <T> void visit(@Nonnull Stack<GraphNode<T>> stack, @Nonnull DFSIndex dfsIndex, @Nonnull Map<T,GraphNode<T>> graphNodes, @Nonnull GraphNode<T> graphNode, @Nonnull Hierarchy<T> hierarchy, @Nonnull List<HierarchyNode<T>> topologicalOrder) {
         graphNode.m_dfsIndex=dfsIndex.m_value++;
         graphNode.m_SCChead=graphNode;
         stack.push(graphNode);
@@ -160,6 +165,7 @@ public class DeterministicClassification {
         public final T m_element;
         public final Set<T> m_successors;
         public int m_dfsIndex;
+        @Nullable
         public GraphNode<T> m_SCChead;
         public int m_topologicalOrderIndex;
 
@@ -181,7 +187,7 @@ public class DeterministicClassification {
     protected static class TopologicalOrderComparator implements Comparator<GraphNode<?>> {
         public static final TopologicalOrderComparator INSTANCE=new TopologicalOrderComparator();
 
-        public int compare(GraphNode<?> o1,GraphNode<?> o2) {
+        public int compare(@Nonnull GraphNode<?> o1, @Nonnull GraphNode<?> o2) {
             return o1.m_topologicalOrderIndex-o2.m_topologicalOrderIndex;
         }
 

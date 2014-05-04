@@ -45,6 +45,9 @@ import java.util.Set;
 
 import rationals.DefaultStateFactory.DefaultState;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A specialization of Automaton for handling two letters alphabets.
  * <p>
@@ -120,6 +123,7 @@ public class BinaryAutomaton extends Automaton {
         private int tobit = -1;
         private int lblbit = -1;
 
+        @Nonnull
         private Iterator it = new Iterator() {
 
             /*
@@ -134,6 +138,7 @@ public class BinaryAutomaton extends Automaton {
                 return from.nextSetBit(frombit) > -1 ;
             }
 
+            @Nullable
             public Object next() {
                 frombit = from.nextSetBit(frombit);
                 if (frombit == -1)
@@ -191,6 +196,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#toArray()
          */
+        @Nonnull
         public Object[] toArray() {
             Object[] ret = new Object[size()];
             Iterator it = iterator();
@@ -244,7 +250,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#addAll(java.util.Collection)
          */
-        public boolean addAll(Collection c) {
+        public boolean addAll(@Nonnull Collection c) {
         return false;
         }
 
@@ -253,7 +259,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#containsAll(java.util.Collection)
          */
-        public boolean containsAll(Collection c) {
+        public boolean containsAll(@Nonnull Collection c) {
  return false;
         }
 
@@ -262,7 +268,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#removeAll(java.util.Collection)
          */
-        public boolean removeAll(Collection c) {
+        public boolean removeAll(@Nonnull Collection c) {
             return false;
         }
 
@@ -271,7 +277,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#retainAll(java.util.Collection)
          */
-        public boolean retainAll(Collection c) {
+        public boolean retainAll(@Nonnull Collection c) {
         return false;
         }
 
@@ -280,6 +286,7 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#iterator()
          */
+        @Nonnull
         public Iterator iterator() {
             /* reset iterator */
             frombit = modcount = mods = 0;
@@ -291,7 +298,8 @@ public class BinaryAutomaton extends Automaton {
          * 
          * @see java.util.Set#toArray(java.lang.Object[])
          */
-        public Object[] toArray(Object[] a) {
+        @Nonnull
+        public Object[] toArray(@Nonnull Object[] a) {
             Object[] ret;
             if (a.length == size())
                 ret = a;
@@ -390,6 +398,7 @@ public class BinaryAutomaton extends Automaton {
      * 
      * @see rationals.Rational#addState(boolean, boolean)
      */
+    @Nonnull
     public State addState(boolean initial, boolean terminal) {
         DefaultStateFactory.DefaultState st = (DefaultStateFactory.DefaultState) super
                 .addState(initial, terminal);
@@ -416,7 +425,7 @@ public class BinaryAutomaton extends Automaton {
      * 
      * @see rationals.Rational#addTransition(rationals.Transition)
      */
-    public void addTransition(Transition transition)
+    public void addTransition(@Nonnull Transition transition)
             throws NoSuchStateException {
         // extract states' indices
         DefaultStateFactory.DefaultState from = (DefaultStateFactory.DefaultState) transition

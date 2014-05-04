@@ -1,5 +1,7 @@
 package rationals.utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,13 +15,15 @@ import java.util.NoSuchElementException;
 public class MsgQueue implements Serializable {
 
 	/** private list for queueing */
-	private LinkedList list = new LinkedList();
+	@Nonnull
+    private LinkedList list = new LinkedList();
 
 	/** counter of enqueued objects */
 	private int count = 0;
 
 	/** lock object */
-	private transient Object lock = new Object();
+	@Nonnull
+    private transient Object lock = new Object();
 
 	/////////////////////////////////////////////////
 	// CONSTRUCTOR
@@ -36,7 +40,8 @@ public class MsgQueue implements Serializable {
 	 *
 	 * @return first message in list or null
 	 */
-	public Object dequeue() {
+	@Nullable
+    public Object dequeue() {
 		try {
 			synchronized (lock) {
 				return list.removeFirst();
@@ -53,7 +58,7 @@ public class MsgQueue implements Serializable {
 	 *
 	 * @param col a Collection
 	 */
-	public void addAll(Collection coll) {
+	public void addAll(@Nonnull Collection coll) {
 		Iterator it = coll.iterator();
 		while (it.hasNext()) {
 			enqueue((Object) it.next());
@@ -77,7 +82,8 @@ public class MsgQueue implements Serializable {
 	 *
 	 * @return an array of Object objects or null
 	 */
-	public Object[] dequeueAll() {
+	@Nonnull
+    public Object[] dequeueAll() {
 		Object[] ary = new Object[0];
 		synchronized (lock) {
 			ary = (Object[]) list.toArray(ary);
@@ -117,7 +123,7 @@ public class MsgQueue implements Serializable {
 	/**
 	 * ReadObject implementation 
 	 */
-	private void readObject(java.io.ObjectInputStream stream)
+	private void readObject(@Nonnull java.io.ObjectInputStream stream)
 		throws java.io.IOException, ClassNotFoundException {
 		try {
 			// first, call default serialization mechanism

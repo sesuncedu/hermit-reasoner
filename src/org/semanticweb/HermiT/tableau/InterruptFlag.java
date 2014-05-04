@@ -22,12 +22,16 @@ import java.io.Serializable;
 import org.semanticweb.owlapi.reasoner.ReasonerInterruptedException;
 import org.semanticweb.owlapi.reasoner.TimeOutException;
 
+import javax.annotation.Nullable;
+
 public final class InterruptFlag implements Serializable {
     private static final long serialVersionUID=-6983680374511847003L;
 
     protected static enum InterruptType { INTERRUPTED,TIMEOUT };
 
+    @Nullable
     protected final InterruptTimer m_interruptTimer;
+    @Nullable
     protected volatile InterruptType m_interruptType;
 
     public InterruptFlag(long individualTaskTimeout) {

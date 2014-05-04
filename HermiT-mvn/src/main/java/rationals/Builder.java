@@ -17,6 +17,8 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
+
 /**
  * An interface for easier creation of automata.
  * 
@@ -32,6 +34,7 @@ public interface Builder<T extends Builder<T>> {
    * @param auto
    * @return
    */
+  @Nonnull
   T build(State label, Automaton<T> auto);
   
   /**
@@ -40,6 +43,7 @@ public interface Builder<T extends Builder<T>> {
    * @param label
    * @return this transition builder.
    */
+  @Nonnull
   public T on(Object label);
 
   /**
@@ -49,6 +53,7 @@ public interface Builder<T extends Builder<T>> {
    * @param o
    *          the label of the end state.
    */
+  @Nonnull
   public T go(Object o);
 
   /**
@@ -57,6 +62,7 @@ public interface Builder<T extends Builder<T>> {
    * 
    * @return
    */
+  @Nonnull
   public T loop();
 
   /**
@@ -67,6 +73,7 @@ public interface Builder<T extends Builder<T>> {
    *          the state to start from.
    * @return this builder.
    */
+  @Nonnull
   public T from(Object label);
 
 }

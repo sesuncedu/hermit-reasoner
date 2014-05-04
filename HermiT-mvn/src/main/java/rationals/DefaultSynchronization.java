@@ -35,6 +35,8 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,14 +58,16 @@ public class DefaultSynchronization implements Synchronization {
      * @see rationals.Synchronization#synchronize(rationals.Transition,
      *      rationals.Transition)
      */
-    public Object synchronize(Object t1, Object t2) {
+    @Nullable
+    public Object synchronize(@Nullable Object t1, Object t2) {
         return t1 == null ? null : (t1.equals(t2) ? t1 : null);
     }
 
     /* (non-Javadoc)
      * @see rationals.Synchronization#synchronizable(java.util.Set, java.util.Set)
      */
-    public Set synchronizable(Set a, Set b) {
+    @Nonnull
+    public Set synchronizable(@Nonnull Set a, @Nonnull Set b) {
         Set r = new HashSet(a);
         r.retainAll(b);
         return r;
@@ -73,7 +77,8 @@ public class DefaultSynchronization implements Synchronization {
      * TO VERIFY (non-Javadoc)
      * @see rationals.Synchronization#synchronizable(java.util.Collection)
      */
-    public Set synchronizable(Collection alphl) {
+    @Nonnull
+    public Set synchronizable(@Nonnull Collection alphl) {
         Set niou = new HashSet();
         /*
          * synchronization set is the union of pairwise 
@@ -89,7 +94,7 @@ public class DefaultSynchronization implements Synchronization {
         return niou;
     }
 
-    public boolean synchronizeWith(Object object, Set alph) {
+    public boolean synchronizeWith(Object object, @Nonnull Set alph) {
         return alph.contains(object);
     }
 

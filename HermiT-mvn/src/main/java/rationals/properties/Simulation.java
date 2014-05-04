@@ -45,6 +45,9 @@ import rationals.Couple;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class implements (strong) simulation equivalence between 
  * two automata.
@@ -104,7 +107,7 @@ public class Simulation implements Relation {
      * are bisimilar.
      * 
      */
-    public boolean equivalence(Set nsa, Set nsb) {
+    public boolean equivalence(@Nonnull Set nsa, @Nonnull Set nsb) {
        for(Iterator i = nsa.iterator();i.hasNext();) {
            State sa = (State)i.next();
            for(Iterator j = nsb.iterator();j.hasNext();) {
@@ -122,7 +125,7 @@ public class Simulation implements Relation {
      * @see rationals.tests.Relation#equivalence(rationals.State,
      *      rationals.State)
      */
-    public boolean equivalence(State q0a, State q0b) {
+    public boolean equivalence(@Nonnull State q0a, @Nonnull State q0b) {
         Couple cpl = new Couple(q0a, q0b);
         /* check states are unknown */
         if (exp.contains(cpl))
@@ -156,6 +159,7 @@ public class Simulation implements Relation {
     /* (non-Javadoc)
      * @see rationals.properties.Relation#getErrorTrace()
      */
+    @Nullable
     public List getErrorTrace() {
         // TODO Auto-generated method stub
         return null;

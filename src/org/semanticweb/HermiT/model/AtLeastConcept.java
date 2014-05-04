@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents at-least concept.
  */
@@ -37,22 +40,26 @@ public class AtLeastConcept extends AtLeast {
     public boolean isAlwaysFalse() {
         return m_toConcept.isAlwaysFalse();
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "atLeast("+m_number+' '+m_onRole.toString(prefixes)+' '+m_toConcept.toString(prefixes)+')';
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<AtLeastConcept> s_interningManager=new InterningManager<AtLeastConcept>() {
-        protected boolean equal(AtLeastConcept object1,AtLeastConcept object2) {
+        protected boolean equal(@Nonnull AtLeastConcept object1, @Nonnull AtLeastConcept object2) {
             return object1.m_number==object2.m_number && object1.m_onRole==object2.m_onRole && object1.m_toConcept==object2.m_toConcept;
         }
-        protected int getHashCode(AtLeastConcept object) {
+        protected int getHashCode(@Nonnull AtLeastConcept object) {
             return (object.m_number*7+object.m_onRole.hashCode())*7+object.m_toConcept.hashCode();
         }
     };
     
+    @Nullable
     public static AtLeastConcept create(int number,Role onRole,LiteralConcept toConcept) {
         return s_interningManager.intern(new AtLeastConcept(number,onRole,toConcept));
     }

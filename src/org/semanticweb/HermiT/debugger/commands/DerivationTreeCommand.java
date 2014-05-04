@@ -24,21 +24,25 @@ import org.semanticweb.HermiT.debugger.DerivationHistory;
 import org.semanticweb.HermiT.debugger.DerivationViewer;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class DerivationTreeCommand extends AbstractCommand {
 
     public DerivationTreeCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "dertree";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] {
             "clash","shows the derivation tree for the clash",
             "predicate [nodeID]+","shows the derivation tree for the given atom",
         };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: dertree clash");
         writer.println("    Shows the derivation tree for the clash.");
         writer.println("usage: dertree predicate [nodeID]+");
@@ -51,7 +55,7 @@ public class DerivationTreeCommand extends AbstractCommand {
         writer.println("    red: existential expansion");
         writer.println("    magenta: base/given fact");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("The specification of the predicate is missing.");
             return;

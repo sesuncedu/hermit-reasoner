@@ -1,7 +1,9 @@
 package rationals;
 
 
-/** 
+import javax.annotation.Nonnull;
+
+/**
  * Interface for State objects
  * 
  * This class defines the notion of state of an automaton. 
@@ -26,6 +28,7 @@ public interface State {
     /** returns a textual representation of this state.
      *  @return a textual representation of this state.
      */
+    @Nonnull
     public String toString();
 
     /**
@@ -34,7 +37,9 @@ public interface State {
      * @param initial
      * @return
      */
+    @Nonnull
     public State setInitial(boolean initial);
 
+    @Nonnull
     public State setTerminal(boolean terminal);
 }

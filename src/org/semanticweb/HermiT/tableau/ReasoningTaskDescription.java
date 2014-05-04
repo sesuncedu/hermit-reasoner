@@ -6,6 +6,8 @@ import org.semanticweb.HermiT.model.DLPredicate;
 import org.semanticweb.HermiT.model.Role;
 import org.semanticweb.HermiT.model.Term;
 
+import javax.annotation.Nonnull;
+
 public class ReasoningTaskDescription {
     public static enum StandardTestType {
         CONCEPT_SATISFIABILITY("satisfiability of concept '{0}'"),
@@ -31,7 +33,7 @@ public class ReasoningTaskDescription {
     protected final String m_messagePattern;
     protected final Object[] m_arguments;
 
-    public ReasoningTaskDescription(boolean flipSatisfiabilityResult,StandardTestType testType,Object... arguments) {
+    public ReasoningTaskDescription(boolean flipSatisfiabilityResult, @Nonnull StandardTestType testType,Object... arguments) {
         this(flipSatisfiabilityResult,testType.messagePattern,arguments);
     }
     public ReasoningTaskDescription(boolean flipSatisfiabilityResult,String message,Object... arguments) {
@@ -68,16 +70,20 @@ public class ReasoningTaskDescription {
         return getTaskDescription(Prefixes.STANDARD_PREFIXES);
     }
     
+    @Nonnull
     public static ReasoningTaskDescription isABoxSatisfiable() {
         return new ReasoningTaskDescription(false,StandardTestType.CONSISTENCY);
     }
+    @Nonnull
     public static ReasoningTaskDescription isConceptSatisfiable(Object atomicConcept) {
         return new ReasoningTaskDescription(false,StandardTestType.CONCEPT_SATISFIABILITY,atomicConcept);
     }
+    @Nonnull
     public static ReasoningTaskDescription isConceptSubsumedBy(Object atomicSubconcept,Object atomicSuperconcept) {
         return new ReasoningTaskDescription(true,StandardTestType.CONCEPT_SUBSUMPTION,atomicSubconcept,atomicSuperconcept);
     }
-    public static ReasoningTaskDescription isConceptSubsumedByList(Object atomicSubconcept,Object... atomicSuperconcepts) {
+    @Nonnull
+    public static ReasoningTaskDescription isConceptSubsumedByList(Object atomicSubconcept, @Nonnull Object... atomicSuperconcepts) {
         StringBuffer message=new StringBuffer();
         message.append("satisiability of concept '{0}' ");
         for (int index=0;index<atomicSuperconcepts.length;index++) {
@@ -90,7 +96,8 @@ public class ReasoningTaskDescription {
         System.arraycopy(atomicSuperconcepts,0,arguments,1,atomicSuperconcepts.length);
         return new ReasoningTaskDescription(false,message.toString(),arguments);
     }
-    public static ReasoningTaskDescription isRoleSubsumedByList(Object subrole,Object... superroles) {
+    @Nonnull
+    public static ReasoningTaskDescription isRoleSubsumedByList(Object subrole, @Nonnull Object... superroles) {
         StringBuffer message=new StringBuffer();
         message.append("satisiability of role '{0}' ");
         for (int index=0;index<superroles.length;index++) {
@@ -103,27 +110,35 @@ public class ReasoningTaskDescription {
         System.arraycopy(superroles,0,arguments,1,superroles.length);
         return new ReasoningTaskDescription(false,message.toString(),arguments);
     }
+    @Nonnull
     public static ReasoningTaskDescription isRoleSatisfiable(Object role,boolean isObjectRole) {
         return new ReasoningTaskDescription(false,(isObjectRole ? StandardTestType.OBJECT_ROLE_SATISFIABILITY : StandardTestType.DATA_ROLE_SATISFIABILITY),role);
     }
+    @Nonnull
     public static ReasoningTaskDescription isRoleSubsumedBy(Object subrole,Object superrole,boolean isObjectRole) {
         return new ReasoningTaskDescription(true,(isObjectRole ? StandardTestType.OBJECT_ROLE_SUBSUMPTION : StandardTestType.DATA_ROLE_SUBSUMPTION),subrole,superrole);
     }
+    @Nonnull
     public static ReasoningTaskDescription isInstanceOf(Object atomicConcept,Object individual) {
         return new ReasoningTaskDescription(true,StandardTestType.INSTANCE_OF,atomicConcept,individual);
     }
+    @Nonnull
     public static ReasoningTaskDescription isObjectRoleInstanceOf(Object atomicRole,Object individual1,Object individual2) {
         return new ReasoningTaskDescription(true,StandardTestType.OBJECT_ROLE_INSTANCE_OF,atomicRole,individual1,individual2);
     }
+    @Nonnull
     public static ReasoningTaskDescription isDataRoleInstanceOf(Object atomicRole,Object individual1,Object individual2) {
         return new ReasoningTaskDescription(true,StandardTestType.DATA_ROLE_INSTANCE_OF,atomicRole,individual1,individual2);
     }
+    @Nonnull
     public static ReasoningTaskDescription isAxiomEntailed(Object axiom) {
         return new ReasoningTaskDescription(true,StandardTestType.ENTAILMENT,axiom);
     }
+    @Nonnull
     public static ReasoningTaskDescription isDomainOf(Object domain,Object role) {
         return new ReasoningTaskDescription(true,StandardTestType.DOMAIN,domain,role);
     }
+    @Nonnull
     public static ReasoningTaskDescription isRangeOf(Object range,Object role) {
         return new ReasoningTaskDescription(true,StandardTestType.RANGE,range,role);
     }

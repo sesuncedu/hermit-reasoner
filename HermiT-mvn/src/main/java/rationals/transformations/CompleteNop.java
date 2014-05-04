@@ -46,6 +46,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * This methods completes the transitions in an Automaton w.r.t. to an
  * arbitrary alphabet.
@@ -76,7 +78,8 @@ public class CompleteNop implements UnaryTransformation {
      * 
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton b = new Automaton();
         Map qm = new HashMap();
         for (Iterator i = a.states().iterator(); i.hasNext();) {

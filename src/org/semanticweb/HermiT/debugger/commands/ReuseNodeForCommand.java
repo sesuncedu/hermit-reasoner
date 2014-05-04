@@ -25,22 +25,26 @@ import org.semanticweb.HermiT.existentials.IndividualReuseStrategy;
 import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ReuseNodeForCommand extends AbstractCommand {
 
     public ReuseNodeForCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "reuseNodeFor";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "nodeID","prints concepts for which the given node is a reuse node under individual reuse strategy" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: reuseNodeFor nodeID");
         writer.println("    If individual reuse strategy is used, prints the concepts for which the given node is a reuse node.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Node ID is missing.");
             return;

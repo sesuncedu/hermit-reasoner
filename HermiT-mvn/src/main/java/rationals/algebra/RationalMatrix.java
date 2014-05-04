@@ -45,6 +45,8 @@ import rationals.expr.Letter;
 import rationals.expr.Plus;
 import rationals.expr.RationalExpr;
 
+import javax.annotation.Nonnull;
+
 /**
  * A matrix for representing regular languages.
  * <p>
@@ -109,7 +111,7 @@ public class RationalMatrix  {
      * @param rat
      *            a Rational language.
      */
-    public RationalMatrix(Rational rat) {
+    public RationalMatrix(@Nonnull Rational rat) {
         Set st = rat.states();
         int n = st.size();
         init = Matrix.zero(1,n,RationalExpr.zero);
@@ -151,6 +153,7 @@ public class RationalMatrix  {
      * @param n
      * @return
      */
+    @Nonnull
     public Matrix nwords(int n) {
         Matrix res = transitions.power(n,Matrix.zero(transitions.getLine(),transitions.getLine(),RationalExpr.zero));
         /* compute product for init and fini */
@@ -158,6 +161,7 @@ public class RationalMatrix  {
         return (Matrix)in.mult(fini);
     }
 
+    @Nonnull
     public String toString() {
         return init.toString() + '\n'+ transitions.toString() + '\n'+fini.toString();
     }

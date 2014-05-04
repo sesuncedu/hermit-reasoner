@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A data range consisting of a datatype URI and a number of facet restrictions.
  * NOTE: RDFS_LITERAL is treated as InternalDatatype due to implemetnation side-effects.
@@ -49,6 +52,7 @@ public class DatatypeRestriction extends AtomicDataRange {
     public Constant getFacetValue(int index) {
         return m_facetValues[index];
     }
+    @Nullable
     public LiteralDataRange getNegation() {
         return AtomicNegationDataRange.create(this);
     }
@@ -58,7 +62,8 @@ public class DatatypeRestriction extends AtomicDataRange {
     public boolean isAlwaysFalse() {
         return false;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(prefixes.abbreviateIRI(m_datatypeURI));
         if (m_facetURIs.length>0) {
@@ -74,12 +79,14 @@ public class DatatypeRestriction extends AtomicDataRange {
         }
         return buffer.toString();
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<DatatypeRestriction> s_interningManager=new InterningManager<DatatypeRestriction>() {
-        protected boolean equal(DatatypeRestriction object1,DatatypeRestriction object2) {
+        protected boolean equal(@Nonnull DatatypeRestriction object1, @Nonnull DatatypeRestriction object2) {
             if (!object1.m_datatypeURI.equals(object2.m_datatypeURI) || object1.m_facetURIs.length!=object2.m_facetURIs.length)
                 return false;
             for (int index=object1.m_facetURIs.length-1;index>=0;--index)
@@ -87,13 +94,13 @@ public class DatatypeRestriction extends AtomicDataRange {
                     return false;
             return true;
         }
-        protected boolean contains(DatatypeRestriction datatypeRestriction,String facetURI,Object facetValue) {
+        protected boolean contains(@Nonnull DatatypeRestriction datatypeRestriction,String facetURI,Object facetValue) {
             for (int i=datatypeRestriction.m_facetURIs.length-1;i>=0;--i)
                 if (datatypeRestriction.m_facetURIs[i].equals(facetURI) && datatypeRestriction.m_facetValues[i].equals(facetValue))
                     return true;
             return false;
         }
-        protected int getHashCode(DatatypeRestriction object) {
+        protected int getHashCode(@Nonnull DatatypeRestriction object) {
             int hashCode=object.m_datatypeURI.hashCode();
             for (int index=object.m_facetURIs.length-1;index>=0;--index)
                 hashCode+=object.m_facetURIs[index].hashCode()+object.m_facetValues[index].hashCode();
@@ -101,6 +108,7 @@ public class DatatypeRestriction extends AtomicDataRange {
         }
     };
 
+    @Nullable
     public static DatatypeRestriction create(String datatypeURI,String[] facetURIs,Constant[] facetValues) {
         return s_interningManager.intern(new DatatypeRestriction(datatypeURI,facetURIs,facetValues));
     }

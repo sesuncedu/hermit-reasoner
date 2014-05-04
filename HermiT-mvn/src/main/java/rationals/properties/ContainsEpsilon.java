@@ -7,6 +7,8 @@ import rationals.Automaton;
 import rationals.State;
 import rationals.transformations.TransformationsToolBox;
 
+import javax.annotation.Nonnull;
+
 /**
  * Checks whether an automaton recognizes the empty word. This test assumes that
  * the tested automaton does not contain epsilon (ie. <code>null</code>)
@@ -17,7 +19,7 @@ import rationals.transformations.TransformationsToolBox;
  */
 public class ContainsEpsilon implements UnaryTest {
 
-    public boolean test(Automaton a) {
+    public boolean test(@Nonnull Automaton a) {
         Iterator i = a.initials().iterator();
         Set s = a.getStateFactory().stateSet();
         while (i.hasNext()) {

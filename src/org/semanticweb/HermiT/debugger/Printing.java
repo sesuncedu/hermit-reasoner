@@ -45,23 +45,25 @@ import org.semanticweb.HermiT.model.Role;
 import org.semanticweb.HermiT.tableau.ExtensionTable;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class Printing {
-    public static void printPadded(PrintWriter writer,int number,int size) {
+    public static void printPadded(@Nonnull PrintWriter writer,int number,int size) {
         printPadded(writer,String.valueOf(number),size);
     }
-    public static void printPadded(PrintWriter writer,String string,int size) {
+    public static void printPadded(@Nonnull PrintWriter writer, @Nonnull String string,int size) {
         for (int i=size-string.length();i>=0;--i)
             writer.print(' ');
         writer.print(string);
     }
-    public static <T> void printCollection(Collection<T> collection,PrintWriter writer) {
+    public static <T> void printCollection(@Nonnull Collection<T> collection, @Nonnull PrintWriter writer) {
         for (T object : collection) {
             writer.print("    ");
             writer.print(object.toString());
             writer.println();
         }
     }
-    public static <T> void diffCollections(String in1NotIn2,String in2NotIn1,PrintWriter writer,Collection<T> c1,Collection<T> c2) {
+    public static <T> void diffCollections(String in1NotIn2,String in2NotIn1, @Nonnull PrintWriter writer, @Nonnull Collection<T> c1, @Nonnull Collection<T> c2) {
         boolean window1Message=false;
         for (Object object : c1) {
             if (!c2.contains(object)) {
@@ -91,7 +93,7 @@ public class Printing {
         if (window1Message)
             writer.println("--------------------------------------------");
     }
-    public static void printNodeData(Debugger debugger,Node node,PrintWriter writer) {
+    public static void printNodeData(@Nonnull Debugger debugger, @Nonnull Node node, @Nonnull PrintWriter writer) {
         writer.print("Node ID:    ");
         writer.println(node.getNodeID());
         writer.print("Node Type:  ");
@@ -126,7 +128,8 @@ public class Printing {
         printConceptLabel(debugger,node,writer);
         printEdges(debugger,node,writer);
     }
-    protected static String formatBlockingStatus(Node node) {
+    @Nonnull
+    protected static String formatBlockingStatus(@Nonnull Node node) {
         if (!node.isBlocked())
             return "no";
         else if (node.isDirectlyBlocked())
@@ -134,7 +137,7 @@ public class Printing {
         else
             return "indirectly by "+(node.getBlocker()==Node.SIGNATURE_CACHE_BLOCKER ? "signature in cache" : node.getBlocker().getNodeID());
     }
-    protected static void printConceptLabel(Debugger debugger,Node node,PrintWriter writer) {
+    protected static void printConceptLabel(@Nonnull Debugger debugger, @Nonnull Node node, @Nonnull PrintWriter writer) {
         TreeSet<AtomicConcept> atomicConceptsCore=new TreeSet<AtomicConcept>(ConceptComparator.INSTANCE);
         TreeSet<AtomicConcept> atomicConceptsNoncore=new TreeSet<AtomicConcept>(ConceptComparator.INSTANCE);
         TreeSet<ExistentialConcept> existentialConcepts=new TreeSet<ExistentialConcept>(ConceptComparator.INSTANCE);
@@ -183,7 +186,7 @@ public class Printing {
             printDataRanges(debugger,dataRanges,writer,1);
         }
     }
-    protected static void printEdges(Debugger debugger,Node node,PrintWriter writer) {
+    protected static void printEdges(@Nonnull Debugger debugger,Node node, @Nonnull PrintWriter writer) {
         Map<Node,Set<AtomicRole>> outgoingEdges=new TreeMap<Node,Set<AtomicRole>>(NodeComparator.INSTANCE);
         ExtensionTable.Retrieval retrieval=debugger.getTableau().getExtensionManager().getTernaryExtensionTable().createRetrieval(new boolean[] { false,true,false },ExtensionTable.View.TOTAL);
         retrieval.getBindingsBuffer()[1]=node;
@@ -229,7 +232,7 @@ public class Printing {
             printEdgeMap(debugger,incomingEdges,writer);
         }
     }
-    protected static void printConcepts(Debugger debugger,Set<? extends Concept> set,Collection<? extends Concept> markedElements,PrintWriter writer,int numberInRow) {
+    protected static void printConcepts(@Nonnull Debugger debugger, @Nonnull Set<? extends Concept> set, @Nonnull Collection<? extends Concept> markedElements, @Nonnull PrintWriter writer,int numberInRow) {
         int number=0;
         for (Concept concept : set) {
             if (number!=0)
@@ -245,7 +248,7 @@ public class Printing {
         }
         writer.println();
     }
-    protected static void printDataRanges(Debugger debugger,Set<? extends DataRange> set,PrintWriter writer,int numberInRow) {
+    protected static void printDataRanges(@Nonnull Debugger debugger, @Nonnull Set<? extends DataRange> set, @Nonnull PrintWriter writer,int numberInRow) {
         int number=0;
         for (DataRange range : set) {
             if (number!=0)
@@ -259,7 +262,7 @@ public class Printing {
         }
         writer.println();
     }
-    protected static void printEdgeMap(Debugger debugger,Map<Node,Set<AtomicRole>> map,PrintWriter writer) {
+    protected static void printEdgeMap(@Nonnull Debugger debugger, @Nonnull Map<Node,Set<AtomicRole>> map, @Nonnull PrintWriter writer) {
         for (Map.Entry<Node,Set<AtomicRole>> entry : map.entrySet()) {
             writer.print("    ");
             writer.print(entry.getKey().getNodeID());
@@ -282,7 +285,7 @@ public class Printing {
     public static class ConceptComparator implements Comparator<Concept> {
         public static final ConceptComparator INSTANCE=new ConceptComparator();
 
-        public int compare(Concept c1,Concept c2) {
+        public int compare(@Nonnull Concept c1, @Nonnull Concept c2) {
             ConceptType type1=getConceptType(c1);
             ConceptType type2=getConceptType(c2);
             if (type1!=type2)
@@ -325,6 +328,7 @@ public class Printing {
                 return m_typeIndex;
             }
         }
+        @Nonnull
         protected ConceptType getConceptType(Concept c) {
             if (c instanceof AtomicConcept)
                 return ConceptType.AtomicConcept;
@@ -342,7 +346,7 @@ public class Printing {
     public static class DataRangeComparator implements Comparator<DataRange> {
         public static final DataRangeComparator INSTANCE=new DataRangeComparator();
 
-        public int compare(DataRange c1,DataRange c2) {
+        public int compare(@Nonnull DataRange c1, @Nonnull DataRange c2) {
             DataRangeType type1=getDataRangeType(c1);
             DataRangeType type2=getDataRangeType(c2);
             if (type1!=type2)
@@ -378,6 +382,7 @@ public class Printing {
                 return m_typeIndex;
             }
         }
+        @Nonnull
         protected DataRangeType getDataRangeType(DataRange dr) {
             if (dr instanceof DatatypeRestriction)
                 return DataRangeType.DatatypeRestriction;
@@ -390,7 +395,7 @@ public class Printing {
             else
                 throw new IllegalArgumentException();
         }
-        protected int compareDatatypeRestrictions(DatatypeRestriction dr1,DatatypeRestriction dr2) {
+        protected int compareDatatypeRestrictions(@Nonnull DatatypeRestriction dr1, @Nonnull DatatypeRestriction dr2) {
             int comparison=dr1.getDatatypeURI().compareTo(dr2.getDatatypeURI());
             if (comparison!=0)
                 return comparison;
@@ -407,7 +412,7 @@ public class Printing {
             }
             return 0;
         }
-        protected int compareConstantEnumerations(ConstantEnumeration dve1,ConstantEnumeration dve2) {
+        protected int compareConstantEnumerations(@Nonnull ConstantEnumeration dve1, @Nonnull ConstantEnumeration dve2) {
             int comparison=dve1.getNumberOfConstants()-dve2.getNumberOfConstants();
             if (comparison!=0)
                 return comparison;
@@ -419,7 +424,7 @@ public class Printing {
             return 0;
 
         }
-        protected int compareConstants(Constant c1,Constant c2) {
+        protected int compareConstants(@Nonnull Constant c1, @Nonnull Constant c2) {
             int comparison=c1.getDatatypeURI().compareTo(c2.getDatatypeURI());
             if (comparison!=0)
                 return comparison;
@@ -429,7 +434,7 @@ public class Printing {
     protected static class RoleComparator implements Comparator<Role> {
         public static final RoleComparator INSTANCE=new RoleComparator();
 
-        public int compare(Role ar1,Role ar2) {
+        public int compare(@Nonnull Role ar1, @Nonnull Role ar2) {
             int type1=getRoleType(ar1);
             int type2=getRoleType(ar2);
             if (type1!=type2)
@@ -450,7 +455,7 @@ public class Printing {
     protected static class NodeComparator implements Comparator<Node> {
         public static final NodeComparator INSTANCE=new NodeComparator();
 
-        public int compare(Node o1,Node o2) {
+        public int compare(@Nonnull Node o1, @Nonnull Node o2) {
             return o1.getNodeID()-o2.getNodeID();
         }
     }
@@ -458,7 +463,7 @@ public class Printing {
     public static class FactComparator implements Comparator<Object[]> {
         public static final FactComparator INSTANCE=new FactComparator();
 
-        public int compare(Object[] o1,Object[] o2) {
+        public int compare(@Nonnull Object[] o1, @Nonnull Object[] o2) {
             int compare=o1.length-o2.length;
             if (compare!=0)
                 return compare;

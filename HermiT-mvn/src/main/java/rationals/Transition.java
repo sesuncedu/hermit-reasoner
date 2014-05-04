@@ -1,5 +1,8 @@
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Defines a Transition (an edge from a state to a state) in an Automaton
  * 
@@ -85,6 +88,7 @@ public class Transition {
    * 
    * @return a textual representation of this transition based
    */
+  @Nonnull
   public String toString() {
     if (label == null) {
       return "(" + start + " , 1 , " + end + ")";
@@ -102,7 +106,7 @@ public class Transition {
    *         <tt>o</tt> is a transition which is composed same states and
    *         label (in the sense of method <tt>equals</tt>).
    */
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (o == null)
       return false;
     try {

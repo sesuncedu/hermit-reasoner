@@ -22,16 +22,24 @@ import org.semanticweb.HermiT.tableau.InterruptFlag;
 import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+
 public final class DatalogEngine {
+    @Nonnull
     protected final InterruptFlag m_interruptFlag;
+    @Nonnull
     protected final DLOntology m_dlOntology;
+    @Nonnull
     protected final Map<Term,Node> m_termsToNodes;
+    @Nonnull
     protected final Map<Node,Term> m_nodesToTerms;
+    @Nonnull
     protected final Map<Term,Set<Term>> m_termsToEquivalenceClasses;
+    @Nonnull
     protected final Map<Term,Term> m_termsToRepresentatives;
     protected ExtensionManager m_extensionManager;
     
-    public DatalogEngine(DLOntology dlOntology) {
+    public DatalogEngine(@Nonnull DLOntology dlOntology) {
         for (DLClause dlClause : dlOntology.getDLClauses())
             if (dlClause.getHeadLength()>1)
                 throw new IllegalArgumentException("The supplied DL ontology contains rules with disjunctive heads.");
@@ -75,6 +83,7 @@ public final class DatalogEngine {
         }
         return !m_extensionManager.containsClash();
     }
+    @Nonnull
     public DLOntology getDLOntology() {
         return m_dlOntology;
     }

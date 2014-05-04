@@ -30,6 +30,9 @@ import org.semanticweb.HermiT.model.LiteralDataRange;
 import org.semanticweb.HermiT.model.NegatedAtomicRole;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * An instance of this class is notified by extension tables when tuples are added. This class then
  * detects whether the addition of a tuple caused a clash or not. Clashes are detected as soon as
@@ -41,16 +44,21 @@ public final class ClashManager implements Serializable {
 
     private static final long serialVersionUID = 3533809151139695892L;
 
+    @Nullable
     protected static final LiteralDataRange NOT_RDFS_LITERAL=InternalDatatype.RDFS_LITERAL.getNegation();
 
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
     protected final ExtensionTable.Retrieval m_ternaryExtensionTableSearch01Bound;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final Object[] m_binaryAuxiliaryTuple;
+    @Nonnull
     protected final Object[] m_ternaryAuxiliaryTuple;
+    @Nonnull
     protected final UnionDependencySet m_binaryUnionDependencySet;
 
-    public ClashManager(Tableau tableau) {
+    public ClashManager(@Nonnull Tableau tableau) {
         m_extensionManager=tableau.m_extensionManager;
         m_ternaryExtensionTableSearch01Bound=m_extensionManager.m_ternaryExtensionTable.createRetrieval(new boolean[] { true,true,false },ExtensionTable.View.TOTAL);
         m_tableauMonitor=tableau.m_tableauMonitor;
@@ -68,7 +76,7 @@ public final class ClashManager implements Serializable {
         m_binaryUnionDependencySet.m_dependencySets[0]=null;
         m_binaryUnionDependencySet.m_dependencySets[1]=null;
     }
-    public void tupleAdded(ExtensionTable extensionTable,Object[] tuple,DependencySet dependencySet,boolean isCore) {
+    public void tupleAdded(@Nonnull ExtensionTable extensionTable,Object[] tuple,DependencySet dependencySet,boolean isCore) {
         Object dlPredicateObject=tuple[0];
         Node node0=(Node)tuple[1];
         if (AtomicConcept.NOTHING.equals(dlPredicateObject) || NOT_RDFS_LITERAL.equals(dlPredicateObject) || (Inequality.INSTANCE.equals(dlPredicateObject) && tuple[1]==tuple[2])) {

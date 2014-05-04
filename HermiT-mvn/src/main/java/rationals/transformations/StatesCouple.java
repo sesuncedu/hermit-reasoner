@@ -35,17 +35,20 @@
  */
 package rationals.transformations;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 
 public class StatesCouple {
+    @Nonnull
     public final Set sa;
 
+    @Nonnull
     public final Set sb;
 
     final int hash;
 
-    public StatesCouple(Set sa, Set sb) {
+    public StatesCouple(@Nonnull Set sa, @Nonnull Set sb) {
         this.sa = sa;
         this.sb = sb;
         this.hash = sa.hashCode() + sb.hashCode();
@@ -75,6 +78,7 @@ public class StatesCouple {
      * 
      * @see java.lang.Object#toString()
      */
+    @Nonnull
     public String toString() {
         return " < " + sa.toString() + "," + sb.toString() + " >";
     }

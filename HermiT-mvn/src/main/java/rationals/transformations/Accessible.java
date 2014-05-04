@@ -27,6 +27,9 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Compute the automaton accessible from a given state
  * @author bailly
@@ -47,7 +50,8 @@ public class Accessible implements UnaryTransformation {
 	/* (non-Javadoc)
 	 * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
 	 */
-	public Automaton transform(Automaton a) {
+	@Nullable
+    public Automaton transform(@Nonnull Automaton a) {
 		Set trs = a.delta();
 		Automaton b = new Automaton();
 		Map stmap = new HashMap();
@@ -78,7 +82,7 @@ public class Accessible implements UnaryTransformation {
 	 * @param stmap
 	 * @param b
 	 */
-	private void explore(State curstate, Map stmap, Automaton a,Automaton b) {
+	private void explore(State curstate, @Nonnull Map stmap, @Nonnull Automaton a, @Nonnull Automaton b) {
 		Iterator it = a.delta(curstate).iterator();
 		while(it.hasNext()) {
 			Transition tr = (Transition)it.next();

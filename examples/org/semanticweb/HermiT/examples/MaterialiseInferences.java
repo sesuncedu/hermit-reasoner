@@ -43,6 +43,8 @@ import org.semanticweb.owlapi.util.InferredDisjointClassesAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredOntologyGenerator;
 import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 
+import javax.annotation.Nonnull;
+
 /**
  * This example Shows how to use HermiT as an OWLReasoner for materialising inferences. 
  * The program loads the pizza ontology, computes implicit subclass relaionships and 
@@ -87,7 +89,7 @@ public class MaterialiseInferences {
         // We don't want that!
         generators.add(new InferredDisjointClassesAxiomGenerator() {
             boolean precomputed=false;
-            protected void addAxioms(OWLClass entity, OWLReasoner reasoner, OWLDataFactory dataFactory, Set<OWLDisjointClassesAxiom> result) {
+            protected void addAxioms(OWLClass entity, @Nonnull OWLReasoner reasoner, @Nonnull OWLDataFactory dataFactory, @Nonnull Set<OWLDisjointClassesAxiom> result) {
                 if (!precomputed) {
                     reasoner.precomputeInferences(InferenceType.DISJOINT_CLASSES);
                     precomputed=true;

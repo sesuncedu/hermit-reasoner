@@ -12,8 +12,11 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 public class ToC implements UnaryTransformation {
 
+    @Nonnull
     public Automaton transform(Automaton a) {
         Automaton b = new EpsilonTransitionRemover().transform(a);
         Set Ib = b.initials();

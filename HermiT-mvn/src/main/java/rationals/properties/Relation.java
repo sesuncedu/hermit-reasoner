@@ -41,6 +41,8 @@ import java.util.Set;
 import rationals.Automaton;
 import rationals.State;
 
+import javax.annotation.Nonnull;
+
 /**
  * An interface for computing equivalences between automata.
  * 
@@ -89,6 +91,7 @@ public interface Relation {
      * 
      * @return a List of objects or null.
      */
+    @Nonnull
     public List getErrorTrace();
 
 }

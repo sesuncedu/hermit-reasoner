@@ -35,14 +35,21 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.NodeType;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class AnywhereValidatedBlocking implements BlockingStrategy {
     protected final DirectBlockingChecker m_directBlockingChecker;
+    @Nonnull
     protected final ValidatedBlockersCache m_currentBlockersCache;
     protected BlockingValidator m_permanentBlockingValidator;
+    @Nullable
     protected BlockingValidator m_additionalBlockingValidator;
     protected Tableau m_tableau;
     protected ExtensionManager m_extensionManager;
+    @Nullable
     protected Node m_firstChangedNode;
+    @Nullable
     protected Node m_lastValidatedUnchangedNode;
     protected boolean m_useSimpleCore;
     protected final boolean m_hasInverses;
@@ -215,7 +222,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
             System.out.println("Checked "+checkedBlocks+" blocked nodes of which "+invalidBlocks+" were invalid.");
         }
     }
-    protected boolean isBlockValid(Node node) {
+    protected boolean isBlockValid(@Nonnull Node node) {
         if (m_permanentBlockingValidator.isBlockValid(node)) {
             if (m_additionalBlockingValidator!=null)
                 return m_additionalBlockingValidator.isBlockValid(node);
@@ -231,39 +238,39 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
     public boolean isPermanentAssertion(DataRange range,Node node) {
         return true;
     }
-    protected void validationInfoChanged(Node node) {
+    protected void validationInfoChanged(@Nullable Node node) {
         if (node!=null) {
             if (m_lastValidatedUnchangedNode!=null && node.getNodeID()<m_lastValidatedUnchangedNode.getNodeID())
                 m_lastValidatedUnchangedNode=node;
             m_directBlockingChecker.setHasChangedSinceValidation(node,true);
         }
     }
-    public void assertionAdded(Concept concept,Node node,boolean isCore) {
+    public void assertionAdded(Concept concept, @Nonnull Node node,boolean isCore) {
         updateNodeChange(m_directBlockingChecker.assertionAdded(concept,node,isCore));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    public void assertionCoreSet(Concept concept,Node node) {
+    public void assertionCoreSet(Concept concept, @Nonnull Node node) {
         updateNodeChange(m_directBlockingChecker.assertionAdded(concept,node,true));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    public void assertionRemoved(Concept concept,Node node,boolean isCore) {
+    public void assertionRemoved(Concept concept, @Nonnull Node node,boolean isCore) {
         updateNodeChange(m_directBlockingChecker.assertionRemoved(concept,node,isCore));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    public void assertionAdded(DataRange range,Node node,boolean isCore) {
+    public void assertionAdded(DataRange range, @Nonnull Node node,boolean isCore) {
         updateNodeChange(m_directBlockingChecker.assertionAdded(range,node,isCore));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    public void assertionCoreSet(DataRange range,Node node) {
+    public void assertionCoreSet(DataRange range, @Nonnull Node node) {
         updateNodeChange(m_directBlockingChecker.assertionAdded(range,node,true));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    public void assertionRemoved(DataRange range,Node node,boolean isCore) {
+    public void assertionRemoved(DataRange range, @Nonnull Node node,boolean isCore) {
         updateNodeChange(m_directBlockingChecker.assertionRemoved(range,node,isCore));
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
@@ -286,22 +293,22 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
         validationInfoChanged(nodeFrom);
         validationInfoChanged(nodeTo);
     }
-    public void nodesMerged(Node mergeFrom,Node mergeInto) {
+    public void nodesMerged(@Nonnull Node mergeFrom,Node mergeInto) {
         Node parent=mergeFrom.getParent();
         if (parent!=null && (m_directBlockingChecker.canBeBlocker(parent) || m_directBlockingChecker.canBeBlocked(parent)))
             validationInfoChanged(parent);
     }
-    public void nodesUnmerged(Node mergeFrom,Node mergeInto) {
+    public void nodesUnmerged(@Nonnull Node mergeFrom,Node mergeInto) {
         Node parent=mergeFrom.getParent();
         if (parent!=null && (m_directBlockingChecker.canBeBlocker(parent) || m_directBlockingChecker.canBeBlocked(parent)))
             validationInfoChanged(parent);
     }
-    public void nodeStatusChanged(Node node) {
+    public void nodeStatusChanged(@Nonnull Node node) {
         updateNodeChange(node);
         validationInfoChanged(node);
         validationInfoChanged(node.getParent());
     }
-    protected final void updateNodeChange(Node node) {
+    protected final void updateNodeChange(@Nullable Node node) {
         if (node!=null) {
             if (m_firstChangedNode==null || node.getNodeID()<m_firstChangedNode.getNodeID())
                 m_firstChangedNode=node;
@@ -310,7 +317,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
     public void nodeInitialized(Node node) {
         m_directBlockingChecker.nodeInitialized(node);
     }
-    public void nodeDestroyed(Node node) {
+    public void nodeDestroyed(@Nonnull Node node) {
         m_currentBlockersCache.removeNode(node);
         m_directBlockingChecker.nodeDestroyed(node);
         if (m_firstChangedNode!=null && m_firstChangedNode.getNodeID()>=node.getNodeID())
@@ -328,7 +335,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
             m_violatedConstraint=violatedConstraint;
             m_numberOfViolations=numberOfViolations;
         }
-        public int compareTo(ViolationStatistic that) {
+        public int compareTo(@Nullable ViolationStatistic that) {
             if (this==that)
                 return 0;
             if (that==null)
@@ -338,6 +345,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
             else
                 return that.m_numberOfViolations-this.m_numberOfViolations;
         }
+        @Nonnull
         public String toString() {
             return m_numberOfViolations+": "+m_violatedConstraint.replaceAll("http://www.co-ode.org/ontologies/galen#","");
         }
@@ -345,7 +353,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
     public boolean isExact() {
         return false;
     }
-    public void dlClauseBodyCompiled(List<DLClauseEvaluator.Worker> workers,DLClause dlClause,List<Variable> variables,Object[] valuesBuffer,boolean[] coreVariables) {
+    public void dlClauseBodyCompiled(@Nonnull List<DLClauseEvaluator.Worker> workers, @Nonnull DLClause dlClause, @Nonnull List<Variable> variables,Object[] valuesBuffer, @Nonnull boolean[] coreVariables) {
         if (m_useSimpleCore) {
             for (int i=0;i<coreVariables.length;i++) {
                 coreVariables[i]=false;
@@ -404,6 +412,7 @@ public class AnywhereValidatedBlocking implements BlockingStrategy {
             }
             return programCounter+1;
         }
+        @Nonnull
         public String toString() {
             return "Compute core variables";
         }
@@ -416,6 +425,7 @@ class ValidatedBlockersCache {
     protected CacheEntry[] m_buckets;
     protected int m_numberOfElements;
     protected int m_threshold;
+    @Nullable
     protected CacheEntry m_emptyEntries;
 
     public ValidatedBlockersCache(DirectBlockingChecker directBlockingChecker) {
@@ -431,7 +441,7 @@ class ValidatedBlockersCache {
         m_numberOfElements=0;
         m_emptyEntries=null;
     }
-    public boolean removeNode(Node node) {
+    public boolean removeNode(@Nonnull Node node) {
         // Check addNode() for an explanation of why we associate the entry with the node.
         ValidatedBlockersCache.CacheEntry removeEntry=(ValidatedBlockersCache.CacheEntry)node.getBlockingCargo();
         if (removeEntry!=null) {
@@ -475,7 +485,7 @@ class ValidatedBlockersCache {
         }
         return false;
     }
-    public void addNode(Node node) {
+    public void addNode(@Nonnull Node node) {
         int hashCode=m_directBlockingChecker.blockingHashCode(node);
         int bucketIndex=getIndexFor(hashCode,m_buckets.length);
         CacheEntry entry=m_buckets[bucketIndex];
@@ -525,7 +535,8 @@ class ValidatedBlockersCache {
         m_buckets=newBuckets;
         m_threshold=(int)(newCapacity*0.75);
     }
-    public Node getBlocker(Node node) {
+    @Nullable
+    public Node getBlocker(@Nonnull Node node) {
         if (m_directBlockingChecker.canBeBlocked(node)) {
             int hashCode=m_directBlockingChecker.blockingHashCode(node);
             int bucketIndex=getIndexFor(hashCode,m_buckets.length);
@@ -567,6 +578,7 @@ class ValidatedBlockersCache {
         hashCode^=(hashCode>>>10);
         return hashCode&(tableLength-1);
     }
+    @Nonnull
     public String toString() {
         String buckets="";
         for (int i=0;i<m_buckets.length;i++) {
@@ -583,20 +595,22 @@ class ValidatedBlockersCache {
 
         protected List<Node> m_nodes;
         protected int m_hashCode;
+        @Nullable
         protected CacheEntry m_nextEntry;
 
-        public void initialize(Node node,int hashCode,CacheEntry nextEntry) {
+        public void initialize(@Nonnull Node node,int hashCode,CacheEntry nextEntry) {
             m_nodes=new ArrayList<Node>();
             add(node);
             m_hashCode=hashCode;
             m_nextEntry=nextEntry;
         }
-        public boolean add(Node node) {
+        public boolean add(@Nonnull Node node) {
             for (Node n : m_nodes) {
                 assert n.getNodeID()<=node.getNodeID();
             }
             return m_nodes.add(node);
         }
+        @Nonnull
         public String toString() {
             String nodes="HashCode: "+m_hashCode+" Nodes: ";
             for (Node n : m_nodes) {

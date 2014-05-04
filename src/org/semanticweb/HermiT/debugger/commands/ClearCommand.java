@@ -21,18 +21,22 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class ClearCommand extends AbstractCommand {
 
     public ClearCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "clear";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","clear the screen" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: clear");
         writer.println("    Clear the command line screen. ");
     }

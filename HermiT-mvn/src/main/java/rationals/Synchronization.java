@@ -35,6 +35,7 @@
  */
 package rationals;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,7 @@ public interface Synchronization {
      * @param t2 second label to synchronize
      * @return a non null Object if the two transitions can be synchronized.
      */
+    @Nullable
     Object synchronize(Object t1, Object t2);
     
     /**
@@ -82,6 +84,7 @@ public interface Synchronization {
      * @return a Set implementation containing all letters of all alphabets 
      * in <code>alphl</code> that could be synchronized.
      */
+    @Nullable
     Set synchronizable(Collection alphl);
 
     /**

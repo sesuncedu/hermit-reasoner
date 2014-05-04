@@ -19,6 +19,8 @@ package org.semanticweb.HermiT.debugger.commands;
 
 import java.awt.Dimension;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -59,7 +61,8 @@ public abstract class AbstractCommand implements DebuggerCommand {
             }
         });
     }
-    protected DLPredicate getDLPredicate(String predicate) throws Exception {
+    @Nullable
+    protected DLPredicate getDLPredicate(@Nonnull String predicate) throws Exception {
         if ("==".equals(predicate))
             return Equality.INSTANCE;
         else if ("!=".equals(predicate))
@@ -83,7 +86,8 @@ public abstract class AbstractCommand implements DebuggerCommand {
      *            a node in the tableau
      * @return "no" if node is not blocked; "directly by" plus "signature in cache" or the ID of the blocking node if the node is directly blocked; "indirectly by" plus "signature in cache" or the ID of the blocking node otherwise
      */
-    protected static String formatBlockingStatus(Node node) {
+    @Nonnull
+    protected static String formatBlockingStatus(@Nonnull Node node) {
         if (!node.isBlocked())
             return "no";
         else if (node.isDirectlyBlocked())

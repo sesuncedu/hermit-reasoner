@@ -21,18 +21,22 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class ForeverCommand extends AbstractCommand {
     
     public ForeverCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "forever";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","run and do not wait for further input" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: forever");
         writer.println("    Continues with the current reasoning task without");
         writer.println("    waiting for further input by the user.");

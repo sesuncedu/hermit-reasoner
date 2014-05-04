@@ -39,13 +39,18 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class QuasiOrderClassification {
     protected final Tableau m_tableau;
     protected final ClassificationProgressMonitor m_progressMonitor;
     protected final AtomicConcept m_topElement;
     protected final AtomicConcept m_bottomElement;
     protected final Set<AtomicConcept> m_elements;
+    @Nonnull
     protected final Graph<AtomicConcept> m_knownSubsumptions;
+    @Nonnull
     protected final Graph<AtomicConcept> m_possibleSubsumptions;
 
     public QuasiOrderClassification(Tableau tableau,ClassificationProgressMonitor progressMonitor,AtomicConcept topElement,AtomicConcept bottomElement,Set<AtomicConcept> elements) {
@@ -57,6 +62,7 @@ public class QuasiOrderClassification {
         m_knownSubsumptions=new Graph<AtomicConcept>();
         m_possibleSubsumptions=new Graph<AtomicConcept>();
     }
+    @Nonnull
     public Hierarchy<AtomicConcept> classify() {
         Relation<AtomicConcept> relation=new Relation<AtomicConcept>() {
             public boolean doesSubsume(AtomicConcept parent,AtomicConcept child) {
@@ -78,7 +84,8 @@ public class QuasiOrderClassification {
         };
         return buildHierarchy(relation);
     }
-    protected Hierarchy<AtomicConcept> buildHierarchy(Relation<AtomicConcept> hierarchyRelation) {
+    @Nonnull
+    protected Hierarchy<AtomicConcept> buildHierarchy(@Nonnull Relation<AtomicConcept> hierarchyRelation) {
     	double totalNumberOfTasks=m_elements.size();
         makeConceptUnsatisfiable(m_bottomElement);
         initialiseKnownSubsumptionsUsingToldSubsumers();
@@ -121,7 +128,8 @@ public class QuasiOrderClassification {
         }
         return buildTransitivelyReducedHierarchy(m_knownSubsumptions,m_elements);
     }
-	protected Hierarchy<AtomicConcept> buildHierarchyOfUnknownPossible(Set<AtomicConcept> unknownSubsumers) {
+	@Nonnull
+    protected Hierarchy<AtomicConcept> buildHierarchyOfUnknownPossible(@Nonnull Set<AtomicConcept> unknownSubsumers) {
         Graph<AtomicConcept> smallKnownSubsumptions=new Graph<AtomicConcept>();
         for (AtomicConcept unknownSubsumer0 : unknownSubsumers) {
             smallKnownSubsumptions.addEdge(m_bottomElement,unknownSubsumer0);
@@ -185,7 +193,8 @@ public class QuasiOrderClassification {
     private boolean conceptHasBeenProcessedAlready(AtomicConcept atConcept) {
 		return !m_possibleSubsumptions.getSuccessors(atConcept).isEmpty() || isUnsatisfiable(atConcept);
 	}
-	protected Node buildModelForConcept(AtomicConcept concept) {
+	@Nullable
+    protected Node buildModelForConcept(AtomicConcept concept) {
         Individual freshIndividual=Individual.createAnonymous("fresh-individual");
         Map<Individual,Node> checkedNode=new HashMap<Individual,Node>();
         checkedNode.put(freshIndividual,null);
@@ -201,7 +210,7 @@ public class QuasiOrderClassification {
     protected boolean isUnsatisfiable(AtomicConcept concept) {
         return m_knownSubsumptions.getSuccessors(concept).contains(m_bottomElement);
     }
-    protected void readKnownSubsumersFromRootNode(AtomicConcept subconcept,Node checkedNode) {
+    protected void readKnownSubsumersFromRootNode(AtomicConcept subconcept, @Nonnull Node checkedNode) {
         if (checkedNode.getCanonicalNodeDependencySet().isEmpty()) {
             checkedNode=checkedNode.getCanonicalNode();
             ExtensionTable.Retrieval retrieval=m_tableau.getExtensionManager().getBinaryExtensionTable().createRetrieval(new boolean[] { false,true },ExtensionTable.View.TOTAL);
@@ -248,7 +257,7 @@ public class QuasiOrderClassification {
             retrieval.next();
         }
     }
-    protected void prunePossibleSubsumersOfConcept(AtomicConcept atomicConcept,Node node) {
+    protected void prunePossibleSubsumersOfConcept(AtomicConcept atomicConcept, @Nonnull Node node) {
         Set<AtomicConcept> possibleSubsumersOfConcept=new HashSet<AtomicConcept>(m_possibleSubsumptions.getSuccessors(atomicConcept));
         for (AtomicConcept atomicCon : possibleSubsumersOfConcept)
             if (!m_tableau.getExtensionManager().containsConceptAssertion(atomicCon,node))
@@ -265,7 +274,8 @@ public class QuasiOrderClassification {
             retrieval.next();
         }
     }
-    protected Hierarchy<AtomicConcept> buildTransitivelyReducedHierarchy(Graph<AtomicConcept> knownSubsumptions,Set<AtomicConcept> elements) {
+    @Nonnull
+    protected Hierarchy<AtomicConcept> buildTransitivelyReducedHierarchy(@Nonnull Graph<AtomicConcept> knownSubsumptions, @Nonnull Set<AtomicConcept> elements) {
         final Map<AtomicConcept,GraphNode<AtomicConcept>> allSubsumers=new HashMap<AtomicConcept,GraphNode<AtomicConcept>>();
         for (AtomicConcept element : elements) {
         	Set<AtomicConcept> extendedSubs = new HashSet<AtomicConcept>(knownSubsumptions.getSuccessors(element));
@@ -279,7 +289,7 @@ public class QuasiOrderClassification {
     protected void initialiseKnownSubsumptionsUsingToldSubsumers() {
         initialiseKnownSubsumptionsUsingToldSubsumers(m_tableau.getPermanentDLOntology().getDLClauses());
     }
-    protected void initialiseKnownSubsumptionsUsingToldSubsumers(Set<DLClause> dlClauses) {
+    protected void initialiseKnownSubsumptionsUsingToldSubsumers(@Nonnull Set<DLClause> dlClauses) {
         for (DLClause dlClause : dlClauses) {
             if (dlClause.getHeadLength()==1 && dlClause.getBodyLength()==1) {
                 DLPredicate headPredicate=dlClause.getHeadAtom(0).getDLPredicate();
@@ -293,7 +303,7 @@ public class QuasiOrderClassification {
             }
         }
     }
-    protected void checkUnknownSubsumersUsingEnhancedTraversal(Relation<AtomicConcept> hierarchyRelation,HierarchyNode<AtomicConcept> startNode,AtomicConcept pickedElement) {
+    protected void checkUnknownSubsumersUsingEnhancedTraversal(@Nonnull Relation<AtomicConcept> hierarchyRelation,HierarchyNode<AtomicConcept> startNode,AtomicConcept pickedElement) {
         Set<HierarchyNode<AtomicConcept>> startSearch=Collections.singleton(startNode);
         Set<HierarchyNode<AtomicConcept>> visited=new HashSet<HierarchyNode<AtomicConcept>>(startSearch);
         Queue<HierarchyNode<AtomicConcept>> toProcess=new LinkedList<HierarchyNode<AtomicConcept>>(startSearch);
@@ -314,7 +324,7 @@ public class QuasiOrderClassification {
             }
         }
     }
-    protected boolean isEveryPossibleSubsumerNonSubsumer(Set<AtomicConcept> unknownPossibleSubsumers,AtomicConcept pickedElement,int lowerBound,int upperBound) {
+    protected boolean isEveryPossibleSubsumerNonSubsumer(@Nonnull Set<AtomicConcept> unknownPossibleSubsumers,AtomicConcept pickedElement,int lowerBound,int upperBound) {
         if (unknownPossibleSubsumers.size()>lowerBound && unknownPossibleSubsumers.size()<upperBound) {
             Individual freshIndividual=Individual.createAnonymous("fresh-individual");
             Atom subconceptAssertion=Atom.create(pickedElement,freshIndividual);
@@ -339,24 +349,28 @@ public class QuasiOrderClassification {
         }
         return false;
     }
+    @Nonnull
     protected Set<AtomicConcept> getAllKnownSubsumers(AtomicConcept child) {
         return m_knownSubsumptions.getReachableSuccessors(child);
     }
     protected void addKnownSubsumption(AtomicConcept subConcept,AtomicConcept superConcept) {
         m_knownSubsumptions.addEdge(subConcept,superConcept);
     }
-    protected void addKnownSubsumptions(AtomicConcept subConcept,Set<AtomicConcept> superConcepts) {
+    protected void addKnownSubsumptions(AtomicConcept subConcept, @Nonnull Set<AtomicConcept> superConcepts) {
         m_knownSubsumptions.addEdges(subConcept,superConcepts);
     }
     protected void addPossibleSubsumption(AtomicConcept subConcept,AtomicConcept superConcept) {
         m_possibleSubsumptions.addEdge(subConcept,superConcept);
     }
+    @Nonnull
     protected ReasoningTaskDescription getSatTestDescription(AtomicConcept atomicConcept) {
         return ReasoningTaskDescription.isConceptSatisfiable(atomicConcept);
     }
+    @Nonnull
     protected ReasoningTaskDescription getSubsumptionTestDescription(AtomicConcept subConcept,AtomicConcept superConcept) {
         return ReasoningTaskDescription.isConceptSubsumedBy(subConcept,superConcept);
     }
+    @Nonnull
     protected ReasoningTaskDescription getSubsumedByListTestDescription(AtomicConcept subConcept,Object[] superconcepts) {
         return ReasoningTaskDescription.isConceptSubsumedByList(subConcept,superconcepts);
     }

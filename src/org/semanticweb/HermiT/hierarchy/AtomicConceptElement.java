@@ -23,14 +23,19 @@ import java.util.Set;
 
 import org.semanticweb.HermiT.model.Individual;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class AtomicConceptElement {
     
     public static final String LB=System.getProperty("line.separator");
     
+    @Nullable
     protected final Set<Individual> m_knownInstances;
+    @Nullable
     protected final Set<Individual> m_possibleInstances;
     
-    public AtomicConceptElement(Set<Individual> known, Set<Individual> possible) {
+    public AtomicConceptElement(@Nullable Set<Individual> known, @Nullable Set<Individual> possible) {
         if (known==null)
             m_knownInstances=new HashSet<Individual>();
         else 
@@ -46,9 +51,11 @@ public class AtomicConceptElement {
     public boolean isPossible(Individual individual) {
         return m_possibleInstances.contains(individual);
     }
+    @Nullable
     public Set<Individual> getKnownInstances() {
         return m_knownInstances;
     }
+    @Nullable
     public Set<Individual> getPossibleInstances() {
         return m_possibleInstances;
     }
@@ -62,9 +69,10 @@ public class AtomicConceptElement {
     public boolean addPossible(Individual individual) {
         return m_possibleInstances.add(individual);
     }
-    public boolean addPossibles(Set<Individual> individuals) {
+    public boolean addPossibles(@Nonnull Set<Individual> individuals) {
         return m_possibleInstances.addAll(individuals);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append(" (known instances: ");

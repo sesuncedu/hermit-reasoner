@@ -35,6 +35,7 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -64,12 +65,14 @@ public interface Acceptor {
      * @param start a starting State. Maybe null
      * @return a List of Set of State objects
      */
+    @Nonnull
     List<Set<State>> traceStates(List<Object> word, State start);
     
     /*
      *  (non-Javadoc)
      * @see rationals.Acceptor#steps(java.util.List)
      */
+    @Nonnull
     Set<State> steps(List<Object> word);
 
 }

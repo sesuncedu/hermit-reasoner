@@ -27,23 +27,27 @@ import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.ExistentialConcept;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class NodesForCommand extends AbstractCommand {
 
     public NodesForCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "nodesFor";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "conceptName","prints nodes that have been created by (atleast n r.conceptName)" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: nodesFor conceptName");
         writer.println("    Prints all nodes that have been created by a concept (atleast n r.conceptName)");
         writer.println("    together with the information whether the nodes are active or not.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Concept name is missing.");
             return;

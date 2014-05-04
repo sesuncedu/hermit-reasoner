@@ -4,29 +4,36 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class Couple {
 
     private final int hash;
     
+  @Nonnull
   public final State from;
 
+  @Nonnull
   public final State to;
 
-  public Couple(State from, State to) {
+  public Couple(@Nonnull State from, @Nonnull State to) {
     this.from = from;
     this.to = to;
     this.hash = (from.hashCode() << 16) ^ to.hashCode();
   }
 
+  @Nonnull
   public State getFrom() {
     return from;
   }
 
+  @Nonnull
   public State getTo() {
     return to;
   }
 
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if ((o != null) && (o instanceof Couple)) {
       Couple c = (Couple) o;
       return from.equals(c.from) && to.equals(c.to);

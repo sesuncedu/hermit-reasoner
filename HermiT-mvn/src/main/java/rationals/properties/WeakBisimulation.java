@@ -42,6 +42,9 @@ import rationals.Automaton;
 import rationals.State;
 import rationals.transformations.EpsilonTransitionRemover;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This method computes the weak bisimulation relation between two states.
  * The weak bisimulation is computed as (strong) bisimulation between the two 
@@ -66,7 +69,7 @@ public class WeakBisimulation implements Relation {
      * @see rationals.tests.Relation#setAutomata(rationals.Automaton,
      *      rationals.Automaton)
      */
-    public void setAutomata(Automaton a1, Automaton a2) {
+    public void setAutomata(@Nonnull Automaton a1, @Nonnull Automaton a2) {
         EpsilonTransitionRemover er = new EpsilonTransitionRemover();
         this.bisim = new Bisimulation( er.transform(a1), er.transform(a2));
     }
@@ -87,6 +90,7 @@ public class WeakBisimulation implements Relation {
     /* (non-Javadoc)
      * @see rationals.properties.Relation#getErrorTrace()
      */
+    @Nullable
     public List getErrorTrace() {
         // TODO Auto-generated method stub
         return null;

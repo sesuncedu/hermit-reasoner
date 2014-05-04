@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents at-least concept.
  */
@@ -37,22 +40,26 @@ public class AtLeastDataRange extends AtLeast {
     public boolean isAlwaysFalse() {
         return m_toDataRange.isAlwaysFalse();
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "atLeast("+m_number+' '+m_onRole.toString(prefixes)+' '+m_toDataRange.toString(prefixes)+')';
     }
 
+    @Nonnull
     protected static InterningManager<AtLeastDataRange> s_interningManager=new InterningManager<AtLeastDataRange>() {
-        protected boolean equal(AtLeastDataRange object1,AtLeastDataRange object2) {
+        protected boolean equal(@Nonnull AtLeastDataRange object1, @Nonnull AtLeastDataRange object2) {
             return object1.m_number==object2.m_number && object1.m_onRole==object2.m_onRole && object1.m_toDataRange==object2.m_toDataRange;
         }
-        protected int getHashCode(AtLeastDataRange object) {
+        protected int getHashCode(@Nonnull AtLeastDataRange object) {
             return (object.m_number*7+object.m_onRole.hashCode())*7+object.m_toDataRange.hashCode();
         }
     };
     
+    @Nullable
     public static AtLeastDataRange create(int number,Role onRole,LiteralDataRange toDataRange) {
         return s_interningManager.intern(new AtLeastDataRange(number,onRole,toDataRange));
     }

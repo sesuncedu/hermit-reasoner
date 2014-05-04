@@ -28,6 +28,9 @@ import org.semanticweb.HermiT.model.ExistentialConcept;
 import org.semanticweb.HermiT.model.NegatedAtomicRole;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * An extension table keeps track of the assertions in the ABox during a run of
  * the tableau. For this purpose, it holds a binary (concept, node) and a
@@ -49,8 +52,11 @@ public abstract class ExtensionTable implements Serializable {
     protected final Tableau m_tableau;
     protected final TableauMonitor m_tableauMonitor;
     protected final int m_tupleArity;
+    @Nonnull
     protected final TupleTable m_tupleTable;
+    @Nonnull
     protected final DependencySetManager m_dependencySetManager;
+    @Nonnull
     protected final CoreManager m_coreManager;
     protected int m_afterExtensionOldTupleIndex;
     protected int m_afterExtensionThisTupleIndex;
@@ -73,7 +79,7 @@ public abstract class ExtensionTable implements Serializable {
     public int getArity() {
         return m_tupleArity;
     }
-    public void retrieveTuple(Object[] tupleBuffer,int tupleIndex) {
+    public void retrieveTuple(@Nonnull Object[] tupleBuffer,int tupleIndex) {
         m_tupleTable.retrieveTuple(tupleBuffer,tupleIndex);
     }
     public Object getTupleObject(int tupleIndex,int objectIndex) {
@@ -112,7 +118,7 @@ public abstract class ExtensionTable implements Serializable {
         m_tableau.m_clashManager.tupleAdded(this,tuple,dependencySet,isCore);
     }
     public abstract boolean containsTuple(Object[] tuple);
-    public Retrieval createRetrieval(boolean[] bindingPattern,View extensionView) {
+    public Retrieval createRetrieval(@Nonnull boolean[] bindingPattern,View extensionView) {
         int[] bindingPositions=new int[bindingPattern.length];
         for (int index=0;index<bindingPattern.length;index++)
             if (bindingPattern[index])
@@ -122,6 +128,7 @@ public abstract class ExtensionTable implements Serializable {
         return createRetrieval(bindingPositions,new Object[bindingPattern.length],new Object[bindingPattern.length],true,extensionView);
     }
     public abstract Retrieval createRetrieval(int[] bindingPositions,Object[] bindingsBuffer,Object[] tupleBuffer,boolean ownsBuffers,View extensionView);
+    @Nullable
     public abstract DependencySet getDependencySet(Object[] tuple);
     public abstract boolean isCore(Object[] tuple);
     public boolean propagateDeltaNew() {
@@ -239,6 +246,7 @@ public abstract class ExtensionTable implements Serializable {
                     numberOfBoundPositions++;
             m_checkTupleSelection=(numberOfBoundPositions>0);
         }
+        @Nonnull
         public ExtensionTable getExtensionTable() {
             return ExtensionTable.this;
         }
@@ -331,9 +339,10 @@ public abstract class ExtensionTable implements Serializable {
     protected static class DeterministicDependencySetManager implements DependencySetManager,Serializable {
         private static final long serialVersionUID=7982627098607954806L;
 
+        @Nonnull
         protected final DependencySetFactory m_dependencySetFactory;
 
-        public DeterministicDependencySetManager(ExtensionTable extensionTable) {
+        public DeterministicDependencySetManager(@Nonnull ExtensionTable extensionTable) {
             m_dependencySetFactory=extensionTable.m_tableau.getDependencySetFactory();
         }
         public DependencySet getDependencySet(int tupleIndex) {
@@ -348,11 +357,13 @@ public abstract class ExtensionTable implements Serializable {
     protected class LastObjectDependencySetManager implements DependencySetManager,Serializable {
         private static final long serialVersionUID=-8097612469749016470L;
 
+        @Nonnull
         protected final DependencySetFactory m_dependencySetFactory;
 
-        public LastObjectDependencySetManager(ExtensionTable extensionTable) {
+        public LastObjectDependencySetManager(@Nonnull ExtensionTable extensionTable) {
             m_dependencySetFactory=extensionTable.m_tableau.getDependencySetFactory();
         }
+        @Nonnull
         public DependencySet getDependencySet(int tupleIndex) {
             return (DependencySet)m_tupleTable.getTupleObject(tupleIndex,m_tupleArity);
         }

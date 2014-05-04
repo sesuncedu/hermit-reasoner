@@ -9,6 +9,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Compute the kleene-star closure of an automaton.
  * 
@@ -16,7 +18,8 @@ import rationals.Transition;
  * @version $Id: Star.java 2 2006-08-24 14:41:48Z oqube $
  */
 public class Star implements UnaryTransformation {
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         if (a.delta().size() == 0)
             return Automaton.epsilonAutomaton();
         Automaton b = new Automaton();

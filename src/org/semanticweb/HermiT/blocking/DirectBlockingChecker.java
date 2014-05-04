@@ -23,6 +23,9 @@ import org.semanticweb.HermiT.model.DataRange;
 import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public interface DirectBlockingChecker {
     void initialize(Tableau tableau);
     void clear();
@@ -40,13 +43,22 @@ public interface DirectBlockingChecker {
     void setHasChangedSinceValidation(Node node, boolean hasChanged);
     void nodeInitialized(Node node);
     void nodeDestroyed(Node node);
+    @Nullable
     Node assertionAdded(Concept concept,Node node,boolean isCore);
+    @Nullable
     Node assertionRemoved(Concept concept,Node node,boolean isCore);
+    @Nullable
     Node assertionAdded(DataRange range,Node node,boolean isCore);
+    @Nullable
     Node assertionRemoved(DataRange range,Node node,boolean isCore);
+    @Nullable
     Node assertionAdded(AtomicRole atomicRole,Node nodeFrom,Node nodeTo,boolean isCore);
+    @Nullable
     Node assertionRemoved(AtomicRole atomicRole,Node nodeFrom,Node nodeTo,boolean isCore);
+    @Nullable
     Node nodesMerged(Node mergeFrom,Node mergeInto);
+    @Nullable
     Node nodesUnmerged(Node mergeFrom,Node mergeInto);
+    @Nonnull
     BlockingSignature getBlockingSignatureFor(Node node);
 }

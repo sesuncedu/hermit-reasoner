@@ -35,6 +35,7 @@
  */
 package rationals.transformations;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -48,9 +49,10 @@ public class HashValue {
     
     public final int hash;
 
+    @Nonnull
     public final Set s;
 
-    public HashValue(Set s) {
+    public HashValue(@Nonnull Set s) {
         this.s = s;
         this.hash = s.hashCode();
     }
@@ -60,7 +62,7 @@ public class HashValue {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
+    public boolean equals(@Nonnull Object obj) {
         return ((HashValue) obj).hash == hash;
     }
 

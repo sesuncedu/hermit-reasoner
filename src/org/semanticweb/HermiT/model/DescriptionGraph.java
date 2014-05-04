@@ -22,6 +22,8 @@ import java.util.Set;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+
 public class DescriptionGraph implements DLPredicate,Serializable {
     private static final long serialVersionUID=-6098910060520673164L;
 
@@ -57,7 +59,7 @@ public class DescriptionGraph implements DLPredicate,Serializable {
     public Set<AtomicConcept> getStartConcepts() {
         return m_startConcepts;
     }
-    public void produceStartDLClauses(Set<DLClause> resultingDLClauses) {
+    public void produceStartDLClauses(@Nonnull Set<DLClause> resultingDLClauses) {
         Variable X=Variable.create("X");
         for (AtomicConcept startAtomicConcept : m_startConcepts) {
             Atom[] antecedent=new Atom[] { Atom.create(startAtomicConcept,X) };
@@ -73,12 +75,15 @@ public class DescriptionGraph implements DLPredicate,Serializable {
             resultingDLClauses.add(DLClause.create(consequent,antecedent));
         }
     }
-    public String toString(Prefixes ns) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes ns) {
         return ns.abbreviateIRI(m_name);
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nonnull
     public String getTextRepresentation() {
         StringBuffer buffer=new StringBuffer();
         String CRLF=System.getProperty("line.separator");

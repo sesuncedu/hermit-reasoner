@@ -45,6 +45,9 @@ import org.semanticweb.HermiT.model.Term;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 import org.semanticweb.HermiT.tableau.Node.NodeState;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class coordinates the main tableau expansion for a given DLOntology
  * (a normalized and clausified ontology). It represents the state of a run
@@ -61,17 +64,29 @@ public final class Tableau implements Serializable {
     protected final TableauMonitor m_tableauMonitor;
     protected final ExistentialExpansionStrategy m_existentialExpansionStrategy;
     protected final DLOntology m_permanentDLOntology;
+    @Nullable
     protected DLOntology m_additionalDLOntology;
+    @Nonnull
     protected final DependencySetFactory m_dependencySetFactory;
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
+    @Nonnull
     protected final ClashManager m_clashManager;
+    @Nonnull
     protected final HyperresolutionManager m_permanentHyperresolutionManager;
+    @Nullable
     protected HyperresolutionManager m_additionalHyperresolutionManager;
+    @Nonnull
     protected final MergingManager m_mergingManager;
+    @Nonnull
     protected final ExistentialExpansionManager m_existentialExpasionManager;
+    @Nonnull
     protected final NominalIntroductionManager m_nominalIntroductionManager;
+    @Nonnull
     protected final DescriptionGraphManager m_descriptionGraphManager;
+    @Nonnull
     protected final DatatypeManager m_datatypeManager;
+    @Nonnull
     protected final List<List<ExistentialConcept>> m_existentialConceptsBuffers;
     protected final boolean m_useDisjunctionLearning;
     protected final boolean m_hasDescriptionGraphs;
@@ -88,14 +103,20 @@ public final class Tableau implements Serializable {
     protected int m_numberOfNodesInTableau;
     protected int m_numberOfMergedOrPrunedNodes;
     protected int m_numberOfNodeCreations;
+    @Nullable
     protected Node m_firstFreeNode;
+    @Nullable
     protected Node m_firstTableauNode;
+    @Nullable
     protected Node m_lastTableauNode;
+    @Nullable
     protected Node m_lastMergedOrPrunedNode;
+    @Nullable
     protected GroundDisjunction m_firstGroundDisjunction;
+    @Nullable
     protected GroundDisjunction m_firstUnprocessedGroundDisjunction;
 
-    public Tableau(InterruptFlag interruptFlag,TableauMonitor tableauMonitor,ExistentialExpansionStrategy existentialsExpansionStrategy,boolean useDisjunctionLearning,DLOntology permanentDLOntology,DLOntology additionalDLOntology,Map<String,Object> parameters) {
+    public Tableau(InterruptFlag interruptFlag,TableauMonitor tableauMonitor,ExistentialExpansionStrategy existentialsExpansionStrategy,boolean useDisjunctionLearning,DLOntology permanentDLOntology, @Nullable DLOntology additionalDLOntology,Map<String,Object> parameters) {
         if (additionalDLOntology!=null && !additionalDLOntology.getAllDescriptionGraphs().isEmpty())
             throw new IllegalArgumentException("Additional ontology cannot contain description graphs.");
         m_interruptFlag=interruptFlag;
@@ -140,6 +161,7 @@ public final class Tableau implements Serializable {
     public DLOntology getPermanentDLOntology() {
         return m_permanentDLOntology;
     }
+    @Nullable
     public DLOntology getAdditionalDLOntology() {
         return m_additionalDLOntology;
     }
@@ -155,27 +177,35 @@ public final class Tableau implements Serializable {
     public boolean isDeterministic() {
         return m_permanentDLOntology.isHorn() && (m_additionalDLOntology==null || m_additionalDLOntology.isHorn()) && m_existentialExpansionStrategy.isDeterministic();
     }
+    @Nonnull
     public DependencySetFactory getDependencySetFactory() {
         return m_dependencySetFactory;
     }
+    @Nonnull
     public ExtensionManager getExtensionManager() {
         return m_extensionManager;
     }
+    @Nonnull
     public HyperresolutionManager getPermanentHyperresolutionManager() {
         return m_permanentHyperresolutionManager;
     }
+    @Nullable
     public HyperresolutionManager getAdditionalHyperresolutionManager() {
         return m_additionalHyperresolutionManager;
     }
+    @Nonnull
     public MergingManager getMergingManager() {
         return m_mergingManager;
     }
+    @Nonnull
     public ExistentialExpansionManager getExistentialExpansionManager() {
         return m_existentialExpasionManager;
     }
+    @Nonnull
     public NominalIntroductionManager getNominalIntroductionManager() {
         return m_nominalIntroductionManager;
     }
+    @Nonnull
     public DescriptionGraphManager getDescriptionGraphManager() {
         return m_descriptionGraphManager;
     }
@@ -210,7 +240,7 @@ public final class Tableau implements Serializable {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.tableauCleared();
     }
-    public boolean supportsAdditionalDLOntology(DLOntology additionalDLOntology) {
+    public boolean supportsAdditionalDLOntology(@Nonnull DLOntology additionalDLOntology) {
         boolean hasInverseRoles=(m_permanentDLOntology.hasInverseRoles() || (m_additionalDLOntology!=null && m_additionalDLOntology.hasInverseRoles()));
         boolean hasNominals=(m_permanentDLOntology.hasNominals() || (m_additionalDLOntology!=null && m_additionalDLOntology.hasNominals()));
         boolean isHorn=(m_permanentDLOntology.isHorn() || (m_additionalDLOntology!=null && m_additionalDLOntology.isHorn()));
@@ -223,7 +253,7 @@ public final class Tableau implements Serializable {
                 return false;
         return true;
     }
-    public void setAdditionalDLOntology(DLOntology additionalDLOntology) {
+    public void setAdditionalDLOntology(@Nonnull DLOntology additionalDLOntology) {
         if (!supportsAdditionalDLOntology(additionalDLOntology))
             throw new IllegalArgumentException("Additional DL-ontology contains features that are incompatible with this tableau.");
         m_additionalDLOntology=additionalDLOntology;
@@ -262,7 +292,7 @@ public final class Tableau implements Serializable {
     public boolean isSatisfiable(boolean loadPermanentABox,boolean loadAdditionalABox,Set<Atom> perTestPositiveFactsNoDependency,Set<Atom> perTestNegativeFactsNoDependency,Set<Atom> perTestPositiveFactsDummyDependency,Set<Atom> perTestNegativeFactsDummyDependency,Map<Individual,Node> nodesForIndividuals,ReasoningTaskDescription reasoningTaskDescription) {
         return isSatisfiable(loadPermanentABox,loadAdditionalABox,perTestPositiveFactsNoDependency,perTestNegativeFactsNoDependency,perTestPositiveFactsDummyDependency,perTestNegativeFactsDummyDependency,new HashMap<Term,Node>(),nodesForIndividuals,reasoningTaskDescription);
     }
-    public boolean isSatisfiable(boolean loadPermanentABox,boolean loadAdditionalABox,Set<Atom> perTestPositiveFactsNoDependency,Set<Atom> perTestNegativeFactsNoDependency,Set<Atom> perTestPositiveFactsDummyDependency,Set<Atom> perTestNegativeFactsDummyDependency,Map<Term,Node> termsToNodes,Map<Individual,Node> nodesForIndividuals,ReasoningTaskDescription reasoningTaskDescription) {
+    public boolean isSatisfiable(boolean loadPermanentABox,boolean loadAdditionalABox, @Nullable Set<Atom> perTestPositiveFactsNoDependency, @Nullable Set<Atom> perTestNegativeFactsNoDependency, @Nullable Set<Atom> perTestPositiveFactsDummyDependency, @Nullable Set<Atom> perTestNegativeFactsDummyDependency, @Nonnull Map<Term,Node> termsToNodes, @Nullable Map<Individual,Node> nodesForIndividuals,ReasoningTaskDescription reasoningTaskDescription) {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.isSatisfiableStarted(reasoningTaskDescription);
         clear();
@@ -312,7 +342,7 @@ public final class Tableau implements Serializable {
             m_tableauMonitor.isSatisfiableFinished(reasoningTaskDescription,result);
         return result;
     }
-    protected void loadPositiveFact(Map<Term,Node> termsToNodes,Atom atom,DependencySet dependencySet) {
+    protected void loadPositiveFact(@Nonnull Map<Term,Node> termsToNodes, @Nonnull Atom atom,DependencySet dependencySet) {
         DLPredicate dlPredicate=atom.getDLPredicate();
         if (dlPredicate instanceof LiteralConcept)
             m_extensionManager.addConceptAssertion((LiteralConcept)dlPredicate,getNodeForTerm(termsToNodes,atom.getArgument(0),dependencySet),dependencySet,true);
@@ -329,7 +359,7 @@ public final class Tableau implements Serializable {
         else
             throw new IllegalArgumentException("Unsupported type of positive ground atom.");
     }
-    protected void loadNegativeFact(Map<Term,Node> termsToNodes,Atom atom,DependencySet dependencySet) {
+    protected void loadNegativeFact(@Nonnull Map<Term,Node> termsToNodes, @Nonnull Atom atom,DependencySet dependencySet) {
         DLPredicate dlPredicate=atom.getDLPredicate();
         if (dlPredicate instanceof LiteralConcept)
             m_extensionManager.addConceptAssertion(((LiteralConcept)dlPredicate).getNegation(),getNodeForTerm(termsToNodes,atom.getArgument(0),dependencySet),dependencySet,true);
@@ -347,7 +377,8 @@ public final class Tableau implements Serializable {
         else
             throw new IllegalArgumentException("Unsupported type of negative ground atom.");
     }
-    protected Node getNodeForTerm(Map<Term,Node> termsToNodes,Term term,DependencySet dependencySet) {
+    @Nullable
+    protected Node getNodeForTerm(@Nonnull Map<Term,Node> termsToNodes,Term term,DependencySet dependencySet) {
         Node node=termsToNodes.get(term);
         if (node==null) {
             if (term instanceof Individual) {
@@ -488,7 +519,7 @@ public final class Tableau implements Serializable {
     public BranchingPoint getCurrentBranchingPoint() {
         return m_branchingPoints[m_currentBranchingPoint];
     }
-    public void addGroundDisjunction(GroundDisjunction groundDisjunction) {
+    public void addGroundDisjunction(@Nonnull GroundDisjunction groundDisjunction) {
         groundDisjunction.m_nextGroundDisjunction=m_firstGroundDisjunction;
         groundDisjunction.m_previousGroundDisjunction=null;
         if (m_firstGroundDisjunction!=null)
@@ -499,6 +530,7 @@ public final class Tableau implements Serializable {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.groundDisjunctionDerived(groundDisjunction);
     }
+    @Nullable
     public GroundDisjunction getFirstUnprocessedGroundDisjunction() {
         return m_firstUnprocessedGroundDisjunction;
     }
@@ -507,7 +539,7 @@ public final class Tableau implements Serializable {
      *
      * @param branchingPoint
      */
-    public void pushBranchingPoint(BranchingPoint branchingPoint) {
+    public void pushBranchingPoint(@Nonnull BranchingPoint branchingPoint) {
         assert m_currentBranchingPoint+1==branchingPoint.m_level;
         if (m_tableauMonitor!=null)
             m_tableauMonitor.pushBranchingPointStarted(branchingPoint);
@@ -576,6 +608,7 @@ public final class Tableau implements Serializable {
      *            the dependency set for the node
      * @return the created node
      */
+    @Nullable
     public Node createNewNamedNode(DependencySet dependencySet) {
         return createNewNodeRaw(dependencySet,null,NodeType.NAMED_NODE,0);
     }
@@ -586,6 +619,7 @@ public final class Tableau implements Serializable {
      *            the dependency set for the node
      * @return the created node
      */
+    @Nullable
     public Node createNewNINode(DependencySet dependencySet) {
         return createNewNodeRaw(dependencySet,null,NodeType.NI_NODE,0);
     }
@@ -598,7 +632,8 @@ public final class Tableau implements Serializable {
      *            the parent of the node that is to be created
      * @return the created node
      */
-    public Node createNewTreeNode(DependencySet dependencySet,Node parent) {
+    @Nullable
+    public Node createNewTreeNode(DependencySet dependencySet, @Nonnull Node parent) {
         return createNewNodeRaw(dependencySet,parent,NodeType.TREE_NODE,parent.getTreeDepth()+1);
     }
     /**
@@ -610,7 +645,8 @@ public final class Tableau implements Serializable {
      *            the parent of the node that is to be created
      * @return the created node
      */
-    public Node createNewConcreteNode(DependencySet dependencySet,Node parent) {
+    @Nullable
+    public Node createNewConcreteNode(DependencySet dependencySet, @Nonnull Node parent) {
         return createNewNodeRaw(dependencySet,parent,NodeType.CONCRETE_NODE,parent.getTreeDepth()+1);
     }
     /**
@@ -620,6 +656,7 @@ public final class Tableau implements Serializable {
      *            the dependency set for the node
      * @return the created node
      */
+    @Nullable
     public Node createNewRootConstantNode(DependencySet dependencySet) {
         return createNewNodeRaw(dependencySet,null,NodeType.ROOT_CONSTANT_NODE,0);
     }
@@ -632,10 +669,12 @@ public final class Tableau implements Serializable {
      *            the dependency set for the node
      * @return the created node
      */
-    public Node createNewGraphNode(Node parent,DependencySet dependencySet) {
+    @Nullable
+    public Node createNewGraphNode(@Nullable Node parent,DependencySet dependencySet) {
         return createNewNodeRaw(dependencySet,parent,NodeType.GRAPH_NODE,parent==null ? 0 : parent.getTreeDepth());
     }
-    protected Node createNewNodeRaw(DependencySet dependencySet,Node parent,NodeType nodeType,int treeDepth) {
+    @Nullable
+    protected Node createNewNodeRaw(DependencySet dependencySet,Node parent, @Nonnull NodeType nodeType,int treeDepth) {
         Node node;
         if (m_firstFreeNode==null) {
             node=new Node(this);
@@ -677,7 +716,7 @@ public final class Tableau implements Serializable {
      *            the node we merge into
      * @param dependencySet
      */
-    public void mergeNode(Node node,Node mergeInto,DependencySet dependencySet) {
+    public void mergeNode(@Nonnull Node node,Node mergeInto,DependencySet dependencySet) {
         assert node.m_nodeState==Node.NodeState.ACTIVE;
         assert node.m_mergedInto==null;
         assert node.m_mergedIntoDependencySet==null;
@@ -692,7 +731,7 @@ public final class Tableau implements Serializable {
         m_existentialExpansionStrategy.nodeStatusChanged(node);
         m_existentialExpansionStrategy.nodesMerged(node,mergeInto);
     }
-    public void pruneNode(Node node) {
+    public void pruneNode(@Nonnull Node node) {
         assert node.m_nodeState==Node.NodeState.ACTIVE;
         assert node.m_mergedInto==null;
         assert node.m_mergedIntoDependencySet==null;
@@ -743,9 +782,11 @@ public final class Tableau implements Serializable {
     public int getNumberOfNodeCreations() {
         return m_numberOfNodeCreations;
     }
+    @Nullable
     public Node getFirstTableauNode() {
         return m_firstTableauNode;
     }
+    @Nullable
     public Node getLastTableauNode() {
         return m_lastTableauNode;
     }
@@ -758,6 +799,7 @@ public final class Tableau implements Serializable {
     public int getNumberOfMergedOrPrunedNodes() {
         return m_numberOfMergedOrPrunedNodes;
     }
+    @Nullable
     public Node getNode(int nodeID) {
         Node node=m_firstTableauNode;
         while (node!=null) {
@@ -773,7 +815,7 @@ public final class Tableau implements Serializable {
         else
             return m_existentialConceptsBuffers.remove(m_existentialConceptsBuffers.size()-1);
     }
-    public void putExistentialConceptsBuffer(List<ExistentialConcept> buffer) {
+    public void putExistentialConceptsBuffer(@Nonnull List<ExistentialConcept> buffer) {
         assert buffer.isEmpty();
         m_existentialConceptsBuffers.add(buffer);
     }

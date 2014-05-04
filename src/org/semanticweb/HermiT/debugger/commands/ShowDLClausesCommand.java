@@ -23,18 +23,22 @@ import java.io.PrintWriter;
 import org.semanticweb.HermiT.debugger.Debugger;
 import org.semanticweb.HermiT.model.DLClause;
 
+import javax.annotation.Nonnull;
+
 public class ShowDLClausesCommand extends AbstractCommand {
 
     public ShowDLClausesCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showDLClauses";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","prints the currently used set of DL-clauses" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showDLClauses");
         writer.println("    Prints the currently used set of DL-clauses.");
     }

@@ -21,18 +21,22 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class WaitForCommand extends AbstractCommand implements DebuggerCommand {
 
     public WaitForCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "waitFor";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "([+|-]gexists|exists|clash|merge|dtcheck|blvalstart|blvalfinish)+","sets (+ default) or removes (-) breakpoint options" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: waitFor ([+|-]gexists|exists|clash|merge)+");
         writer.println("    Sets (+ default) or removes (-) breakpoint options for the debugger.");
         writer.println("    Possible options are:");
@@ -45,7 +49,7 @@ public class WaitForCommand extends AbstractCommand implements DebuggerCommand {
         writer.println("        blvalfinish - stop after blocking validation");
         writer.println("    Example: waitFor -clash +gexists");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         boolean add;
         for (int index=1;index<args.length;index++) {
             String argument=args[index];

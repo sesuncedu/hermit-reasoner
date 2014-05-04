@@ -8,6 +8,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Complete an Automaton by adding a sink state and needed transitions.
  * <p />
@@ -37,7 +39,8 @@ public class SinkComplete implements UnaryTransformation {
      *  (non-Javadoc)
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
       Automaton b = (Automaton) a.clone();
       Set alph = (alphabet == null) ? b.alphabet() : alphabet;
       State hole = null;

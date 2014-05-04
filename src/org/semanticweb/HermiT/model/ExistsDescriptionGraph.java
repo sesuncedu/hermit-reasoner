@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class ExistsDescriptionGraph extends ExistentialConcept implements DLPredicate {
     private static final long serialVersionUID=7433430510725260994L;
 
@@ -44,25 +47,30 @@ public class ExistsDescriptionGraph extends ExistentialConcept implements DLPred
     public boolean isAlwaysFalse() {
         return false;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return "exists("+prefixes.abbreviateIRI(m_descriptionGraph.getName())+'|'+m_vertex+')';
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<ExistsDescriptionGraph> s_interningManager=new InterningManager<ExistsDescriptionGraph>() {
-        protected boolean equal(ExistsDescriptionGraph object1,ExistsDescriptionGraph object2) {
+        protected boolean equal(@Nonnull ExistsDescriptionGraph object1, @Nonnull ExistsDescriptionGraph object2) {
             return object1.m_descriptionGraph.equals(object2.m_descriptionGraph) && object1.m_vertex==object2.m_vertex;
         }
-        protected int getHashCode(ExistsDescriptionGraph object) {
+        protected int getHashCode(@Nonnull ExistsDescriptionGraph object) {
             return object.m_descriptionGraph.hashCode()+7*object.m_vertex;
         }
     };
     
+    @Nullable
     public static ExistsDescriptionGraph create(DescriptionGraph descriptionGraph,int vertex) {
         return s_interningManager.intern(new ExistsDescriptionGraph(descriptionGraph,vertex));
     }

@@ -30,22 +30,35 @@ import org.semanticweb.HermiT.model.DescriptionGraph;
 import org.semanticweb.HermiT.model.ExistsDescriptionGraph;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+
 public final class DescriptionGraphManager implements Serializable {
     private static final long serialVersionUID=4536271856850424712L;
 
     protected final Tableau m_tableau;
     protected final InterruptFlag m_interruptFlag;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
+    @Nonnull
     protected final MergingManager m_mergingManager;
+    @Nonnull
     protected final OccurrenceManager m_occurrenceManager;
+    @Nonnull
     protected final Map<DescriptionGraph,Integer> m_descriptionGraphIndices;
+    @Nonnull
     protected final DescriptionGraph[] m_descriptionGraphsByIndex;
+    @Nonnull
     protected final ExtensionTable[] m_extensionTablesByIndex;
+    @Nonnull
     protected final Object[][] m_auxiliaryTuples1;
+    @Nonnull
     protected final Object[][] m_auxiliaryTuples2;
+    @Nonnull
     protected final List<Node> m_newNodes;
+    @Nonnull
     protected final UnionDependencySet m_binaryUnionDependencySet;
+    @Nonnull
     protected final ExtensionTable.Retrieval[] m_deltaOldRetrievals;
 
     public DescriptionGraphManager(Tableau tableau) {
@@ -100,6 +113,7 @@ public final class DescriptionGraphManager implements Serializable {
         for (ExtensionTable.Retrieval retrieval : m_deltaOldRetrievals)
             retrieval.clear();
     }
+    @Nonnull
     public Object[] getDescriptionGraphTuple(int graphIndex,int tupleIndex) {
         DescriptionGraph descriptionGraph=m_descriptionGraphsByIndex[graphIndex];
         ExtensionTable extensionTable=m_extensionTablesByIndex[graphIndex];
@@ -160,7 +174,7 @@ public final class DescriptionGraphManager implements Serializable {
         }
         return hasChange;
     }
-    public boolean isSatisfied(ExistsDescriptionGraph existsDescriptionGraph,Node node) {
+    public boolean isSatisfied(@Nonnull ExistsDescriptionGraph existsDescriptionGraph, @Nonnull Node node) {
         int graphIndex=m_descriptionGraphIndices.get(existsDescriptionGraph.getDescriptionGraph()).intValue();
         int positionInTuple=existsDescriptionGraph.getVertex()+1;
         int listNode=node.m_firstGraphOccurrenceNode;
@@ -171,7 +185,7 @@ public final class DescriptionGraphManager implements Serializable {
         }
         return false;
     }
-    public void mergeGraphs(Node mergeFrom,Node mergeInto,UnionDependencySet binaryUnionDependencySet) {
+    public void mergeGraphs(@Nonnull Node mergeFrom,Node mergeInto,UnionDependencySet binaryUnionDependencySet) {
         int listNode=mergeFrom.m_firstGraphOccurrenceNode;
         while (listNode!=-1) {
             int graphIndex=m_occurrenceManager.getListNodeComponent(listNode,OccurrenceManager.GRAPH_INDEX);
@@ -199,7 +213,7 @@ public final class DescriptionGraphManager implements Serializable {
             listNode=m_occurrenceManager.getListNodeComponent(listNode,OccurrenceManager.NEXT_NODE);
         }
     }
-    public void descriptionGraphTupleAdded(int tupleIndex,Object[] tuple) {
+    public void descriptionGraphTupleAdded(int tupleIndex, @Nonnull Object[] tuple) {
         int graphIndex=m_descriptionGraphIndices.get(tuple[0]).intValue();
         for (int positionInTuple=tuple.length-1;positionInTuple>=1;--positionInTuple) {
             Node node=(Node)tuple[positionInTuple];
@@ -208,7 +222,7 @@ public final class DescriptionGraphManager implements Serializable {
             node.m_firstGraphOccurrenceNode=listNode;
         }
     }
-    public void descriptionGraphTupleRemoved(int tupleIndex,Object[] tuple) {
+    public void descriptionGraphTupleRemoved(int tupleIndex, @Nonnull Object[] tuple) {
         for (int positionInTuple=tuple.length-1;positionInTuple>=1;--positionInTuple) {
             Node node=(Node)tuple[positionInTuple];
             int listNode=node.m_firstGraphOccurrenceNode;
@@ -219,7 +233,7 @@ public final class DescriptionGraphManager implements Serializable {
             m_occurrenceManager.deleteListNode(listNode);
         }
     }
-    public void expand(ExistsDescriptionGraph existsDescriptionGraph,Node forNode) {
+    public void expand(@Nonnull ExistsDescriptionGraph existsDescriptionGraph, @Nonnull Node forNode) {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionStarted(existsDescriptionGraph,forNode);
         m_newNodes.clear();
@@ -254,10 +268,10 @@ public final class DescriptionGraphManager implements Serializable {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionFinished(existsDescriptionGraph,forNode);
     }
-    public void intializeNode(Node node) {
+    public void intializeNode(@Nonnull Node node) {
         node.m_firstGraphOccurrenceNode=-1;
     }
-    public void destroyNode(Node node) {
+    public void destroyNode(@Nonnull Node node) {
         int listNode=node.m_firstGraphOccurrenceNode;
         while (listNode!=-1) {
             int nextListNode=m_occurrenceManager.getListNodeComponent(listNode,OccurrenceManager.NEXT_NODE);

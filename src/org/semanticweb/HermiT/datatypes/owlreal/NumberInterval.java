@@ -17,17 +17,21 @@
 */
 package org.semanticweb.HermiT.datatypes.owlreal;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class NumberInterval {
+    @Nonnull
     protected final NumberRange m_baseRange;
+    @Nonnull
     protected final NumberRange m_excludedRange;
     protected final Number m_lowerBound;
     protected final BoundType m_lowerBoundType;
     protected final Number m_upperBound;
     protected final BoundType m_upperBoundType;
     
-    public NumberInterval(NumberRange baseRange,NumberRange excludedRange,Number lowerBound,BoundType lowerBoundType,Number upperBound,BoundType upperBoundType) {
+    public NumberInterval(@Nonnull NumberRange baseRange, @Nonnull NumberRange excludedRange, @Nonnull Number lowerBound,BoundType lowerBoundType, @Nonnull Number upperBound,BoundType upperBoundType) {
         assert !isIntervalEmpty(baseRange,excludedRange,lowerBound,lowerBoundType,upperBound,upperBoundType);
         m_baseRange=baseRange;
         m_excludedRange=excludedRange;
@@ -61,7 +65,8 @@ public class NumberInterval {
      * Computes the intersection of this interval with the supplied one. If the two intervals
      * do not intersect, the result is null.
      */
-    public NumberInterval intersectWith(NumberInterval that) {
+    @Nullable
+    public NumberInterval intersectWith(@Nonnull NumberInterval that) {
         NumberRange newBaseRange=NumberRange.intersection(m_baseRange,that.m_baseRange);
         NumberRange newExcludedRange=NumberRange.union(m_excludedRange,that.m_excludedRange);
         if (NumberRange.isSubsetOf(newBaseRange,newExcludedRange))
@@ -135,7 +140,7 @@ public class NumberInterval {
             return Numbers.subtractIntegerIntervalSizeFrom(m_lowerBound,m_upperBound,argument);
         }
     }
-    public boolean containsNumber(Number number) {
+    public boolean containsNumber(@Nonnull Number number) {
         NumberRange mostSpecificRange=NumberRange.getMostSpecificRange(number);
         if (!NumberRange.isSubsetOf(mostSpecificRange,m_baseRange) || NumberRange.isSubsetOf(mostSpecificRange,m_excludedRange))
             return false;
@@ -147,7 +152,7 @@ public class NumberInterval {
             return false;
         return true;
     }
-    public void enumerateNumbers(Collection<Object> numbers) {
+    public void enumerateNumbers(@Nonnull Collection<Object> numbers) {
         if (m_lowerBound.equals(m_upperBound)) {
             // The interval is not empty, and we know that it is not empty; hence, it is a singleton.
             numbers.add(m_lowerBound);
@@ -171,7 +176,7 @@ public class NumberInterval {
             numbers.add(m_upperBound);
         }
     }
-    protected static boolean isIntervalEmpty(NumberRange baseRange,NumberRange excludedRange,Number lowerBound,BoundType lowerBoundType,Number upperBound,BoundType upperBoundType) {
+    protected static boolean isIntervalEmpty(@Nonnull NumberRange baseRange, @Nonnull NumberRange excludedRange, @Nonnull Number lowerBound,BoundType lowerBoundType, @Nonnull Number upperBound,BoundType upperBoundType) {
         if (NumberRange.isSubsetOf(baseRange,excludedRange))
             return true;
         int boundComparison=Numbers.compare(lowerBound,upperBound);
@@ -198,6 +203,7 @@ public class NumberInterval {
             return Numbers.compare(lowerBoundInclusive,upperBoundInclusive)>0;
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append(m_baseRange.toString());

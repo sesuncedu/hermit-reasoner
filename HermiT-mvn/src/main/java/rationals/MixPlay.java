@@ -1,5 +1,7 @@
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +38,7 @@ public class MixPlay implements AutomatonRunner {
 
     private int upperBound = 1;
 
+    @Nullable
     private Object target;
 
     private List autos;
@@ -44,6 +47,7 @@ public class MixPlay implements AutomatonRunner {
 
     private Set syncAlphabet;
 
+    @Nonnull
     private Set listeners = new HashSet();
 
     /*
@@ -131,7 +135,7 @@ public class MixPlay implements AutomatonRunner {
      * @param word
      * @param states
      */
-    private void notify(List word, List states) {
+    private void notify(@Nonnull List word, @Nonnull List states) {
         if (listeners.isEmpty() || word.isEmpty() || states.isEmpty())
             return;
         Iterator wit = word.iterator();
@@ -159,7 +163,7 @@ public class MixPlay implements AutomatonRunner {
      * @param tuples current accumulated list of states tuples
      * @param states current states tuple
      */
-    private void doPlay(List word, List tuples, StatesTuple states)
+    private void doPlay(@Nonnull List word, @Nonnull List tuples, @Nonnull StatesTuple states)
             throws MixException {
         /* set current states*/
         current = states;
@@ -210,7 +214,7 @@ public class MixPlay implements AutomatonRunner {
      * @param states
      * @return
      */
-    private boolean checkSynchronizableWith(Object object, StatesTuple states) {
+    private boolean checkSynchronizableWith(Object object, @Nonnull StatesTuple states) {
         if (!syncAlphabet.contains(object))
             return true;
         for (int i = 0; i < states.sets.length; i++) {
@@ -251,7 +255,8 @@ public class MixPlay implements AutomatonRunner {
      * @param states
      * @return
      */
-    private StatesTuple advanceWith(Object object, StatesTuple states) {
+    @Nonnull
+    private StatesTuple advanceWith(Object object, @Nonnull StatesTuple states) {
         Set[] nstates = new Set[autos.size()];
         for (int i = 0; i < states.sets.length; i++) {
             Automaton auto = (Automaton) autos.get(i);

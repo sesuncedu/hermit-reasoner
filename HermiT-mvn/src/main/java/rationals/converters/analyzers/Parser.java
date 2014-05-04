@@ -8,6 +8,9 @@ import rationals.transformations.Reducer;
 import rationals.transformations.Shuffle;
 import rationals.transformations.Star;
 import rationals.transformations.Union;
+
+import javax.annotation.Nonnull;
+
 // Grammar :
 // E -> T E'
 // E' -> + T E' | '/' '{' L '}' | eps
@@ -42,12 +45,14 @@ public class Parser {
       this.lexico = lexer;
   }
   
+  @Nonnull
   private Automaton error(String message) throws ConverterException {
     if (true) throw new ConverterException(
       "line " + lexico.lineNumber() + " , " + lexico.label() + " : " + message) ;
     return new Automaton() ;
   }
   
+  @Nonnull
   public Automaton analyze() throws ConverterException {
     lexico.read() ;
     Automaton r = E() ;
@@ -55,6 +60,7 @@ public class Parser {
     return r ; 
   }
   
+  @Nonnull
   private Automaton E() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -77,6 +83,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton EP() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -100,6 +107,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton T() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -123,6 +131,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton TS() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -154,6 +163,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton S() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -177,6 +187,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton TP() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -200,6 +211,7 @@ public class Parser {
     }
   }
 
+  @Nonnull
   private Automaton F() throws ConverterException {
     switch(lexico.current()) {
       case Lexer.EPSILON :
@@ -257,7 +269,8 @@ public class Parser {
     }
   }
 
-  private Automaton BP(Automaton a) throws ConverterException {
+  @Nonnull
+  private Automaton BP(@Nonnull Automaton a) throws ConverterException {
     switch(lexico.current()) {
       case Lexer.OPEN :
       case Lexer.LABEL :

@@ -29,6 +29,8 @@ import dk.brics.automaton.BasicOperations;
 import dk.brics.automaton.Datatypes;
 import dk.brics.automaton.RegExp;
 
+import javax.annotation.Nonnull;
+
 public class AnyURIValueSpaceSubset implements ValueSpaceSubset {
     protected static final Automaton s_anyChar;
     protected static final Automaton s_anyString;
@@ -59,7 +61,7 @@ public class AnyURIValueSpaceSubset implements ValueSpaceSubset {
         else
             return false;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         Set<String> elements=m_automaton.getFiniteStrings();
         if (elements==null)
             throw new IllegalStateException("The value space range is infinite.");
@@ -68,6 +70,7 @@ public class AnyURIValueSpaceSubset implements ValueSpaceSubset {
                 dataValues.add(URI.create(element));
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("xsd:anyURI{");

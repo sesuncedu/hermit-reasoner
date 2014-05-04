@@ -50,6 +50,8 @@ import rationals.Transition;
 import rationals.transformations.StatesCouple;
 import rationals.transformations.TransformationsToolBox;
 
+import javax.annotation.Nonnull;
+
 /**
  * A class that compute trace equivalence relation between two states. This
  * class checks whether two states from two automata are trace equivalent, which
@@ -102,7 +104,7 @@ public class TraceEquivalence implements Relation {
      * @see rationals.properties.Relation#equivalence(java.util.Set,
      *      java.util.Set)
      */
-    public boolean equivalence(Set nsa, Set nsb) {
+    public boolean equivalence(@Nonnull Set nsa, @Nonnull Set nsb) {
         /* sets of explored states */
         Stack todo /* < StatesCouple > */= new Stack();
         /* current traces for failure */
@@ -158,7 +160,7 @@ public class TraceEquivalence implements Relation {
     /*
      * @param tas @param am
      */
-    public void mapAlphabet(List tas, Map am, Automaton a) {
+    public void mapAlphabet(@Nonnull List tas, @Nonnull Map am, @Nonnull Automaton a) {
         /* compute set of states for each letter */
         while (!tas.isEmpty()) {
             Transition tr = (Transition) tas.remove(0);

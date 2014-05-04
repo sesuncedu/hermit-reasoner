@@ -1,5 +1,6 @@
 package rationals;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -18,6 +19,7 @@ public interface StateFactory {
    * @param terminal
    * @return
    */
+  @Nonnull
   State create(boolean initial, boolean terminal);
 
   /**
@@ -28,6 +30,7 @@ public interface StateFactory {
    * 
    * @return an - opaque - implementation of Set.
    */
+  @Nonnull
   Set<State> stateSet();
 
   /**
@@ -39,6 +42,7 @@ public interface StateFactory {
    *          a Set
    * @return a shallow copy of <code>s</code>
    */
+  @Nonnull
   Set<State> stateSet(Set<State> s);
 
   /**
@@ -46,6 +50,7 @@ public interface StateFactory {
    * 
    * @return an initialized StateFactory.
    */
+  @Nonnull
   Object clone();
 
   /**

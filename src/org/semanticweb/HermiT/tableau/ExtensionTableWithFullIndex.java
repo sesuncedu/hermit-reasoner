@@ -24,6 +24,9 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.Concept;
 import org.semanticweb.HermiT.model.InternalDatatype;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This extension table is for use with Description Graphs and it supports tuple
  * tables with arity greater than three, but are, as a result, less efficient.
@@ -32,7 +35,9 @@ import org.semanticweb.HermiT.model.InternalDatatype;
 public class ExtensionTableWithFullIndex extends ExtensionTable {
     private static final long serialVersionUID=2856811178050960058L;
 
+    @Nonnull
     protected final TupleTableFullIndex m_tupleTableFullIndex;
+    @Nonnull
     protected final Object[] m_auxiliaryTuple;
 
     public ExtensionTableWithFullIndex(Tableau tableau,int tupleArity,boolean needsDependencySets) {
@@ -43,7 +48,7 @@ public class ExtensionTableWithFullIndex extends ExtensionTable {
     public int sizeInMemory() {
         return m_tupleTable.sizeInMemory()+m_tupleTableFullIndex.sizeInMemory();
     }
-    public boolean addTuple(Object[] tuple,DependencySet dependencySet,boolean isCore) {
+    public boolean addTuple(@Nonnull Object[] tuple,DependencySet dependencySet,boolean isCore) {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.addFactStarted(tuple,isCore);
         if (isTupleActive(tuple) && (m_tableau.m_needsThingExtension || !AtomicConcept.THING.equals(tuple[0])) && (m_tableau.m_needsRDFSLiteralExtension || !InternalDatatype.RDFS_LITERAL.equals(tuple[0]))) {
@@ -76,6 +81,7 @@ public class ExtensionTableWithFullIndex extends ExtensionTable {
         int tupleIndex=m_tupleTableFullIndex.getTupleIndex(tuple);
         return tupleIndex!=-1 && isTupleActive(tupleIndex);
     }
+    @Nullable
     public DependencySet getDependencySet(Object[] tuple) {
         int tupleIndex=m_tupleTableFullIndex.getTupleIndex(tuple);
         if (tupleIndex==-1)
@@ -90,6 +96,7 @@ public class ExtensionTableWithFullIndex extends ExtensionTable {
         else
             return m_coreManager.isCore(tupleIndex);
     }
+    @Nonnull
     public Retrieval createRetrieval(int[] bindingPositions,Object[] bindingsBuffer,Object[] tupleBuffer,boolean ownsBuffers,View extensionView) {
         int numberOfBindings=0;
         for (int index=m_tupleArity-1;index>=0;--index)
@@ -127,6 +134,7 @@ public class ExtensionTableWithFullIndex extends ExtensionTable {
             m_ownsBuffers=ownsBuffers;
             m_extensionView=extensionView;
         }
+        @Nonnull
         public ExtensionTable getExtensionTable() {
             return ExtensionTableWithFullIndex.this;
         }
@@ -150,6 +158,7 @@ public class ExtensionTableWithFullIndex extends ExtensionTable {
         public Object[] getTupleBuffer() {
             return m_tupleBuffer;
         }
+        @Nullable
         public DependencySet getDependencySet() {
             if (m_currentTupleIndex==-1)
                 return null;

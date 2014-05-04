@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +35,16 @@ import java.util.List;
 public final class DependencySetFactory implements Serializable {
     private static final long serialVersionUID=8632867055646817311L;
 
+    @Nonnull
     protected final IntegerArray m_mergeArray;
+    @Nonnull
     protected final List<PermanentDependencySet> m_mergeSets;
+    @Nonnull
     protected final List<UnionDependencySet> m_unprocessedSets;
     protected PermanentDependencySet m_emptySet;
+    @Nullable
     protected PermanentDependencySet m_firstUnusedSet;
+    @Nullable
     protected PermanentDependencySet m_firstDestroyedSet;
     protected PermanentDependencySet[] m_entries;
     protected int m_size;
@@ -75,13 +82,13 @@ public final class DependencySetFactory implements Serializable {
         while (m_firstUnusedSet!=null)
             destroyDependencySet(m_firstUnusedSet);
     }
-    public void addUsage(PermanentDependencySet dependencySet) {
+    public void addUsage(@Nonnull PermanentDependencySet dependencySet) {
         assert dependencySet.m_branchingPoint>=0 || dependencySet==m_emptySet;
         if (dependencySet.m_usageCounter==0)
             removeFromUnusedList(dependencySet);
         dependencySet.m_usageCounter++;
     }
-    public void removeUsage(PermanentDependencySet dependencySet) {
+    public void removeUsage(@Nonnull PermanentDependencySet dependencySet) {
         assert dependencySet.m_branchingPoint>=0 || dependencySet==m_emptySet;
         assert dependencySet.m_usageCounter>0;
         assert dependencySet.m_previousUnusedSet==null;
@@ -90,6 +97,7 @@ public final class DependencySetFactory implements Serializable {
         if (dependencySet.m_usageCounter==0)
             addToUnusedList(dependencySet);
     }
+    @Nullable
     public PermanentDependencySet addBranchingPoint(DependencySet dependencySet,int branchingPoint) {
         PermanentDependencySet permanentDependencySet=getPermanent(dependencySet);
         if (branchingPoint>permanentDependencySet.m_branchingPoint)
@@ -113,7 +121,8 @@ public final class DependencySetFactory implements Serializable {
             }
         }
     }
-    protected PermanentDependencySet getDepdendencySet(PermanentDependencySet rest,int branchingPoint) {
+    @Nullable
+    protected PermanentDependencySet getDepdendencySet(@Nonnull PermanentDependencySet rest,int branchingPoint) {
         int index=(rest.hashCode()+branchingPoint) & (m_entries.length-1);
         PermanentDependencySet dependencySet=m_entries[index];
         while (dependencySet!=null) {
@@ -128,6 +137,7 @@ public final class DependencySetFactory implements Serializable {
             resizeEntries();
         return dependencySet;
     }
+    @Nullable
     protected PermanentDependencySet createDependencySet(PermanentDependencySet rest,int branchingPoint) {
         PermanentDependencySet newSet;
         if (m_firstDestroyedSet==null)
@@ -144,7 +154,7 @@ public final class DependencySetFactory implements Serializable {
         m_size++;
         return newSet;
     }
-    protected void destroyDependencySet(PermanentDependencySet dependencySet) {
+    protected void destroyDependencySet(@Nonnull PermanentDependencySet dependencySet) {
         assert dependencySet.m_branchingPoint>=0;
         assert dependencySet.m_usageCounter==0;
         assert dependencySet.m_rest.m_usageCounter>0;
@@ -157,7 +167,7 @@ public final class DependencySetFactory implements Serializable {
         m_firstDestroyedSet=dependencySet;
         m_size--;
     }
-    protected void  removeFromEntries(PermanentDependencySet dependencySet) {
+    protected void  removeFromEntries(@Nonnull PermanentDependencySet dependencySet) {
         int index=(dependencySet.m_rest.hashCode()+dependencySet.m_branchingPoint) & (m_entries.length-1);
         PermanentDependencySet lastEntry=null;
         PermanentDependencySet entry=m_entries[index];
@@ -174,7 +184,7 @@ public final class DependencySetFactory implements Serializable {
         }
         throw new IllegalStateException("Internal error: dependency set not in the entries table. Please inform HermiT authors about this.");
     }
-    protected void removeFromUnusedList(PermanentDependencySet dependencySet) {
+    protected void removeFromUnusedList(@Nonnull PermanentDependencySet dependencySet) {
         if (dependencySet.m_previousUnusedSet!=null)
             dependencySet.m_previousUnusedSet.m_nextUnusedSet=dependencySet.m_nextUnusedSet;
         else
@@ -184,7 +194,7 @@ public final class DependencySetFactory implements Serializable {
         dependencySet.m_previousUnusedSet=null;
         dependencySet.m_nextUnusedSet=null;
     }
-    protected void addToUnusedList(PermanentDependencySet dependencySet) {
+    protected void addToUnusedList(@Nonnull PermanentDependencySet dependencySet) {
         dependencySet.m_previousUnusedSet=null;
         dependencySet.m_nextUnusedSet=m_firstUnusedSet;
         if (m_firstUnusedSet!=null)
@@ -208,6 +218,7 @@ public final class DependencySetFactory implements Serializable {
         m_entries=newEntries;
         m_resizeThreshold=(int)(m_entries.length*0.75);
     }
+    @Nullable
     public PermanentDependencySet removeBranchingPoint(DependencySet dependencySet,int branchingPoint) {
         PermanentDependencySet permanentDependencySet=getPermanent(dependencySet);
         if (branchingPoint==permanentDependencySet.m_branchingPoint)
@@ -231,6 +242,7 @@ public final class DependencySetFactory implements Serializable {
             }
         }
     }
+    @Nullable
     public PermanentDependencySet unionWith(DependencySet set1,DependencySet set2) {
         PermanentDependencySet permanentSet1=getPermanent(set1);
         PermanentDependencySet permanentSet2=getPermanent(set2);
@@ -257,6 +269,7 @@ public final class DependencySetFactory implements Serializable {
             result=getDepdendencySet(result,m_mergeArray.get(index));
         return result;
     }
+    @Nullable
     public PermanentDependencySet getPermanent(DependencySet dependencySet) {
         if (dependencySet instanceof PermanentDependencySet)
             return (PermanentDependencySet)dependencySet;

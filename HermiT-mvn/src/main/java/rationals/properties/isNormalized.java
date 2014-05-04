@@ -3,6 +3,8 @@ package rationals.properties;
 import rationals.Automaton;
 import rationals.State;
 
+import javax.annotation.Nonnull;
+
 /**
  * Tests if an automaton is normalized.
  * 
@@ -11,7 +13,7 @@ import rationals.State;
  * @version $Id: isNormalized.java 2 2006-08-24 14:41:48Z oqube $
  */
 public class isNormalized implements UnaryTest {
-    public boolean test(Automaton a) {
+    public boolean test(@Nonnull Automaton a) {
         if (a.initials().size() != 1)
             return false;
         if (a.terminals().size() != 1)

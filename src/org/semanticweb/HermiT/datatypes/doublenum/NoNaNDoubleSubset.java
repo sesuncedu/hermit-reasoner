@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 
+import javax.annotation.Nonnull;
+
 public class NoNaNDoubleSubset implements ValueSpaceSubset {
     protected final List<DoubleInterval> m_intervals;
     
@@ -50,10 +52,11 @@ public class NoNaNDoubleSubset implements ValueSpaceSubset {
         }
         return false;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         for (int index=m_intervals.size()-1;index>=0;--index)
             m_intervals.get(index).enumerateNumbers(dataValues);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("xsd:double{");

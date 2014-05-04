@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a negated atomic role
  */
@@ -32,25 +35,30 @@ public class NegatedAtomicRole {
     public AtomicRole getNegatedAtomicRole() {
         return m_negatedAtomicRole;
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return "not("+m_negatedAtomicRole.toString(prefixes)+")";
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<NegatedAtomicRole> s_interningManager=new InterningManager<NegatedAtomicRole>() {
-        protected boolean equal(NegatedAtomicRole object1,NegatedAtomicRole object2) {
+        protected boolean equal(@Nonnull NegatedAtomicRole object1, @Nonnull NegatedAtomicRole object2) {
             return object1.m_negatedAtomicRole==object2.m_negatedAtomicRole;
         }
-        protected int getHashCode(NegatedAtomicRole object) {
+        protected int getHashCode(@Nonnull NegatedAtomicRole object) {
             return -object.m_negatedAtomicRole.hashCode();
         }
     };
     
+    @Nullable
     public static NegatedAtomicRole create(AtomicRole negatedAtomicRole) {
         return s_interningManager.intern(new NegatedAtomicRole(negatedAtomicRole));
     }

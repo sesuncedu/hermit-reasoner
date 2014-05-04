@@ -36,6 +36,8 @@ import org.semanticweb.HermiT.model.Inequality;
 import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Role;
 
+import javax.annotation.Nonnull;
+
 /**
  * Manages the expansion of at least restrictions in a tableau.
  */
@@ -43,13 +45,19 @@ public final class ExistentialExpansionManager implements Serializable {
     private static final long serialVersionUID=4794168582297181623L;
 
     protected final Tableau m_tableau;
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
+    @Nonnull
     protected final TupleTable m_expandedExistentials;
+    @Nonnull
     protected final Object[] m_auxiliaryTuple;
+    @Nonnull
     protected final List<Node> m_auxiliaryNodes;
     protected final ExtensionTable.Retrieval m_ternaryExtensionTableSearch01Bound;
     protected final ExtensionTable.Retrieval m_ternaryExtensionTableSearch02Bound;
+    @Nonnull
     protected final Map<Role,Role[]> m_functionalRoles;
+    @Nonnull
     protected final UnionDependencySet m_binaryUnionDependencySet;
     protected int[] m_indicesByBranchingPoint;
 
@@ -90,7 +98,7 @@ public final class ExistentialExpansionManager implements Serializable {
             }
         }
     }
-    protected void loadDLClausesIntoGraph(Set<DLClause> dlClauses,Graph<Role> superRoleGraph,Set<Role> functionalRoles) {
+    protected void loadDLClausesIntoGraph(@Nonnull Set<DLClause> dlClauses, @Nonnull Graph<Role> superRoleGraph, @Nonnull Set<Role> functionalRoles) {
         for (DLClause dlClause : dlClauses) {
             if (dlClause.isAtomicRoleInclusion()) {
                 AtomicRole subrole=(AtomicRole)dlClause.getBodyAtom(0).getDLPredicate();
@@ -114,7 +122,7 @@ public final class ExistentialExpansionManager implements Serializable {
             }
         }
     }
-    public void markExistentialProcessed(ExistentialConcept existentialConcept,Node forNode) {
+    public void markExistentialProcessed(ExistentialConcept existentialConcept, @Nonnull Node forNode) {
         m_auxiliaryTuple[0]=existentialConcept;
         m_auxiliaryTuple[1]=forNode;
         m_expandedExistentials.addTuple(m_auxiliaryTuple);
@@ -157,7 +165,7 @@ public final class ExistentialExpansionManager implements Serializable {
      *
      * @return true if the at least cardinality is 1 (causes an expansion) or it is greater than one but the role is functional (causes a clash) and false otherwise.
      */
-    public boolean tryFunctionalExpansion(AtLeast atLeast,Node forNode) {
+    public boolean tryFunctionalExpansion(@Nonnull AtLeast atLeast, @Nonnull Node forNode) {
         if (atLeast.getNumber()==1) {
             if (getFunctionalExpansionNode(atLeast.getOnRole(),forNode,m_auxiliaryTuple)) {
                 if (m_tableau.m_tableauMonitor!=null)
@@ -214,7 +222,7 @@ public final class ExistentialExpansionManager implements Serializable {
         }
         return false;
     }
-    public void doNormalExpansion(AtLeastConcept atLeastConcept,Node forNode) {
+    public void doNormalExpansion(@Nonnull AtLeastConcept atLeastConcept, @Nonnull Node forNode) {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionStarted(atLeastConcept,forNode);
         DependencySet existentialDependencySet=m_extensionManager.getConceptAssertionDependencySet(atLeastConcept,forNode);
@@ -242,7 +250,7 @@ public final class ExistentialExpansionManager implements Serializable {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionFinished(atLeastConcept,forNode);
     }
-    public void doNormalExpansion(AtLeastDataRange atLeastDataRange,Node forNode) {
+    public void doNormalExpansion(@Nonnull AtLeastDataRange atLeastDataRange, @Nonnull Node forNode) {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionStarted(atLeastDataRange,forNode);
         DependencySet existentialDependencySet=m_extensionManager.getConceptAssertionDependencySet(atLeastDataRange,forNode);
@@ -270,7 +278,7 @@ public final class ExistentialExpansionManager implements Serializable {
         if (m_tableau.m_tableauMonitor!=null)
             m_tableau.m_tableauMonitor.existentialExpansionFinished(atLeastDataRange,forNode);
     }
-    public void expand(AtLeast atLeast,Node forNode) {
+    public void expand(@Nonnull AtLeast atLeast, @Nonnull Node forNode) {
         if (!tryFunctionalExpansion(atLeast,forNode))
             if (atLeast instanceof AtLeastConcept)
                 doNormalExpansion((AtLeastConcept)atLeast,forNode);

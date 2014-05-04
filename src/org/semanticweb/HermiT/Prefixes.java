@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +50,7 @@ public class Prefixes implements Serializable {
     protected static final String PN_CHARS_BASE="[A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]";
     protected static final String PN_CHARS="[A-Za-z0-9_\\u002D\\u00B7\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0300-\\u036F\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u203F-\\u2040\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]";
     protected static final Pattern s_localNameChecker=Pattern.compile("("+PN_CHARS_BASE+"|_|[0-9])(("+PN_CHARS+"|[.])*("+PN_CHARS+"))?");
+    @Nonnull
     public static final Map<String,String> s_semanticWebPrefixes;
     static {
         s_semanticWebPrefixes=new HashMap<String,String>();
@@ -62,8 +65,11 @@ public class Prefixes implements Serializable {
     }
     public static final Prefixes STANDARD_PREFIXES=new ImmutablePrefixes(s_semanticWebPrefixes);
 
+    @Nonnull
     protected final Map<String,String> m_prefixIRIsByPrefixName;
+    @Nonnull
     protected final Map<String,String> m_prefixNamesByPrefixIRI;
+    @Nullable
     protected Pattern m_prefixIRIMatchingPattern;
 
     public Prefixes() {
@@ -75,7 +81,7 @@ public class Prefixes implements Serializable {
         List<String> list=new ArrayList<String>(m_prefixNamesByPrefixIRI.keySet());
         // Sort the prefix IRIs, longest first
         Collections.sort(list,new Comparator<String>() {
-            public int compare(String lhs,String rhs) {
+            public int compare(@Nonnull String lhs, @Nonnull String rhs) {
                 return rhs.length()-lhs.length();
             }
         });
@@ -97,7 +103,8 @@ public class Prefixes implements Serializable {
         else
             m_prefixIRIMatchingPattern=null;
     }
-    public String abbreviateIRI(String iri) {
+    @Nonnull
+    public String abbreviateIRI(@Nonnull String iri) {
         if (m_prefixIRIMatchingPattern!=null) {
             Matcher matcher=m_prefixIRIMatchingPattern.matcher(iri);
             if (matcher.find()) {
@@ -115,7 +122,8 @@ public class Prefixes implements Serializable {
      * 'prefix:name', where 'prefix' is a registered prefix name (can be empty), or
      * '&lt;iri&gt;', where 'iri' is an IRI.
      */
-    public String expandAbbreviatedIRI(String abbreviation) {
+    @Nonnull
+    public String expandAbbreviatedIRI(@Nonnull String abbreviation) {
         if (abbreviation.length()>0 && abbreviation.charAt(0)=='<') {
             if (abbreviation.charAt(abbreviation.length()-1)!='>')
                 throw new IllegalArgumentException("The string '"+abbreviation+"' is not a valid abbreviation: IRIs must be enclosed in '<' and '>'.");
@@ -141,7 +149,7 @@ public class Prefixes implements Serializable {
     /**
      * Checks whether the given IRI can be expanded
      */
-    public boolean canBeExpanded(String iri) {
+    public boolean canBeExpanded(@Nonnull String iri) {
         if (iri.length()>0 && iri.charAt(0)=='<')
             return false;
         else {
@@ -154,12 +162,12 @@ public class Prefixes implements Serializable {
                 return false;
         }
     }
-    public boolean declarePrefix(String prefixName,String prefixIRI) {
+    public boolean declarePrefix(@Nonnull String prefixName,String prefixIRI) {
         boolean containsPrefix=declarePrefixRaw(prefixName,prefixIRI);
         buildPrefixIRIMatchingPattern();
         return containsPrefix;
     }
-    protected boolean declarePrefixRaw(String prefixName,String prefixIRI) {
+    protected boolean declarePrefixRaw(@Nonnull String prefixName,String prefixIRI) {
         if (!prefixName.endsWith(":"))
             throw new IllegalArgumentException("Prefix name '"+prefixName+"' should end with a colon character.");
         String existingPrefixName=m_prefixNamesByPrefixIRI.get(prefixIRI);
@@ -186,7 +194,7 @@ public class Prefixes implements Serializable {
      * @param individualIRIs    the collection of IRIs used in individuals (used for registering nominal prefix names)
      * @return                  'true' if this object already contained one of the internal prefix names
      */
-    public boolean declareInternalPrefixes(Collection<String> individualIRIs, Collection<String> anonIndividualIRIs) {
+    public boolean declareInternalPrefixes(@Nonnull Collection<String> individualIRIs, @Nonnull Collection<String> anonIndividualIRIs) {
         boolean containsPrefix=false;
         if (declarePrefixRaw("def:","internal:def#"))
             containsPrefix=true;
@@ -236,7 +244,7 @@ public class Prefixes implements Serializable {
      * @param prefixes          the object from which the prefixes are taken
      * @return                  'true' if this object already contained one of the prefixes from the supplied object
      */
-    public boolean addPrefixes(Prefixes prefixes) {
+    public boolean addPrefixes(@Nonnull Prefixes prefixes) {
         boolean containsPrefix=false;
         for (Map.Entry<String,String> entry : prefixes.m_prefixIRIsByPrefixName.entrySet())
             if (declarePrefixRaw(entry.getKey(),entry.getValue()))
@@ -253,25 +261,25 @@ public class Prefixes implements Serializable {
     /**
      * Determines whether the supplied IRI is used internally by HermiT.
      */
-    public static boolean isInternalIRI(String iri) {
+    public static boolean isInternalIRI(@Nonnull String iri) {
         return iri.startsWith("internal:");
     }
     /**
      * Determines whether the supplied string is a valid local name.
      */
-    public static boolean isValidLocalName(String localName) {
+    public static boolean isValidLocalName(@Nonnull String localName) {
         return s_localNameChecker.matcher(localName).matches();
     }
 
     public static class ImmutablePrefixes extends Prefixes {
         private static final long serialVersionUID=8517988865445255837L;
 
-        public ImmutablePrefixes(Map<String,String> initialPrefixes) {
+        public ImmutablePrefixes(@Nonnull Map<String,String> initialPrefixes) {
             for (Map.Entry<String,String> entry : initialPrefixes.entrySet())
                 super.declarePrefixRaw(entry.getKey(),entry.getValue());
             buildPrefixIRIMatchingPattern();
         }
-        protected boolean declarePrefixRaw(String prefixName,String prefixIRI) {
+        protected boolean declarePrefixRaw(@Nonnull String prefixName,String prefixIRI) {
             throw new UnsupportedOperationException("The well-known standard Prefix instance cannot be modified.");
         }
     }

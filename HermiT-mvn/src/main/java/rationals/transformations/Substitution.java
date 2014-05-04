@@ -12,6 +12,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A (rational) substitution is a  morphism that maps
  * letters to languages.
@@ -37,7 +39,8 @@ public class Substitution implements UnaryTransformation {
 	/* (non-Javadoc)
 	 * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
 	 */
-	public Automaton transform(Automaton a) {
+	@Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
 		Automaton b = new Automaton();
 		/* state map */
 		Map stm = new HashMap();
@@ -89,7 +92,7 @@ public class Substitution implements UnaryTransformation {
 	 * @param automaton
 	 */
 
-	private void insert(State nss, State nse, Automaton b, Automaton automaton) {
+	private void insert(State nss, State nse, @Nonnull Automaton b, @Nonnull Automaton automaton) {
 		/* map states */
 		Map map = new HashMap();
 		for (Iterator i = automaton.states().iterator(); i.hasNext();) {

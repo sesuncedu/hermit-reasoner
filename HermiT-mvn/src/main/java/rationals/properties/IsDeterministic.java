@@ -43,6 +43,8 @@ import rationals.Automaton;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A property that checks a given automaton is deterministic. 
  * <p>
@@ -60,7 +62,7 @@ public class IsDeterministic implements UnaryTest {
     /* (non-Javadoc)
      * @see rationals.properties.UnaryTest#test(rationals.Automaton)
      */
-    public boolean test(Automaton a) {
+    public boolean test(@Nonnull Automaton a) {
         if(a.alphabet().contains(null))
             return false;
         if(a.initials().size() > 1)

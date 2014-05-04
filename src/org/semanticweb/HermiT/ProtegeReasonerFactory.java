@@ -8,16 +8,22 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class ProtegeReasonerFactory extends AbstractProtegeOWLReasonerInfo {
     protected final Reasoner.ReasonerFactory factory=new Reasoner.ReasonerFactory();
 
+    @Nonnull
     public BufferingMode getRecommendedBuffering() {
         return BufferingMode.BUFFERING;
     }
+    @Nonnull
     public OWLReasonerFactory getReasonerFactory() {
         return factory;
     }
 
+    @Nullable
     public OWLReasonerConfiguration getConfiguration(ReasonerProgressMonitor monitor) {
         Configuration configuration=factory.getProtegeConfiguration(null);
         configuration.reasonerProgressMonitor=monitor;

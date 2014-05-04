@@ -40,6 +40,8 @@ import rationals.transformations.Complement;
 import rationals.transformations.Mix;
 import rationals.transformations.Pruner;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class implements a basic model-checking algorithm.
  * <p>
@@ -69,7 +71,7 @@ public class ModelCheck implements BinaryTest {
      * @see rationals.properties.BinaryTest#test(rationals.Automaton,
      *      rationals.Automaton)
      */
-    public boolean test(Automaton a, Automaton b) {
+    public boolean test(@Nonnull Automaton a, @Nonnull Automaton b) {
         Automaton ca = new Complement().transform(a);
         cex = new Pruner().transform(new Mix().transform(ca, b));
         if (new isEmpty().test(ca))

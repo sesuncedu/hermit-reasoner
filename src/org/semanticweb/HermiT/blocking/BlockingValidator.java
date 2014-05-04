@@ -43,27 +43,38 @@ import org.semanticweb.HermiT.tableau.ExtensionTable.Retrieval;
 import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Checks whether the rules from some set are applicable given the current state of the extensions.
  */
 public class BlockingValidator {
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
     protected final ExtensionTable.Retrieval m_binaryRetrieval1Bound;
     protected final ExtensionTable.Retrieval m_ternaryRetrieval01Bound;
     protected final ExtensionTable.Retrieval m_ternaryRetrieval02Bound;
     protected final ExtensionTable.Retrieval m_ternaryRetrieval1Bound;
     protected final ExtensionTable.Retrieval m_ternaryRetrieval2Bound;
+    @Nonnull
     protected final List<DLClauseInfo> m_dlClauseInfos;
+    @Nonnull
     protected final Map<AtomicConcept,List<DLClauseInfo>> m_dlClauseInfosByXConcepts;
+    @Nonnull
     protected final List<DLClauseInfo> m_dlClauseInfosWithoutXConcepts;
+    @Nonnull
     public Map<AtLeastConcept,Node> inValidAtleastForBlockedParent=new HashMap<AtLeastConcept, Node>();
+    @Nonnull
     public Map<DLClauseInfo,Node> inValidClausesForBlockedParent=new HashMap<DLClauseInfo, Node>();
+    @Nonnull
     public Map<AtLeastConcept,Node> inValidAtleastForBlocker=new HashMap<AtLeastConcept, Node>();
+    @Nonnull
     public Map<DLClauseInfo,Node> inValidClausesForBlocker=new HashMap<DLClauseInfo, Node>();
     protected final boolean debuggingMode=false;
 
 
-    public BlockingValidator(Tableau tableau,Set<DLClause> dlClauses) {
+    public BlockingValidator(@Nonnull Tableau tableau, @Nonnull Set<DLClause> dlClauses) {
         m_extensionManager=tableau.getExtensionManager();
         m_binaryRetrieval1Bound=m_extensionManager.getBinaryExtensionTable().createRetrieval(new boolean[] { false, true }, ExtensionTable.View.TOTAL);
         m_ternaryRetrieval01Bound=m_extensionManager.getTernaryExtensionTable().createRetrieval(new boolean[] { true,true,false }, ExtensionTable.View.TOTAL);
@@ -115,11 +126,11 @@ public class BlockingValidator {
     public boolean hasViolation() {
         return (!inValidAtleastForBlocker.isEmpty() || !inValidClausesForBlocker.isEmpty() || !inValidAtleastForBlockedParent.isEmpty() || !inValidClausesForBlockedParent.isEmpty());
     }
-    public void blockerChanged(Node node) {
+    public void blockerChanged(@Nonnull Node node) {
         Node parent=node.getParent();
         ((ValidatedBlockingObject)parent.getBlockingObject()).setHasAlreadyBeenChecked(false);
     }
-    public boolean isBlockValid(Node blocked) {
+    public boolean isBlockValid(@Nonnull Node blocked) {
         Node blockedParent=blocked.getParent();
         if (!((ValidatedBlockingObject)blockedParent.getBlockingObject()).hasAlreadyBeenChecked()) {
             resetChildFlags(blockedParent);
@@ -159,7 +170,7 @@ public class BlockingValidator {
         }
     }
     // These methods check the constraint satisfaction for the case when X is matched to a blocked node
-    protected boolean satisfiesConstraintsForBlockedX(Node blockedX) {
+    protected boolean satisfiesConstraintsForBlockedX(@Nonnull Node blockedX) {
         Node blocker=blockedX.getBlocker();
         Node blockerParent=blocker.getParent();
         m_binaryRetrieval1Bound.getBindingsBuffer()[1]=blocker;
@@ -191,7 +202,7 @@ public class BlockingValidator {
 
         return true;
     }
-    protected boolean isSatisfiedAtLeastForBlocked(AtLeastConcept atleast,Node blockedX, Node blocker,Node blockerParent) {
+    protected boolean isSatisfiedAtLeastForBlocked(@Nonnull AtLeastConcept atleast, @Nonnull Node blockedX, Node blocker,Node blockerParent) {
         Role r=atleast.getOnRole();
         LiteralConcept c=atleast.getToConcept();
         Node blockedXParent=blockedX.getParent();
@@ -229,7 +240,7 @@ public class BlockingValidator {
         }
         return true;
     }
-    protected boolean satisfiesDLClauseForBlockedX(DLClauseInfo dlClauseInfo,Node blockedX) {
+    protected boolean satisfiesDLClauseForBlockedX(@Nonnull DLClauseInfo dlClauseInfo, @Nonnull Node blockedX) {
         assert blockedX.isDirectlyBlocked();
         Node blockedXParent=blockedX.getParent();
         Node blocker=blockedX.getBlocker();
@@ -256,7 +267,7 @@ public class BlockingValidator {
         dlClauseInfo.m_yNodes[matchingYConstraintIndex]=null;
         return result;
     }
-    protected boolean satisfiesDLClauseForBlockedXAndAnyZ(DLClauseInfo dlClauseInfo,Node blockedX,int parentOfBlockedXIndex,int toMatchIndex) {
+    protected boolean satisfiesDLClauseForBlockedXAndAnyZ(@Nonnull DLClauseInfo dlClauseInfo, @Nonnull Node blockedX,int parentOfBlockedXIndex,int toMatchIndex) {
         if (toMatchIndex==dlClauseInfo.m_zNodes.length)
             return satisfiesDLClauseForBlockedXAnyZAndAnyY(dlClauseInfo,blockedX,parentOfBlockedXIndex,0,0);
         else {
@@ -285,7 +296,7 @@ public class BlockingValidator {
             return true;
         }
     }
-    protected boolean satisfiesDLClauseForBlockedXAnyZAndAnyY(DLClauseInfo dlClauseInfo,Node blockedX,int parentOfBlockedXIndex,int toMatchIndexXToY,int toMatchIndexYToX) {
+    protected boolean satisfiesDLClauseForBlockedXAnyZAndAnyY(@Nonnull DLClauseInfo dlClauseInfo, @Nonnull Node blockedX,int parentOfBlockedXIndex,int toMatchIndexXToY,int toMatchIndexYToX) {
         if ((toMatchIndexXToY+toMatchIndexYToX)==parentOfBlockedXIndex) {
             // assignment already fixed, skip
             if (dlClauseInfo.m_yConstraints[parentOfBlockedXIndex].m_x2yRoles.length!=0)
@@ -334,7 +345,7 @@ public class BlockingValidator {
             return true;
         }
     }
-    protected boolean satisfiesDLClauseForBlockedXAndMatchedNodes(DLClauseInfo dlClauseInfo,Node blockedX,int parentOfBlockedXIndex) {
+    protected boolean satisfiesDLClauseForBlockedXAndMatchedNodes(@Nonnull DLClauseInfo dlClauseInfo,Node blockedX,int parentOfBlockedXIndex) {
         for (ConsequenceAtom consequenceAtom : dlClauseInfo.m_consequencesForBlockedX) {
             if (consequenceAtom.isSatisfied(m_extensionManager,dlClauseInfo,blockedX))
                 return true;
@@ -360,7 +371,7 @@ public class BlockingValidator {
         for (DLClauseInfo dlClauseInfo : m_dlClauseInfos)
             checkDLClauseForNonblockedX(dlClauseInfo,nonblockedX);
     }
-    protected void checkAtLeastForNonblocked(AtLeastConcept atleast,Node nonblocked) {
+    protected void checkAtLeastForNonblocked(@Nonnull AtLeastConcept atleast,Node nonblocked) {
         int suitableSuccessors=0;
         int requiredSuccessors=atleast.getNumber();
         Role r=atleast.getOnRole();
@@ -404,7 +415,7 @@ public class BlockingValidator {
             }
         }
     }
-    protected void checkDLClauseForNonblockedX(DLClauseInfo dlClauseInfo,Node nonblockedX) {
+    protected void checkDLClauseForNonblockedX(@Nonnull DLClauseInfo dlClauseInfo,Node nonblockedX) {
         // Check whether some of the X concepts can be matched to the node
         for (AtomicConcept atomicConcept : dlClauseInfo.m_xConcepts)
             if (!m_extensionManager.containsAssertion(atomicConcept,nonblockedX))
@@ -417,7 +428,7 @@ public class BlockingValidator {
         checkDLClauseForNonblockedXAndAnyZ(dlClauseInfo,nonblockedX,0);
         dlClauseInfo.m_xNode=null; // checking done, reset assignment
     }
-    protected void checkDLClauseForNonblockedXAndAnyZ(DLClauseInfo dlClauseInfo,Node nonblockedX,int toMatchIndex) {
+    protected void checkDLClauseForNonblockedXAndAnyZ(@Nonnull DLClauseInfo dlClauseInfo,Node nonblockedX,int toMatchIndex) {
         if (toMatchIndex==dlClauseInfo.m_zNodes.length)
             checkDLClauseForNonblockedXAnyZAndAnyY(dlClauseInfo,nonblockedX,0,0);
         else {
@@ -445,7 +456,7 @@ public class BlockingValidator {
             return;  // no z could be found that satisfies the constrains (clause is trivially satisfied)
         }
     }
-    protected void checkDLClauseForNonblockedXAnyZAndAnyY(DLClauseInfo dlClauseInfo,Node nonblockedX,int toMatchIndexXtoY,int toMatchIndexYtoX) {
+    protected void checkDLClauseForNonblockedXAnyZAndAnyY(@Nonnull DLClauseInfo dlClauseInfo,Node nonblockedX,int toMatchIndexXtoY,int toMatchIndexYtoX) {
         if ((toMatchIndexXtoY+toMatchIndexYtoX)==dlClauseInfo.m_yConstraints.length)
             checkDLClauseForNonblockedXAndMatchedNodes(dlClauseInfo,nonblockedX);
         else {
@@ -482,7 +493,7 @@ public class BlockingValidator {
             }
         }
     }
-    protected void checkDLClauseForNonblockedXAndMatchedNodes(DLClauseInfo dlClauseInfo,Node nonblockedX) {
+    protected void checkDLClauseForNonblockedXAndMatchedNodes(@Nonnull DLClauseInfo dlClauseInfo,Node nonblockedX) {
         boolean containsAtLeastOneBlockedY=false;
         for (Node y : dlClauseInfo.m_yNodes) {
             if (y.isBlocked() && !((ValidatedBlockingObject)y.getBlockingObject()).blockViolatesParentConstraints()) {
@@ -527,18 +538,31 @@ public class BlockingValidator {
     }
 
     protected static class DLClauseInfo {
+        @Nonnull
         protected final AtomicConcept[] m_xConcepts;
+        @Nonnull
         protected final AtomicRole[] m_x2xRoles;
+        @Nonnull
         protected final YConstraint[] m_yConstraints;
+        @Nonnull
         protected final AtomicConcept[][] m_zConcepts;
+        @Nonnull
         protected final ExtensionTable.Retrieval[] m_x2yRetrievals;
+        @Nonnull
         protected final AtomicRole[] m_x2yRoles;
+        @Nonnull
         protected final ExtensionTable.Retrieval[] m_y2xRetrievals;
+        @Nonnull
         protected final AtomicRole[] m_y2xRoles;
+        @Nonnull
         protected final ExtensionTable.Retrieval[] m_zRetrievals;
+        @Nonnull
         protected final ConsequenceAtom[] m_consequencesForBlockedX;
+        @Nonnull
         protected final ConsequenceAtom[] m_consequencesForNonblockedX;
+        @Nonnull
         protected final DLClause m_dlClause; // for debugging
+        @Nullable
         protected Node m_xNode;
         protected Node[] m_yNodes;
         protected Variable[] m_yVariables;
@@ -546,7 +570,7 @@ public class BlockingValidator {
         protected Variable[] m_zVariables;
 
 
-        public DLClauseInfo(DLClause dlClause,ExtensionManager extensionManager) {
+        public DLClauseInfo(@Nonnull DLClause dlClause, @Nonnull ExtensionManager extensionManager) {
             m_dlClause=dlClause;
             // TODO: We'll sort our variables by names. This introduces a dependency
             // to clausification. That's ugly and should be fixed later.
@@ -814,12 +838,13 @@ public class BlockingValidator {
                 retrieval.clear();
 
         }
-        protected int getIndexFor(Variable[] variables, Variable variable) {
+        protected int getIndexFor(@Nonnull Variable[] variables, Variable variable) {
             for (int index=0;index<variables.length;index++) {
                 if (variables[index]==variable) return index;
             }
             return -1;
         }
+        @Nonnull
         public String toString() {
             return m_dlClause.toString();
         }
@@ -835,7 +860,7 @@ public class BlockingValidator {
             m_x2yRoles=x2yRoles;
             m_y2xRoles=y2xRoles;
         }
-        public boolean isSatisfiedExplicitly(ExtensionManager extensionManager,Node nodeX,Node nodeY) {
+        public boolean isSatisfiedExplicitly(@Nonnull ExtensionManager extensionManager,Node nodeX,Node nodeY) {
             for (AtomicRole x2yRole : m_x2yRoles)
                 if (!extensionManager.containsAssertion(x2yRole,nodeX,nodeY))
                     return false;
@@ -847,7 +872,7 @@ public class BlockingValidator {
                     return false;
             return true;
         }
-        public boolean isSatisfiedViaMirroringY(ExtensionManager extensionManager,Node nodeX,Node nodeY) {
+        public boolean isSatisfiedViaMirroringY(@Nonnull ExtensionManager extensionManager,Node nodeX, @Nonnull Node nodeY) {
             for (AtomicRole x2yRole : m_x2yRoles)
                 if (!extensionManager.containsAssertion(x2yRole,nodeX,nodeY))
                     return false;
@@ -873,11 +898,13 @@ public class BlockingValidator {
     }
 
     protected static class SimpleConsequenceAtom implements ConsequenceAtom {
+        @Nonnull
         protected final Object[] m_assertionBuffer;
         protected final ArgumentType[] m_argumentTypes;
+        @Nonnull
         protected final int[] m_argumentIndexes;
 
-        public SimpleConsequenceAtom(DLPredicate dlPredicate,ArgumentType[] argumentTypes,int[] argumentIndexes) {
+        public SimpleConsequenceAtom(DLPredicate dlPredicate,ArgumentType[] argumentTypes, @Nonnull int[] argumentIndexes) {
             // r(x,y) would have argumentTypes { XVAR, YVAR } and dlPredicate r
             // y1==y2 would have argumentTypes { YVAR, YVAR } and dlPredicate ==
             // argumentIndex indicates at which position in the DLClauseInfo the variable is
@@ -887,7 +914,7 @@ public class BlockingValidator {
             m_argumentTypes=argumentTypes;
             m_argumentIndexes=argumentIndexes;
         }
-        public boolean isSatisfied(ExtensionManager extensionManager,DLClauseInfo dlClauseInfo,Node nodeX) {
+        public boolean isSatisfied(@Nonnull ExtensionManager extensionManager, @Nonnull DLClauseInfo dlClauseInfo,Node nodeX) {
             for (int argumentIndex=m_argumentIndexes.length-1;argumentIndex>=0;--argumentIndex) {
                 switch (m_argumentTypes[argumentIndex]) {
                 case XVAR:
@@ -906,6 +933,7 @@ public class BlockingValidator {
             else
                 return extensionManager.containsTuple(m_assertionBuffer);
         }
+        @Nonnull
         public String toString() {
             String result="";
             for (Object o : m_assertionBuffer) {
@@ -925,7 +953,7 @@ public class BlockingValidator {
             m_yArgumentIndex=yArgumentIndex;
             m_isX2Y=isX2Y;
         }
-        public boolean isSatisfied(ExtensionManager extensionManager,DLClauseInfo dlClauseInfo,Node nodeX) {
+        public boolean isSatisfied(@Nonnull ExtensionManager extensionManager, @Nonnull DLClauseInfo dlClauseInfo, @Nonnull Node nodeX) {
             Node nodeY=dlClauseInfo.m_yNodes[m_yArgumentIndex];
             Node nodeXReal;
             if (nodeY==nodeX.getParent())
@@ -937,6 +965,7 @@ public class BlockingValidator {
             else
                 return extensionManager.containsAssertion(m_atomicRole,nodeY,nodeXReal);
         }
+        @Nonnull
         public String toString() {
             return m_atomicRole+"("+(m_isX2Y?"x,yi":"y_i,x")+")";
         }
@@ -950,7 +979,7 @@ public class BlockingValidator {
             m_atomicConcept=atomicConcept;
             m_yArgumentIndex=yArgumentIndex;
         }
-        public boolean isSatisfied(ExtensionManager extensionManager,DLClauseInfo dlClauseInfo,Node nodeX) {
+        public boolean isSatisfied(@Nonnull ExtensionManager extensionManager, @Nonnull DLClauseInfo dlClauseInfo,Node nodeX) {
             Node nodeY=dlClauseInfo.m_yNodes[m_yArgumentIndex];
             Node nodeYMirror;
             if (nodeY.isBlocked())
@@ -959,9 +988,10 @@ public class BlockingValidator {
                 nodeYMirror=nodeY;
             return extensionManager.containsAssertion(m_atomicConcept,nodeYMirror);
         }
-        public boolean isSatisfiedNonMirrored(ExtensionManager extensionManager,DLClauseInfo dlClauseInfo) {
+        public boolean isSatisfiedNonMirrored(@Nonnull ExtensionManager extensionManager, @Nonnull DLClauseInfo dlClauseInfo) {
             return extensionManager.containsAssertion(m_atomicConcept,dlClauseInfo.m_yNodes[m_yArgumentIndex]);
         }
+        @Nonnull
         public String toString() {
             return m_atomicConcept+"(y_i)";
         }

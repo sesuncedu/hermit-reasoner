@@ -23,22 +23,26 @@ import java.io.PrintWriter;
 import org.semanticweb.HermiT.debugger.Debugger;
 import org.semanticweb.HermiT.model.DescriptionGraph;
 
+import javax.annotation.Nonnull;
+
 public class ShowDescriptionGraphCommand extends AbstractCommand {
 
     public ShowDescriptionGraphCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showDGraph";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "graphName","prints a text representation of the description graph graphName" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showDGraph graphName");
         writer.println("    Prints information about the description graph with the given name.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Graph name is missing.");
             return;

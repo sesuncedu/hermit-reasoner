@@ -21,6 +21,9 @@ import java.io.Serializable;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an annotated equality.
  */
@@ -48,24 +51,29 @@ public class AnnotatedEquality implements DLPredicate,Serializable {
     public int getArity() {
         return 3;
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "==@atMost("+m_cardinality+" "+m_onRole.toString(prefixes)+" "+m_toConcept.toString(prefixes)+")";
     }
+    @Nonnull
     protected static InterningManager<AnnotatedEquality> s_interningManager=new InterningManager<AnnotatedEquality>() {
-        protected boolean equal(AnnotatedEquality object1,AnnotatedEquality object2) {
+        protected boolean equal(@Nonnull AnnotatedEquality object1, @Nonnull AnnotatedEquality object2) {
             return object1.m_cardinality==object2.m_cardinality && object1.m_onRole==object2.m_onRole && object1.m_toConcept==object2.m_toConcept;
         }
-        protected int getHashCode(AnnotatedEquality object) {
+        protected int getHashCode(@Nonnull AnnotatedEquality object) {
             return object.m_cardinality+object.m_onRole.hashCode()+object.m_toConcept.hashCode();
         }
     };
     
+    @Nullable
     public static AnnotatedEquality create(int cardinality,Role onRole,LiteralConcept toConcept) {
         return s_interningManager.intern(new AnnotatedEquality(cardinality,onRole,toConcept));
     }

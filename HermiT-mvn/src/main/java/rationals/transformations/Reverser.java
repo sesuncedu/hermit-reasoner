@@ -10,6 +10,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Computes the reversal of an Automaton.
  * <p /> 
@@ -26,7 +28,8 @@ import rationals.Transition;
  */
 public class Reverser implements UnaryTransformation {
 
-  public Automaton transform(Automaton a) {
+  @Nonnull
+  public Automaton transform(@Nonnull Automaton a) {
     Automaton b = new Automaton() ;
     Map map = new HashMap() ;
     Iterator i = a.states().iterator() ;

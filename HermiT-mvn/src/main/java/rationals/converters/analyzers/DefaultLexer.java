@@ -7,6 +7,8 @@ import java.io.StringReader;
 
 import rationals.converters.ConverterException;
 
+import javax.annotation.Nonnull;
+
 /**
  * Default lexical analyser for regular expressions.
  * This lexer parse a regular expression and treats each letter 
@@ -31,7 +33,7 @@ public class DefaultLexer implements Lexer {
      * 
      * @param in the String to parse.
      */
-    public DefaultLexer(String in) {
+    public DefaultLexer(@Nonnull String in) {
         this(new StreamTokenizer(new StringReader(in)));
     }
 

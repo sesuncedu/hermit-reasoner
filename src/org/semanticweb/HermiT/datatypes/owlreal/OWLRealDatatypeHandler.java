@@ -33,6 +33,9 @@ import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 import org.semanticweb.HermiT.model.Constant;
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Implements a handler for the numeric datatypes derived from owl:real. This class
  * makes am important assumption that all data values are represented with objects
@@ -106,10 +109,11 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
         }
     }
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_intervalsByDatatype.keySet();
     }
-    public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
+    public Object parseLiteral(@Nonnull String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert s_intervalsByDatatype.keySet().contains(datatypeURI);
         try {
             if ((OWL_NS+"real").equals(datatypeURI))
@@ -125,7 +129,7 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
         }
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert s_intervalsByDatatype.keySet().contains(datatypeRestriction.getDatatypeURI());
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
             String facetURI=datatypeRestriction.getFacetURI(index);
@@ -139,7 +143,8 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
                 throw new UnsupportedFacetException("The facet with URI '"+facetURI+"' does not support '"+facetValue.toString()+"' as value. The value should be an integer, a decimal, or a rational, but this seems not to be the case in the datatype restriction "+this.toString());
         }
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_intervalsByDatatype.keySet().contains(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return s_subsetsByDatatype.get(datatypeRestriction.getDatatypeURI());
@@ -149,7 +154,8 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
         else
             return new OWLRealValueSpaceSubset(interval);
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_intervalsByDatatype.keySet().contains(datatypeRestriction.getDatatypeURI());
         NumberInterval interval=getIntervalFor(datatypeRestriction);
         if (interval==null)
@@ -170,7 +176,7 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
                 return new OWLRealValueSpaceSubset(newIntervals);
         }
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_intervalsByDatatype.keySet().contains(datatypeRestriction.getDatatypeURI());
         NumberInterval interval=getIntervalFor(datatypeRestriction);
         if (interval==null)
@@ -212,7 +218,8 @@ public class OWLRealDatatypeHandler implements DatatypeHandler {
                 return new OWLRealValueSpaceSubset(newIntervals);
         }
     }
-    protected NumberInterval getIntervalFor(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    protected NumberInterval getIntervalFor(@Nonnull DatatypeRestriction datatypeRestriction) {
         NumberInterval baseInterval=s_intervalsByDatatype.get(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return baseInterval;

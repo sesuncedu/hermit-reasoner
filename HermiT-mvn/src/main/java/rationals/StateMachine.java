@@ -35,6 +35,7 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -66,11 +67,13 @@ public interface StateMachine {
      * 
      * @return a Set of Object.
      */
+    @Nonnull
     Set<Object> alphabet();
     
     /**
      * @return Returns the id.
      */
+    @Nonnull
     Object getId();
 
     /**
@@ -84,6 +87,7 @@ public interface StateMachine {
      * 
      * @return a StateFactory instance
      */
+    @Nonnull
     StateFactory getStateFactory();
 
     /**
@@ -108,6 +112,7 @@ public interface StateMachine {
      *         <tt>Transition</tt>.
      * @see Transition
      */
+    @Nonnull
     Set<Transition> delta(State state, Object label);
 
     /**
@@ -117,6 +122,7 @@ public interface StateMachine {
      *            start state
      * @return a new Set of transitions (maybe empty)
      */
+    @Nonnull
     Set<Transition> delta(State state);
 
     /**
@@ -125,6 +131,7 @@ public interface StateMachine {
      * @param s a Set of State objects
      * @return a Set of Transition objects 
      */
+    @Nonnull
     Set<Transition> delta(Set<State> s);
 
     /**
@@ -135,6 +142,7 @@ public interface StateMachine {
      * @param word the word to read.
      * @return the set of reached states. Maybe empty or <code>null</code>.
      */
+    @Nonnull
     Set<State> steps(Set<State> s, List<Object> word);
 
     /**
@@ -145,6 +153,7 @@ public interface StateMachine {
      * @param word the word to read.
      * @return the set of reached states. Maybe empty or <code>null</code>
      */
+    @Nonnull
     Set<State> steps(State st, List<Object> word);
 
     /**
@@ -155,6 +164,7 @@ public interface StateMachine {
      * @param o the letter 
      * @return a set of reachable states. Maybe empty or <code>null</code>.
      */
+    @Nonnull
     Set<State> step(Set<State> s, Object o);
 
     /**
@@ -162,6 +172,7 @@ public interface StateMachine {
      * 
      * @return a Set of State objects.
      */
+    @Nonnull
     Set<State> initials();
     
     /**
@@ -171,5 +182,6 @@ public interface StateMachine {
      * @param st end states
      * @return a set of states that can reach <code>st</code>. May be empty or null.
      */
+    @Nonnull
     Set<Transition> deltaMinusOne(State st);
 }

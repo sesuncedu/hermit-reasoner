@@ -34,26 +34,48 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.SWRLAtom;
 
+import javax.annotation.Nonnull;
+
 public class OWLAxioms {
+    @Nonnull
     public final Set<OWLClass> m_classes;
+    @Nonnull
     public final Set<OWLObjectProperty> m_objectProperties;
+    @Nonnull
     public final Set<OWLObjectProperty> m_objectPropertiesOccurringInOWLAxioms;
+    @Nonnull
     public final Set<OWLObjectPropertyExpression> m_complexObjectPropertyExpressions;
+    @Nonnull
     public final Set<OWLDataProperty> m_dataProperties;
+    @Nonnull
     public final Set<OWLNamedIndividual> m_namedIndividuals;
+    @Nonnull
     public final Collection<OWLClassExpression[]> m_conceptInclusions;
+    @Nonnull
     public final Collection<OWLDataRange[]> m_dataRangeInclusions;
+    @Nonnull
     public final Collection<OWLObjectPropertyExpression[]> m_simpleObjectPropertyInclusions;
+    @Nonnull
     public final Collection<ComplexObjectPropertyInclusion> m_complexObjectPropertyInclusions;
+    @Nonnull
     public final Collection<OWLObjectPropertyExpression[]> m_disjointObjectProperties;
+    @Nonnull
     public final Set<OWLObjectPropertyExpression> m_reflexiveObjectProperties;
+    @Nonnull
     public final Set<OWLObjectPropertyExpression> m_irreflexiveObjectProperties;
+    @Nonnull
     public final Set<OWLObjectPropertyExpression> m_asymmetricObjectProperties;
+    @Nonnull
     public final Collection<OWLDataPropertyExpression[]> m_dataPropertyInclusions;
+    @Nonnull
     public final Collection<OWLDataPropertyExpression[]> m_disjointDataProperties;
+    @Nonnull
     public final Collection<OWLIndividualAxiom> m_facts;
+    @Nonnull
     public final Set<OWLHasKeyAxiom> m_hasKeys;
+    @Nonnull
     public final Set<String> m_definedDatatypesIRIs; // contains custom datatypes from DatatypeDefinition axioms
+    @Nonnull
     public final Collection<DisjunctiveRule> m_rules;
 
     public OWLAxioms() {
@@ -101,6 +123,7 @@ public class OWLAxioms {
             m_body=body;
             m_head=head;
         }
+        @Nonnull
         public String toString() {
             StringBuffer buffer=new StringBuffer();
             boolean first=true;
