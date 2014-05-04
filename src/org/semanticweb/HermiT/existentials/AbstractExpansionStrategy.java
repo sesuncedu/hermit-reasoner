@@ -48,6 +48,8 @@ import org.semanticweb.HermiT.tableau.InterruptFlag;
 import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+
 /**
  * Implements the common bits of an ExistentialsExpansionStrategy, leaving only actual processing of existentials in need of expansion to subclasses.
  */
@@ -57,8 +59,11 @@ public abstract class AbstractExpansionStrategy implements ExistentialExpansionS
 
     protected final BlockingStrategy m_blockingStrategy;
     protected final boolean m_expandNodeAtATime;
+    @Nonnull
     protected final List<ExistentialConcept> m_processedExistentials;
+    @Nonnull
     protected final List<Node> m_auxiliaryNodes1;
+    @Nonnull
     protected final List<Node> m_auxiliaryNodes2;
     protected Tableau m_tableau;
     protected InterruptFlag m_interruptFlag;
@@ -205,7 +210,8 @@ public abstract class AbstractExpansionStrategy implements ExistentialExpansionS
     public void dlClauseBodyCompiled(List<DLClauseEvaluator.Worker> workers,DLClause dlClause,List<Variable> variables,Object[] valuesBuffer,boolean[] coreVariables) {
         m_blockingStrategy.dlClauseBodyCompiled(workers,dlClause,variables,valuesBuffer,coreVariables);
     }
-    protected SatType isSatisfied(AtLeast atLeast,Node forNode) {
+    @Nonnull
+    protected SatType isSatisfied(@Nonnull AtLeast atLeast, @Nonnull Node forNode) {
         int cardinality=atLeast.getNumber();
         if (cardinality<=0)
             return SatType.PERMANENTLY_SATISFIED;
@@ -284,10 +290,10 @@ public abstract class AbstractExpansionStrategy implements ExistentialExpansionS
             return SatType.NOT_SATISFIED;
         }
     }
-    protected boolean isPermanentSatisfier(Node forNode,Node toNode) {
+    protected boolean isPermanentSatisfier(@Nonnull Node forNode, @Nonnull Node toNode) {
         return forNode==toNode || forNode.getParent()==toNode || toNode.getParent()==forNode || toNode.isRootNode();
     }
-    protected boolean containsSubsetOfNUnequalNodes(Node forNode,List<Node> nodes,int startAt,List<Node> selectedNodes,int cardinality) {
+    protected boolean containsSubsetOfNUnequalNodes(Node forNode, @Nonnull List<Node> nodes,int startAt, @Nonnull List<Node> selectedNodes,int cardinality) {
         if (selectedNodes.size()==cardinality)
             return true;
         else {

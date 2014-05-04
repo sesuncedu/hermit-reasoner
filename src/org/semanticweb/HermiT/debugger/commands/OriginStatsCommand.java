@@ -33,18 +33,22 @@ import org.semanticweb.HermiT.model.Concept;
 import org.semanticweb.HermiT.model.ExistentialConcept;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class OriginStatsCommand extends AbstractCommand {
 
     public OriginStatsCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "originStats";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","prints origin information for nodes in the model" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: originStats");
         writer.println("    Prints origin information for the nodes in the current model.");
     }
@@ -105,6 +109,7 @@ public class OriginStatsCommand extends AbstractCommand {
 
     protected static class OriginInfo {
         public final Concept m_concept;
+        @Nonnull
         public final List<Node> m_nodes;
         public int m_numberOfNonactiveOccurrences;
 
@@ -117,7 +122,7 @@ public class OriginStatsCommand extends AbstractCommand {
     protected static class OriginInfoComparator implements Comparator<OriginInfo> {
         public static final OriginInfoComparator INSTANCE=new OriginInfoComparator();
 
-        public int compare(OriginInfo o1,OriginInfo o2) {
+        public int compare(@Nonnull OriginInfo o1, @Nonnull OriginInfo o2) {
             int comparison=o1.m_nodes.size()-o2.m_nodes.size();
             if (comparison==0) {
                 comparison=o1.m_numberOfNonactiveOccurrences-o2.m_numberOfNonactiveOccurrences;

@@ -17,16 +17,22 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 public final class PermanentDependencySet implements DependencySet,Serializable {
     private static final long serialVersionUID=353039301123337446L;
 
+    @Nullable
     protected PermanentDependencySet m_rest;
     protected int m_branchingPoint;
+    @Nullable
     protected PermanentDependencySet m_nextEntry;
     protected int m_usageCounter;
+    @Nullable
     protected PermanentDependencySet m_previousUnusedSet;
+    @Nullable
     protected PermanentDependencySet m_nextUnusedSet;
     
     protected PermanentDependencySet() {
@@ -52,6 +58,7 @@ public final class PermanentDependencySet implements DependencySet,Serializable 
     public int getMaximumBranchingPoint() {
         return m_branchingPoint;
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("{ ");

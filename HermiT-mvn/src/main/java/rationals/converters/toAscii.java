@@ -4,8 +4,11 @@ import java.util.Iterator;
 
 import rationals.Automaton;
 
+import javax.annotation.Nonnull;
+
 public class toAscii implements ToString {
-    public String toString(Automaton a) {
+    @Nonnull
+    public String toString(@Nonnull Automaton a) {
         StringBuffer sb = new StringBuffer();
         sb.append("A = ").append(a.alphabet().toString()).append("\n");
         sb.append("Q = ").append(a.states().toString()).append("\n");

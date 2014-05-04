@@ -14,6 +14,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Determinization of an automaton.
  * 
@@ -22,7 +24,8 @@ import rationals.Transition;
  */
 public class ToDFA implements UnaryTransformation {
   
-  public Automaton transform(Automaton a) {
+  @Nonnull
+  public Automaton transform(@Nonnull Automaton a) {
     Automaton ret = new Automaton();
     Map bmap = new HashMap();
     List /* < Set > */todo = new ArrayList();

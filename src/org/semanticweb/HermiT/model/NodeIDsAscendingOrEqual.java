@@ -21,6 +21,9 @@ import java.io.Serializable;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a predicate that whether the IDs of the argument nodes are all strictly ascending or all equal.
  */
@@ -35,21 +38,25 @@ public class NodeIDsAscendingOrEqual implements DLPredicate,Serializable {
     public int getArity() {
         return m_arity;
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "NodeIDsAscendingOrEqual";
     }
+    @Nonnull
     protected static InterningManager<NodeIDsAscendingOrEqual> s_interningManager=new InterningManager<NodeIDsAscendingOrEqual>() {
-        protected boolean equal(NodeIDsAscendingOrEqual object1,NodeIDsAscendingOrEqual object2) {
+        protected boolean equal(@Nonnull NodeIDsAscendingOrEqual object1, @Nonnull NodeIDsAscendingOrEqual object2) {
             return object1.m_arity==object2.m_arity;
         }
-        protected int getHashCode(NodeIDsAscendingOrEqual object) {
+        protected int getHashCode(@Nonnull NodeIDsAscendingOrEqual object) {
             return object.m_arity;
         }
     };
     
+    @Nullable
     public static NodeIDsAscendingOrEqual create(int arity) {
         return s_interningManager.intern(new NodeIDsAscendingOrEqual(arity));
     }

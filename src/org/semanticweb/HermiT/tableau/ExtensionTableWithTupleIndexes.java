@@ -24,6 +24,9 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.Concept;
 import org.semanticweb.HermiT.model.InternalDatatype;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This extension table is for use with binary and ternary assertions (not
  * description graphs).
@@ -33,6 +36,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
     private static final long serialVersionUID=-684536236157965372L;
 
     protected final TupleIndex[] m_tupleIndexes;
+    @Nonnull
     protected final Object[] m_auxiliaryTuple;
 
     public ExtensionTableWithTupleIndexes(Tableau tableau,int tupleArity,boolean needsDependencySets,TupleIndex[] tupleIndexes) {
@@ -46,7 +50,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
             size+=m_tupleIndexes[i].sizeInMemoy();
         return size;
     }
-    public boolean addTuple(Object[] tuple,DependencySet dependencySet,boolean isCore) {
+    public boolean addTuple(@Nonnull Object[] tuple,DependencySet dependencySet,boolean isCore) {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.addFactStarted(tuple,isCore);
         if (isTupleActive(tuple) && (m_tableau.m_needsThingExtension || !AtomicConcept.THING.equals(tuple[0])) && (m_tableau.m_needsRDFSLiteralExtension || !InternalDatatype.RDFS_LITERAL.equals(tuple[0]))) {
@@ -81,6 +85,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
         int tupleIndex=m_tupleIndexes[0].getTupleIndex(tuple);
         return tupleIndex!=-1 && isTupleActive(tupleIndex);
     }
+    @Nullable
     public DependencySet getDependencySet(Object[] tuple) {
         int tupleIndex=m_tupleIndexes[0].getTupleIndex(tuple);
         // If the tuple is not in the tuple table, we'll get back -1; then, there is no dependency set.
@@ -96,6 +101,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
         else
             return m_coreManager.isCore(tupleIndex);
     }
+    @Nullable
     public Retrieval createRetrieval(int[] bindingPositions,Object[] bindingsBuffer,Object[] tupleBuffer,boolean ownsBuffers,View extensionView) {
         TupleIndex selectedTupleIndex=null;
         int boundPrefixSizeInSelected=0;
@@ -142,7 +148,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
         protected int m_firstTupleIndex;
         protected int m_afterLastTupleIndex;
 
-        public IndexedRetrieval(TupleIndex tupleIndex,int[] bindingPositions,Object[] bindingsBuffer,Object[] tupleBuffer,boolean ownsBuffers,View extensionView) {
+        public IndexedRetrieval(@Nonnull TupleIndex tupleIndex,int[] bindingPositions,Object[] bindingsBuffer,Object[] tupleBuffer,boolean ownsBuffers,View extensionView) {
             super(tupleIndex,bindingsBuffer,createSelectionArray(bindingPositions,tupleIndex.m_indexingSequence));
             m_ownsBuffers=ownsBuffers;
             m_bindingPositions=bindingPositions;
@@ -154,6 +160,7 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
                     numberOfBoundPositions++;
             m_checkTupleSelection=(numberOfBoundPositions>m_selectionIndices.length);
         }
+        @Nonnull
         public ExtensionTable getExtensionTable() {
             return ExtensionTableWithTupleIndexes.this;
         }
@@ -241,7 +248,8 @@ public class ExtensionTableWithTupleIndexes extends ExtensionTable {
             return true;
         }
     }
-    protected static int[] createSelectionArray(int[] bindingPositions,int[] indexingSequence) {
+    @Nonnull
+    protected static int[] createSelectionArray(int[] bindingPositions, @Nonnull int[] indexingSequence) {
         int boundPrefixLength=0;
         for (int index=0;index<indexingSequence.length;index++)
             if (bindingPositions[indexingSequence[index]]!=-1)

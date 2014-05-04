@@ -32,6 +32,7 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -54,6 +55,7 @@ public interface Rational {
    *         transition for this automaton.
    * @see Transition
    */
+  @Nonnull
   State addState(boolean initial, boolean terminal);
 
   /**
@@ -61,6 +63,7 @@ public interface Rational {
    * 
    * @return the alphabet <em>X</em> associated with this automaton.
    */
+  @Nonnull
   Set<Object> alphabet();
 
   /**
@@ -71,6 +74,7 @@ public interface Rational {
    *         <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> states();
 
   /**
@@ -82,6 +86,7 @@ public interface Rational {
    *         class <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> initials();
 
   /**
@@ -93,6 +98,7 @@ public interface Rational {
    *         <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> terminals();
 
   /**
@@ -104,6 +110,7 @@ public interface Rational {
    *         instances of class <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> accessibleStates();
 
   /**
@@ -114,6 +121,7 @@ public interface Rational {
    *          a non null set of starting states
    * @return a - possibly empty - set of accessible states
    */
+  @Nonnull
   Set<State> accessibleStates(Set<State> states);
 
   /**
@@ -125,6 +133,7 @@ public interface Rational {
    *          a non null set of ending states
    * @return a - possibly empty - set of coaccessible states
    */
+  @Nonnull
   Set<State> coAccessibleStates(Set<State> states);
 
   /**
@@ -136,6 +145,7 @@ public interface Rational {
    *         in this set are instances of class <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> coAccessibleStates();
 
   /**
@@ -150,6 +160,7 @@ public interface Rational {
    *         instances of class <tt>State</tt>.
    * @see State
    */
+  @Nonnull
   Set<State> accessibleAndCoAccessibleStates();
 
   /**
@@ -159,6 +170,7 @@ public interface Rational {
    *         contained in this set are instances of class <tt>Transition</tt>.
    * @see Transition
    */
+  @Nonnull
   Set<Transition> delta();
 
   /**
@@ -175,6 +187,7 @@ public interface Rational {
    *         <tt>Transition</tt>.
    * @see Transition
    */
+  @Nonnull
   Set<Transition> delta(State state, Object label);
 
   /**
@@ -184,8 +197,10 @@ public interface Rational {
    *          start state
    * @return a new Set of transitions (maybe empty)
    */
+  @Nonnull
   Set<Transition> delta(State state);
 
+  @Nonnull
   Set<Transition> deltaFrom(State from, State to);
 
   /**
@@ -199,6 +214,7 @@ public interface Rational {
    *         <tt>Transition</tt>.
    * @see Transition
    */
+  @Nonnull
   Set<Transition> deltaMinusOne(State state, Object label);
 
   /**
@@ -221,11 +237,13 @@ public interface Rational {
    * @param st
    * @return
    */
+  @Nonnull
   Set<Transition> deltaMinusOne(State st);
 
   /**
    * @param st
    * @return
    */
+  @Nonnull
   Set<State> accessibleStates(State st);
 }

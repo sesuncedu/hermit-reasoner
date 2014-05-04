@@ -44,6 +44,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A general  class for alphabetic morphism over automaton.
  * <p>
@@ -66,7 +68,8 @@ public class Morphism implements UnaryTransformation {
     /* (non-Javadoc)
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton b = new Automaton();
         /* state map */
         Map stm = new HashMap();

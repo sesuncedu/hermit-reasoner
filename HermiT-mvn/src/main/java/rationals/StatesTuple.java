@@ -32,14 +32,16 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 public class StatesTuple {
+    @Nonnull
     public final Set[] sets;
 
     final int hash;
 
-    public StatesTuple(Set[] sets) {
+    public StatesTuple(@Nonnull Set[] sets) {
         this.sets = new Set[sets.length];
         System.arraycopy(sets,0,this.sets,0,sets.length);
         int h = 0;
@@ -75,6 +77,7 @@ public class StatesTuple {
      * 
      * @see java.lang.Object#toString()
      */
+    @Nonnull
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("( ");

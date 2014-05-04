@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.owlreal;
 
+import javax.annotation.Nonnull;
+
 public final class MinusInfinity extends Number {
     private static final long serialVersionUID=-205551124673073593L;
     public static final MinusInfinity INSTANCE=new MinusInfinity();
@@ -26,6 +28,7 @@ public final class MinusInfinity extends Number {
     public boolean equals(Object that) {
         return this==that;
     }
+    @Nonnull
     public String toString() {
         return "-INF";
     }
@@ -41,6 +44,7 @@ public final class MinusInfinity extends Number {
     public long longValue() {
         throw new UnsupportedOperationException();
     }
+    @Nonnull
     protected Object readResolve() {
         return INSTANCE;
     }

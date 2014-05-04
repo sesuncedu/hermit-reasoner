@@ -5,6 +5,8 @@ import java.util.Set;
 
 import rationals.Automaton;
 import rationals.Synchronization;
+
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -30,6 +32,7 @@ public class Shuffle implements BinaryTransformation {
     public Automaton transform(Automaton a, Automaton b) {
 
         Mix mix = new Mix(new Synchronization() {
+            @Nullable
             public Object synchronize(Object t1, Object t2) {
                 return null;
             }
@@ -38,6 +41,7 @@ public class Shuffle implements BinaryTransformation {
                 return Collections.unmodifiableSet(new HashSet());
             }
 
+            @Nullable
             public Set synchronizable(Collection alphl) {
                 // TODO Auto-generated method stub
                 return null;

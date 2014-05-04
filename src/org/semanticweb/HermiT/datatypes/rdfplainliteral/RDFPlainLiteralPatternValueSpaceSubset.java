@@ -31,6 +31,9 @@ import dk.brics.automaton.BasicOperations;
 import dk.brics.automaton.Datatypes;
 import dk.brics.automaton.RegExp;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset {
     public static final char SEPARATOR='\u0001';
     protected static final Automaton s_separator;
@@ -41,6 +44,7 @@ public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset 
     protected static final Automaton s_nonemptyLangTag;
     protected static final Automaton s_anyLangTag;
     protected static final Automaton s_xsdString;
+    @Nonnull
     protected static final Map<String,Automaton> s_anyDatatype;
     protected static final Automaton s_anyString;
     protected static final Automaton s_anyChar;
@@ -120,7 +124,7 @@ public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset 
         else
             return false;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         Set<String> elements=m_automaton.getFiniteStrings();
         if (elements==null)
             throw new IllegalStateException("The value space range is infinite.");
@@ -136,6 +140,7 @@ public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset 
             }
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("rdf:PlainLiteral{");
@@ -143,7 +148,8 @@ public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset 
         buffer.append('}');
         return buffer.toString();
     }
-    public static Automaton toAutomaton(RDFPlainLiteralLengthValueSpaceSubset valueSpaceSubset) {
+    @Nullable
+    public static Automaton toAutomaton(@Nonnull RDFPlainLiteralLengthValueSpaceSubset valueSpaceSubset) {
         List<RDFPlainLiteralLengthInterval> intervals=valueSpaceSubset.m_intervals;
         Automaton result=null;
         for (int intervalIndex=intervals.size()-1;intervalIndex>=0;--intervalIndex) {
@@ -195,7 +201,7 @@ public class RDFPlainLiteralPatternValueSpaceSubset implements ValueSpaceSubset 
         Automaton stringPart=new RegExp(pattern).toAutomaton();
         return stringPart.concatenate(s_anyLangTag);
     }
-    public static Automaton getLanguageRangeAutomaton(String languageRange) {
+    public static Automaton getLanguageRangeAutomaton(@Nonnull String languageRange) {
         if ("*".equals(languageRange))
             return s_anyStringWithNonemptyLangTag;
         else {

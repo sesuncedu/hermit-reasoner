@@ -17,6 +17,9 @@
  */
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A class for step-by-step creation of transitions. A TransitionBuilder can be
  * used to add expesiveness to transition creation withing automaton.
@@ -30,6 +33,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
 
   private Automaton automaton;
 
+  @Nullable
   protected Object label;
 
   /**
@@ -55,6 +59,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
    * @param label
    * @return this transition builder.
    */
+  @Nonnull
   public TransitionBuilder on(Object label) {
     this.label = label;
     return this;
@@ -67,6 +72,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
    * @param o
    *          the label of the end state.
    */
+  @Nonnull
   public TransitionBuilder go(Object o) {
     State s = automaton.state(o);
     try {
@@ -83,6 +89,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
    * 
    * @return
    */
+  @Nonnull
   public TransitionBuilder loop() {
     try {
       automaton.addTransition(new Transition(start, label, start));
@@ -100,6 +107,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
    *          the state to start from.
    * @return this builder.
    */
+  @Nonnull
   public TransitionBuilder from(Object label) {
     this.start = automaton.state(label);
     this.label = null;
@@ -111,6 +119,7 @@ public class TransitionBuilder implements Builder<TransitionBuilder> {
    * 
    * @see rationals.Builder#build(java.lang.Object, rationals.Automaton)
    */
+  @Nonnull
   public TransitionBuilder build(State state, Automaton<TransitionBuilder> auto) {
     this.start = state;
     this.label = null;

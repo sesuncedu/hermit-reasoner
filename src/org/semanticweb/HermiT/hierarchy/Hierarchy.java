@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.hierarchy;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import java.util.TreeSet;
 public class Hierarchy<E> {
     protected final HierarchyNode<E> m_topNode;
     protected final HierarchyNode<E> m_bottomNode;
+    @Nonnull
     protected final Map<E,HierarchyNode<E>> m_nodesByElements;
 
     public Hierarchy(HierarchyNode<E> topNode,HierarchyNode<E> bottomNode) {
@@ -78,12 +81,13 @@ public class Hierarchy<E> {
         public boolean redirect(HierarchyNode<T>[] nodes) {
             return true;
         }
-        public void visit(int level,HierarchyNode<T> node,HierarchyNode<T> parentNode,boolean firstVisit) {
+        public void visit(int level, @Nonnull HierarchyNode<T> node,HierarchyNode<T> parentNode,boolean firstVisit) {
             if (node.equals(m_bottomNode)&&level>depth)
                 depth=level;
         }
     }
-    public <T> Hierarchy<T> transform(Transformer<? super E,T> transformer,Comparator<T> comparator) {
+    @Nonnull
+    public <T> Hierarchy<T> transform(@Nonnull Transformer<? super E,T> transformer, @Nullable Comparator<T> comparator) {
         HierarchyNodeComparator<T> newNodeComparator=new HierarchyNodeComparator<T>(comparator);
         Map<HierarchyNode<E>,HierarchyNode<T>> oldToNew=new HashMap<HierarchyNode<E>,HierarchyNode<T>>();
         for (HierarchyNode<E> oldNode : m_nodesByElements.values()) {
@@ -125,12 +129,12 @@ public class Hierarchy<E> {
         return newHierarchy;
     }
     @SuppressWarnings("unchecked")
-    public void traverseDepthFirst(HierarchyNodeVisitor<E> visitor) {
+    public void traverseDepthFirst(@Nonnull HierarchyNodeVisitor<E> visitor) {
         HierarchyNode<E>[] redirectBuffer=new HierarchyNode[2];
         Set<HierarchyNode<E>> visited=new HashSet<HierarchyNode<E>>();
         traverseDepthFirst(visitor,0,m_topNode,null,visited,redirectBuffer);
     }
-    protected void traverseDepthFirst(HierarchyNodeVisitor<E> visitor,int level,HierarchyNode<E> node,HierarchyNode<E> parentNode,Set<HierarchyNode<E>> visited,HierarchyNode<E>[] redirectBuffer) {
+    protected void traverseDepthFirst(@Nonnull HierarchyNodeVisitor<E> visitor,int level,HierarchyNode<E> node,HierarchyNode<E> parentNode, @Nonnull Set<HierarchyNode<E>> visited,HierarchyNode<E>[] redirectBuffer) {
         redirectBuffer[0]=node;
         redirectBuffer[1]=parentNode;
         if (visitor.redirect(redirectBuffer)) {
@@ -150,11 +154,11 @@ public class Hierarchy<E> {
             public boolean redirect(HierarchyNode<E>[] nodes) {
                 return true;
             }
-            public void visit(int level,HierarchyNode<E> node,HierarchyNode<E> parentNode,boolean firstVisit) {
+            public void visit(int level, @Nonnull HierarchyNode<E> node,HierarchyNode<E> parentNode,boolean firstVisit) {
                 if (!node.equals(m_bottomNode))
                     printNode(level,node,parentNode,firstVisit);
             }
-            public void printNode(int level,HierarchyNode<E> node,HierarchyNode<E> parentNode,boolean firstVisit) {
+            public void printNode(int level, @Nonnull HierarchyNode<E> node, @Nullable HierarchyNode<E> parentNode,boolean firstVisit) {
                 Set<E> equivalences=node.getEquivalentElements();
                 boolean printSubClasOf=(parentNode!=null);
                 boolean printEquivalences=firstVisit && equivalences.size()>1;
@@ -187,13 +191,15 @@ public class Hierarchy<E> {
         output.flush();
         return buffer.toString();
     }
-    public static <T> Hierarchy<T> emptyHierarchy(Collection<T> elements,T topElement,T bottomElement) {
+    @Nonnull
+    public static <T> Hierarchy<T> emptyHierarchy(@Nonnull Collection<T> elements,T topElement,T bottomElement) {
         HierarchyNode<T> topBottomNode=new HierarchyNode<T>(topElement);
         topBottomNode.m_equivalentElements.add(topElement);
         topBottomNode.m_equivalentElements.add(bottomElement);
         topBottomNode.m_equivalentElements.addAll(elements);
         return new Hierarchy<T>(topBottomNode,topBottomNode);
     }
+    @Nonnull
     public static <T> Hierarchy<T> trivialHierarchy(T topElement,T bottomElement) {
         HierarchyNode<T> topNode=new HierarchyNode<T>(topElement);
         topNode.m_equivalentElements.add(topElement);
@@ -219,7 +225,7 @@ public class Hierarchy<E> {
         public HierarchyNodeComparator(Comparator<E> elementComparator) {
             m_elementComparator=elementComparator;
         }
-        public int compare(HierarchyNode<E> n1,HierarchyNode<E> n2) {
+        public int compare(@Nonnull HierarchyNode<E> n1, @Nonnull HierarchyNode<E> n2) {
             return m_elementComparator.compare(n1.m_representative,n2.m_representative);
         }
 

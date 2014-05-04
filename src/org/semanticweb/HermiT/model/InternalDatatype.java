@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an internal datatype. Such objects are used in DL-clauses (e.g., in structural transformation of complex data ranges), but are ignored by the datatype manager.
  */
@@ -36,6 +39,7 @@ public class InternalDatatype extends AtomicDataRange implements DLPredicate {
     public int getArity() {
         return 1;
     }
+    @Nullable
     public LiteralDataRange getNegation() {
         return AtomicNegationDataRange.create(this);
     }
@@ -48,25 +52,30 @@ public class InternalDatatype extends AtomicDataRange implements DLPredicate {
     public boolean isInternalDatatype() {
         return true;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return prefixes.abbreviateIRI(m_iri);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<InternalDatatype> s_interningManager=new InterningManager<InternalDatatype>() {
-        protected boolean equal(InternalDatatype object1,InternalDatatype object2) {
+        protected boolean equal(@Nonnull InternalDatatype object1, @Nonnull InternalDatatype object2) {
             return object1.m_iri.equals(object2.m_iri);
         }
-        protected int getHashCode(InternalDatatype object) {
+        protected int getHashCode(@Nonnull InternalDatatype object) {
             return object.m_iri.hashCode();
         }
     };
 
+    @Nullable
     public static InternalDatatype create(String uri) {
         return s_interningManager.intern(new InternalDatatype(uri));
     }
 
+    @Nullable
     public static final InternalDatatype RDFS_LITERAL=create("http://www.w3.org/2000/01/rdf-schema#Literal");
 }

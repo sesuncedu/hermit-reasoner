@@ -21,18 +21,22 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class ExitCommand extends AbstractCommand {
 
     public ExitCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "exit";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","exits the curtrent process" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: exit");
         writer.println("    Exits the current process.");
     }

@@ -19,12 +19,16 @@ package org.semanticweb.HermiT.blocking;
 
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nullable;
+
 public abstract class BlockingSignature {
+    @Nullable
     protected BlockingSignature m_nextEntry;
     
     public BlockingSignature() {
         m_nextEntry=null;
     }
+    @Nullable
     public final BlockingSignature getNextEntry() {
         return m_nextEntry;
     }

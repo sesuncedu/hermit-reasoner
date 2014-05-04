@@ -1,5 +1,7 @@
 package rationals;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.util.BitSet;
 import java.util.Collection;
@@ -40,6 +42,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see salvo.jesus.graph.Vertex#getObject()
      */
+    @Nonnull
     public Object getObject() {
       return new Integer(i);
     }
@@ -58,6 +61,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see rationals.State#setInitial(boolean)
      */
+    @Nonnull
     public State setInitial(boolean initial) {
       this.initial = initial;
       if(initial)
@@ -72,6 +76,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see rationals.State#setTerminal(boolean)
      */
+    @Nonnull
     public State setTerminal(boolean terminal) {
       this.terminal = terminal;
       if(terminal)
@@ -124,7 +129,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
     /**
      * @param set
      */
-    public DefaultStateSet(DefaultStateSet set, DefaultStateFactory df) {
+    public DefaultStateSet(@Nonnull DefaultStateSet set, DefaultStateFactory df) {
       this.bits = (BitSet) set.bits.clone();
       this.df = df;
     }
@@ -145,6 +150,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
       return bits.hashCode();
     }
 
+    @Nonnull
     public String toString() {
       StringBuffer sb = new StringBuffer();
       sb.append('[');
@@ -160,8 +166,10 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
 
     int bit = -1;
 
+    @Nonnull
     BitSet bits = new BitSet();
 
+    @Nonnull
     Iterator it = new Iterator() {
 
       public void remove() {
@@ -173,6 +181,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
         return bits.nextSetBit(bit) > -1;
       }
 
+      @Nonnull
       public Object next() {
         bit = bits.nextSetBit(bit);
         if (bit == -1)
@@ -223,6 +232,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#toArray()
      */
+    @Nonnull
     public Object[] toArray() {
       Object[] ret = new Object[size()];
       Iterator it = iterator();
@@ -276,7 +286,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#addAll(java.util.Collection)
      */
-    public boolean addAll(Collection c) {
+    public boolean addAll(@Nonnull Collection c) {
       DefaultStateSet dss = (DefaultStateSet) c;
       bits.or(dss.bits);
       modcount++;
@@ -288,7 +298,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#containsAll(java.util.Collection)
      */
-    public boolean containsAll(Collection c) {
+    public boolean containsAll(@Nonnull Collection c) {
       DefaultStateSet dss = (DefaultStateSet) c;
       BitSet bs = new BitSet();
       bs.or(bits);
@@ -302,7 +312,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#removeAll(java.util.Collection)
      */
-    public boolean removeAll(Collection c) {
+    public boolean removeAll(@Nonnull Collection c) {
       DefaultStateSet dss = (DefaultStateSet) c;
       bits.andNot(dss.bits);
       modcount++;
@@ -314,7 +324,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#retainAll(java.util.Collection)
      */
-    public boolean retainAll(Collection c) {
+    public boolean retainAll(@Nonnull Collection c) {
       DefaultStateSet dss = (DefaultStateSet) c;
       bits.and(dss.bits);
       modcount++;
@@ -326,6 +336,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#iterator()
      */
+    @Nonnull
     public Iterator iterator() {
       /* reset iterator */
       bit = modcount = mods = 0;
@@ -337,7 +348,8 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
      * 
      * @see java.util.Set#toArray(java.lang.Object[])
      */
-    public Object[] toArray(Object[] a) {
+    @Nonnull
+    public Object[] toArray(@Nonnull Object[] a) {
       Object[] ret;
       if (a.length == size())
         ret = a;
@@ -383,6 +395,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
    *          if true, this state will be terminal; otherwise this state will be
    *          non terminal.
    */
+  @Nonnull
   public State create(boolean initial, boolean terminal) {
     return new DefaultState(id++, initial, terminal);
   }
@@ -392,6 +405,7 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
    * 
    * @see rationals.StateFactory#stateSet()
    */
+  @Nonnull
   public Set stateSet() {
     return new DefaultStateSet(this);
   }
@@ -401,10 +415,12 @@ public class DefaultStateFactory implements StateFactory, Cloneable {
    * 
    * @see rationals.StateFactory#stateSet(java.util.Set)
    */
+  @Nonnull
   public Set stateSet(Set s) {
     return new DefaultStateSet((DefaultStateSet) s, this);
   }
 
+  @Nullable
   public Object clone() {
     DefaultStateFactory cl;
     try {

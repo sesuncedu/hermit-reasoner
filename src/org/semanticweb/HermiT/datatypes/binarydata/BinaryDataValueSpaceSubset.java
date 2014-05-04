@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 
+import javax.annotation.Nonnull;
+
 public class BinaryDataValueSpaceSubset implements ValueSpaceSubset {
     protected final List<BinaryDataLengthInterval> m_intervals;
     
@@ -50,10 +52,11 @@ public class BinaryDataValueSpaceSubset implements ValueSpaceSubset {
         }
         return false;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         for (int index=m_intervals.size()-1;index>=0;--index)
             m_intervals.get(index).enumerateValues(dataValues);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("binaryData{");

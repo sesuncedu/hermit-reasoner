@@ -35,22 +35,37 @@ import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Role;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class ExtensionManager implements Serializable {
     private static final long serialVersionUID=5900300914631070591L;
 
     protected final Tableau m_tableau;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final DependencySetFactory m_dependencySetFactory;
+    @Nonnull
     protected final Map<Integer,ExtensionTable> m_extensionTablesByArity;
+    @Nonnull
     protected final ExtensionTable[] m_allExtensionTablesArray;
+    @Nonnull
     protected final ExtensionTable m_binaryExtensionTable;
+    @Nonnull
     protected final ExtensionTable m_ternaryExtensionTable;
+    @Nonnull
     protected final Object[] m_binaryAuxiliaryTupleContains;
+    @Nonnull
     protected final Object[] m_binaryAuxiliaryTupleAdd;
+    @Nonnull
     protected final Object[] m_ternaryAuxiliaryTupleContains;
+    @Nonnull
     protected final Object[] m_ternaryAuxiliaryTupleAdd;
+    @Nonnull
     protected final Object[] m_fouraryAuxiliaryTupleContains;
+    @Nonnull
     protected final Object[] m_fouraryAuxiliaryTupleAdd;
+    @Nullable
     protected PermanentDependencySet m_clashDependencySet;
     protected boolean m_addActive;
 
@@ -141,9 +156,11 @@ public final class ExtensionManager implements Serializable {
         for (int index=m_allExtensionTablesArray.length-1;index>=0;--index)
             m_allExtensionTablesArray[index].backtrack();
     }
+    @Nonnull
     public ExtensionTable getBinaryExtensionTable() {
         return m_binaryExtensionTable;
     }
+    @Nonnull
     public ExtensionTable getTernaryExtensionTable() {
         return m_ternaryExtensionTable;
     }
@@ -157,6 +174,7 @@ public final class ExtensionManager implements Serializable {
             return m_extensionTablesByArity.get(arity);
         }
     }
+    @Nonnull
     public Collection<ExtensionTable> getExtensionTables() {
         return m_extensionTablesByArity.values();
     }
@@ -182,13 +200,14 @@ public final class ExtensionManager implements Serializable {
         if (m_tableauMonitor!=null)
             m_tableauMonitor.clashDetected();
     }
+    @Nullable
     public DependencySet getClashDependencySet() {
         return m_clashDependencySet;
     }
     public boolean containsClash() {
         return m_clashDependencySet!=null;
     }
-    public boolean containsConceptAssertion(Concept concept,Node node) {
+    public boolean containsConceptAssertion(Concept concept, @Nonnull Node node) {
         if (node.getNodeType().isAbstract() && AtomicConcept.THING.equals(concept))
             return true;
         else {
@@ -197,7 +216,7 @@ public final class ExtensionManager implements Serializable {
             return m_binaryExtensionTable.containsTuple(m_binaryAuxiliaryTupleContains);
         }
     }
-    public boolean containsDataRangeAssertion(DataRange range,Node node) {
+    public boolean containsDataRangeAssertion(DataRange range, @Nonnull Node node) {
         if (!node.getNodeType().isAbstract() && InternalDatatype.RDFS_LITERAL.equals(range))
             return true;
         else {
@@ -245,10 +264,10 @@ public final class ExtensionManager implements Serializable {
         m_fouraryAuxiliaryTupleContains[3]=node2;
         return containsTuple(m_fouraryAuxiliaryTupleContains);
     }
-    public boolean containsAnnotatedEquality(AnnotatedEquality annotatedEquality,Node node0,Node node1,Node node2) {
+    public boolean containsAnnotatedEquality(AnnotatedEquality annotatedEquality, @Nonnull Node node0, @Nonnull Node node1, @Nonnull Node node2) {
         return m_tableau.m_nominalIntroductionManager.canForgetAnnotation(annotatedEquality,node0,node1,node2) && node0==node1;
     }
-    public boolean containsTuple(Object[] tuple) {
+    public boolean containsTuple(@Nonnull Object[] tuple) {
         if (tuple.length==0)
             return containsClash();
         else if (AtomicConcept.THING.equals(tuple[0]))
@@ -260,6 +279,7 @@ public final class ExtensionManager implements Serializable {
         else
             return getExtensionTable(tuple.length).containsTuple(tuple);
     }
+    @Nullable
     public DependencySet getConceptAssertionDependencySet(Concept concept,Node node) {
         if (AtomicConcept.THING.equals(concept))
             return m_dependencySetFactory.emptySet();
@@ -269,6 +289,7 @@ public final class ExtensionManager implements Serializable {
             return m_binaryExtensionTable.getDependencySet(m_binaryAuxiliaryTupleContains);
         }
     }
+    @Nullable
     public DependencySet getDataRangeAssertionDependencySet(DataRange range,Node node) {
         if (InternalDatatype.RDFS_LITERAL.equals(range))
             return m_dependencySetFactory.emptySet();
@@ -278,6 +299,7 @@ public final class ExtensionManager implements Serializable {
             return m_binaryExtensionTable.getDependencySet(m_binaryAuxiliaryTupleContains);
         }
     }
+    @Nullable
     public DependencySet getRoleAssertionDependencySet(Role role,Node nodeFrom,Node nodeTo) {
         if (role instanceof AtomicRole) {
             m_ternaryAuxiliaryTupleContains[0]=role;
@@ -291,11 +313,13 @@ public final class ExtensionManager implements Serializable {
         }
         return m_ternaryExtensionTable.getDependencySet(m_ternaryAuxiliaryTupleContains);
     }
+    @Nullable
     public DependencySet getAssertionDependencySet(DLPredicate dlPredicate,Node node) {
         m_binaryAuxiliaryTupleContains[0]=dlPredicate;
         m_binaryAuxiliaryTupleContains[1]=node;
         return m_binaryExtensionTable.getDependencySet(m_binaryAuxiliaryTupleContains);
     }
+    @Nullable
     public DependencySet getAssertionDependencySet(DLPredicate dlPredicate,Node node0,Node node1) {
         if (Equality.INSTANCE.equals(dlPredicate))
             return node0==node1 ? m_dependencySetFactory.emptySet() : null;
@@ -306,6 +330,7 @@ public final class ExtensionManager implements Serializable {
             return m_ternaryExtensionTable.getDependencySet(m_ternaryAuxiliaryTupleContains);
         }
     }
+    @Nullable
     public DependencySet getAssertionDependencySet(DLPredicate dlPredicate,Node node0,Node node1,Node node2) {
         m_fouraryAuxiliaryTupleContains[0]=dlPredicate;
         m_fouraryAuxiliaryTupleContains[1]=node0;
@@ -313,13 +338,14 @@ public final class ExtensionManager implements Serializable {
         m_fouraryAuxiliaryTupleContains[3]=node2;
         return getTupleDependencySet(m_fouraryAuxiliaryTupleContains);
     }
-    public DependencySet getTupleDependencySet(Object[] tuple) {
+    @Nullable
+    public DependencySet getTupleDependencySet(@Nonnull Object[] tuple) {
         if (tuple.length==0)
             return m_clashDependencySet;
         else
             return getExtensionTable(tuple.length).getDependencySet(tuple);
     }
-    public boolean isCore(Object[] tuple) {
+    public boolean isCore(@Nonnull Object[] tuple) {
         if (tuple.length==0)
             return true;
         else
@@ -351,7 +377,7 @@ public final class ExtensionManager implements Serializable {
             m_addActive=false;
         }
     }
-    public boolean addRoleAssertion(Role role,Node nodeFrom,Node nodeTo,DependencySet dependencySet,boolean isCore) {
+    public boolean addRoleAssertion(Role role, @Nonnull Node nodeFrom, @Nonnull Node nodeTo,DependencySet dependencySet,boolean isCore) {
         if (role instanceof AtomicRole)
             return addAssertion((AtomicRole)role,nodeFrom,nodeTo,dependencySet,isCore);
         else
@@ -370,7 +396,7 @@ public final class ExtensionManager implements Serializable {
             m_addActive=false;
         }
     }
-    public boolean addAssertion(DLPredicate dlPredicate,Node node0,Node node1,DependencySet dependencySet,boolean isCore) {
+    public boolean addAssertion(DLPredicate dlPredicate, @Nonnull Node node0, @Nonnull Node node1,DependencySet dependencySet,boolean isCore) {
         if (Equality.INSTANCE.equals(dlPredicate))
             return m_tableau.m_mergingManager.mergeNodes(node0,node1,dependencySet);
         else {
@@ -397,10 +423,10 @@ public final class ExtensionManager implements Serializable {
         m_fouraryAuxiliaryTupleAdd[3]=node2;
         return addTuple(m_fouraryAuxiliaryTupleAdd,dependencySet,isCore);
     }
-    public boolean addAnnotatedEquality(AnnotatedEquality annotatedEquality,Node node0,Node node1,Node node2,DependencySet dependencySet) {
+    public boolean addAnnotatedEquality(@Nonnull AnnotatedEquality annotatedEquality, @Nonnull Node node0, @Nonnull Node node1, @Nonnull Node node2,DependencySet dependencySet) {
         return m_tableau.m_nominalIntroductionManager.addAnnotatedEquality(annotatedEquality,node0,node1,node2,dependencySet);
     }
-    public boolean addTuple(Object[] tuple,DependencySet dependencySet,boolean isCore) {
+    public boolean addTuple(@Nonnull Object[] tuple,DependencySet dependencySet,boolean isCore) {
         if (tuple.length==0) {
             boolean result=(m_clashDependencySet==null);
             setClash(dependencySet);

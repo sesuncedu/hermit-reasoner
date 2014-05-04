@@ -37,6 +37,9 @@ import java.util.TreeSet;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a DL ontology as a set of rules.
  */
@@ -53,20 +56,29 @@ public class DLOntology implements Serializable {
     protected final boolean m_hasNominals;
     protected final boolean m_hasDatatypes;
     protected final boolean m_isHorn;
+    @Nullable
     protected final Set<AtomicConcept> m_allAtomicConcepts;
     protected final int m_numberOfExternalConcepts;
+    @Nullable
     protected final Set<AtomicRole> m_allAtomicObjectRoles;
+    @Nullable
     protected final Set<Role> m_allComplexObjectRoles;
+    @Nullable
     protected final Set<AtomicRole> m_allAtomicDataRoles;
+    @Nullable
     protected final Set<DatatypeRestriction> m_allUnknownDatatypeRestrictions;
+    @Nullable
     protected final Set<String> m_definedDatatypeIRIs;
+    @Nullable
     protected final Set<Individual> m_allIndividuals;
+    @Nonnull
     protected final Set<DescriptionGraph> m_allDescriptionGraphs;
+    @Nonnull
     protected final Map<AtomicRole,Map<Individual,Set<Constant>>> m_dataPropertyAssertions;
 
-    public DLOntology(String ontologyIRI,Set<DLClause> dlClauses,Set<Atom> positiveFacts,Set<Atom> negativeFacts, Set<AtomicConcept> atomicConcepts,
-            Set<AtomicRole> atomicObjectRoles,Set<Role> allComplexObjectRoles,Set<AtomicRole> atomicDataRoles,
-            Set<DatatypeRestriction> allUnknownDatatypeRestrictions,Set<String> definedDatatypeIRIs,Set<Individual> individuals,
+    public DLOntology(String ontologyIRI,Set<DLClause> dlClauses,Set<Atom> positiveFacts,Set<Atom> negativeFacts, @Nullable Set<AtomicConcept> atomicConcepts,
+            @Nullable Set<AtomicRole> atomicObjectRoles, @Nullable Set<Role> allComplexObjectRoles, @Nullable Set<AtomicRole> atomicDataRoles,
+            @Nullable Set<DatatypeRestriction> allUnknownDatatypeRestrictions, @Nullable Set<String> definedDatatypeIRIs, @Nullable Set<Individual> individuals,
             boolean hasInverseRoles,boolean hasAtMostRestrictions,boolean hasNominals,boolean hasDatatypes) {
         m_ontologyIRI=ontologyIRI;
         m_dlClauses=dlClauses;
@@ -183,6 +195,7 @@ public class DLOntology implements Serializable {
     public String getOntologyIRI() {
         return m_ontologyIRI;
     }
+    @Nullable
     public Set<AtomicConcept> getAllAtomicConcepts() {
         return m_allAtomicConcepts;
     }
@@ -192,33 +205,39 @@ public class DLOntology implements Serializable {
     public int getNumberOfExternalConcepts() {
         return m_numberOfExternalConcepts;
     }
+    @Nullable
     public Set<AtomicRole> getAllAtomicObjectRoles() {
         return m_allAtomicObjectRoles;
     }
     public boolean containsObjectRole(AtomicRole role) {
     	return m_allAtomicObjectRoles.contains(role);
     }
+    @Nullable
     public Set<Role> getAllComplexObjectRoles() {
         return m_allComplexObjectRoles;
     }
     public boolean isComplexObjectRole(Role role) {
         return m_allComplexObjectRoles.contains(role);
     }
+    @Nullable
     public Set<AtomicRole> getAllAtomicDataRoles() {
         return m_allAtomicDataRoles;
     }
     public boolean containsDataRole(AtomicRole role) {
     	return m_allAtomicDataRoles.contains(role);
     }
+    @Nullable
     public Set<DatatypeRestriction> getAllUnknownDatatypeRestrictions() {
         return m_allUnknownDatatypeRestrictions;
     }
+    @Nullable
     public Set<Individual> getAllIndividuals() {
         return m_allIndividuals;
     }
     public boolean containsIndividual(Individual individual) {
     	return m_allIndividuals.contains(individual);
     }
+    @Nonnull
     public Set<DescriptionGraph> getAllDescriptionGraphs() {
         return m_allDescriptionGraphs;
     }
@@ -228,6 +247,7 @@ public class DLOntology implements Serializable {
     public Set<Atom> getPositiveFacts() {
         return m_positiveFacts;
     }
+    @Nonnull
     public Map<AtomicRole,Map<Individual,Set<Constant>>> getDataPropertyAssertions() {
         return m_dataPropertyAssertions;
     }
@@ -252,9 +272,11 @@ public class DLOntology implements Serializable {
     public boolean isHorn() {
         return m_isHorn;
     }
+    @Nullable
     public Set<String> getDefinedDatatypeIRIs() {
         return m_definedDatatypeIRIs;
     }
+    @Nonnull
     protected Set<AtomicConcept> getBodyOnlyAtomicConcepts() {
         Set<AtomicConcept> bodyOnlyAtomicConcepts=new HashSet<AtomicConcept>(m_allAtomicConcepts);
         for (DLClause dlClause : m_dlClauses)
@@ -266,6 +288,7 @@ public class DLOntology implements Serializable {
             }
         return bodyOnlyAtomicConcepts;
     }
+    @Nonnull
     protected Set<AtomicRole> computeGraphAtomicRoles() {
         Set<AtomicRole> graphAtomicRoles=new HashSet<AtomicRole>();
         for (DescriptionGraph descriptionGraph : m_allDescriptionGraphs)
@@ -283,7 +306,7 @@ public class DLOntology implements Serializable {
         }
         return graphAtomicRoles;
     }
-    protected boolean containsAtomicRoles(DLClause dlClause,Set<AtomicRole> roles) {
+    protected boolean containsAtomicRoles(@Nonnull DLClause dlClause, @Nonnull Set<AtomicRole> roles) {
         for (int atomIndex=0;atomIndex<dlClause.getBodyLength();atomIndex++) {
             DLPredicate dlPredicate=dlClause.getBodyAtom(atomIndex).getDLPredicate();
             if (dlPredicate instanceof AtomicRole && roles.contains(dlPredicate))
@@ -296,7 +319,7 @@ public class DLOntology implements Serializable {
         }
         return false;
     }
-    protected boolean addAtomicRoles(DLClause dlClause,Set<AtomicRole> roles) {
+    protected boolean addAtomicRoles(@Nonnull DLClause dlClause, @Nonnull Set<AtomicRole> roles) {
         boolean change=false;
         for (int atomIndex=0;atomIndex<dlClause.getBodyLength();atomIndex++) {
             DLPredicate dlPredicate=dlClause.getBodyAtom(atomIndex).getDLPredicate();
@@ -312,7 +335,8 @@ public class DLOntology implements Serializable {
         }
         return change;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         StringBuffer stringBuffer=new StringBuffer();
         stringBuffer.append("Prefixes: [");
         stringBuffer.append(CRLF);
@@ -381,10 +405,12 @@ public class DLOntology implements Serializable {
         stringBuffer.append("]");
         return stringBuffer.toString();
     }
+    @Nonnull
     public String getStatistics() {
         return getStatistics(null,null,null);
     }
-    protected String getStatistics(Integer numDeterministicClauses, Integer numNondeterministicClauses, Integer numDisjunctions) {
+    @Nonnull
+    protected String getStatistics(@Nullable Integer numDeterministicClauses, @Nullable Integer numNondeterministicClauses, @Nullable Integer numDisjunctions) {
         if (numDeterministicClauses==null || numNondeterministicClauses==null || numDisjunctions==null) {
             numDeterministicClauses=0;
             numNondeterministicClauses=0;
@@ -430,10 +456,11 @@ public class DLOntology implements Serializable {
         stringBuffer.append("]");
         return stringBuffer.toString();
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
-    public void save(File file) throws IOException {
+    public void save(@Nonnull File file) throws IOException {
         OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(file));
         try {
             save(outputStream);
@@ -447,6 +474,7 @@ public class DLOntology implements Serializable {
         objectOutputStream.writeObject(this);
         objectOutputStream.flush();
     }
+    @Nonnull
     public static DLOntology load(InputStream inputStream) throws IOException {
         try {
             ObjectInputStream objectInputStream=new ObjectInputStream(inputStream);
@@ -458,7 +486,8 @@ public class DLOntology implements Serializable {
             throw error;
         }
     }
-    public static DLOntology load(File file) throws IOException {
+    @Nonnull
+    public static DLOntology load(@Nonnull File file) throws IOException {
         InputStream inputStream=new BufferedInputStream(new FileInputStream(file));
         try {
             return load(inputStream);
@@ -472,10 +501,11 @@ public class DLOntology implements Serializable {
         private static final long serialVersionUID=2386841732225838685L;
         public static final Comparator<AtomicConcept> INSTANCE=new AtomicConceptComparator();
 
-        public int compare(AtomicConcept o1,AtomicConcept o2) {
+        public int compare(@Nonnull AtomicConcept o1, @Nonnull AtomicConcept o2) {
             return o1.getIRI().compareTo(o2.getIRI());
         }
 
+        @Nonnull
         protected Object readResolve() {
             return INSTANCE;
         }
@@ -485,10 +515,11 @@ public class DLOntology implements Serializable {
         private static final long serialVersionUID=3483541702854959793L;
         public static final Comparator<AtomicRole> INSTANCE=new AtomicRoleComparator();
 
-        public int compare(AtomicRole o1,AtomicRole o2) {
+        public int compare(@Nonnull AtomicRole o1, @Nonnull AtomicRole o2) {
             return o1.getIRI().compareTo(o2.getIRI());
         }
 
+        @Nonnull
         protected Object readResolve() {
             return INSTANCE;
         }
@@ -498,10 +529,11 @@ public class DLOntology implements Serializable {
         private static final long serialVersionUID=2386841732225838685L;
         public static final Comparator<Individual> INSTANCE=new IndividualComparator();
 
-        public int compare(Individual o1,Individual o2) {
+        public int compare(@Nonnull Individual o1, @Nonnull Individual o2) {
             return o1.getIRI().compareTo(o2.getIRI());
         }
 
+        @Nonnull
         protected Object readResolve() {
             return INSTANCE;
         }

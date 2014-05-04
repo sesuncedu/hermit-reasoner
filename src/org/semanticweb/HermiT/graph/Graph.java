@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.graph;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,9 @@ import java.util.Set;
 public class Graph<T> implements Serializable {
     private static final long serialVersionUID = 5372948202031042380L;
 
+    @Nonnull
     protected final Set<T> m_elements;
+    @Nonnull
     protected final Map<T,Set<T>> m_successorsByNodes;
 
     public Graph() {
@@ -48,7 +51,7 @@ public class Graph<T> implements Serializable {
         m_elements.add(from);
         m_elements.add(to);
     }
-    public void addEdges(T from,Set<T> to) {
+    public void addEdges(T from, @Nonnull Set<T> to) {
         Set<T> successors=m_successorsByNodes.get(from);
         if (successors==null) {
             successors=new HashSet<T>();
@@ -58,6 +61,7 @@ public class Graph<T> implements Serializable {
         m_elements.add(from);
         m_elements.addAll(to);
     }
+    @Nonnull
     public Set<T> getElements() {
         return m_elements;
     }
@@ -82,6 +86,7 @@ public class Graph<T> implements Serializable {
             }
         }
     }
+    @Nonnull
     public Graph<T> getInverse() {
         Graph<T> result=new Graph<T>();
         for (Map.Entry<T,Set<T>> entry : m_successorsByNodes.entrySet()) {
@@ -91,6 +96,7 @@ public class Graph<T> implements Serializable {
         }
         return result;
     }
+    @Nonnull
     public Graph<T> clone() {
         Graph<T> result=new Graph<T>();
         result.m_elements.addAll( m_elements );
@@ -101,13 +107,13 @@ public class Graph<T> implements Serializable {
         }
         return result;
     }
-	public void removeElements(Set<T> elements) {
+	public void removeElements(@Nonnull Set<T> elements) {
 		for(T element : elements){
 			m_elements.remove( element );
 			m_successorsByNodes.remove( element );
 		}
 	}
-    public boolean isReachableSuccessor(T fromNode,T toNode) {
+    public boolean isReachableSuccessor(@Nonnull T fromNode,T toNode) {
 		if (fromNode.equals(toNode))
 			return true;
 		Set<T> result=new HashSet<T>();
@@ -123,6 +129,7 @@ public class Graph<T> implements Serializable {
 		}
 		return false;
     }
+    @Nonnull
     public Set<T> getReachableSuccessors(T fromNode) {
         Set<T> result = new HashSet<T>();
         Queue<T> toVisit=new LinkedList<T>();
@@ -134,6 +141,7 @@ public class Graph<T> implements Serializable {
         }
         return result;
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         for (T element : m_elements) {

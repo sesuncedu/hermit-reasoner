@@ -45,6 +45,8 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.util.OWLAxiomVisitorAdapter;
 
+import javax.annotation.Nonnull;
+
 public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWLClassExpressionVisitor {
     public boolean m_hasAtMostRestrictions;
     public boolean m_hasInverseRoles;
@@ -52,7 +54,7 @@ public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWL
     public boolean m_hasDatatypes;
     public boolean m_hasSWRLRules;
 
-    public OWLAxiomsExpressivity(OWLAxioms axioms) {
+    public OWLAxiomsExpressivity(@Nonnull OWLAxioms axioms) {
         for (OWLClassExpression[] inclusion : axioms.m_conceptInclusions)
             for (OWLClassExpression description : inclusion)
                 description.accept(this);
@@ -85,7 +87,7 @@ public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWL
         m_hasSWRLRules=!axioms.m_rules.isEmpty();
     }
 
-    protected void visitProperty(OWLObjectPropertyExpression object) {
+    protected void visitProperty(@Nonnull OWLObjectPropertyExpression object) {
         if (object.getSimplified().isAnonymous())
             m_hasInverseRoles=true;
     }
@@ -93,16 +95,16 @@ public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWL
     public void visit(OWLClass desc) {
     }
 
-    public void visit(OWLObjectComplementOf object) {
+    public void visit(@Nonnull OWLObjectComplementOf object) {
         object.getOperand().accept(this);
     }
 
-    public void visit(OWLObjectIntersectionOf object) {
+    public void visit(@Nonnull OWLObjectIntersectionOf object) {
         for (OWLClassExpression description : object.getOperands())
             description.accept(this);
     }
 
-    public void visit(OWLObjectUnionOf object) {
+    public void visit(@Nonnull OWLObjectUnionOf object) {
         for (OWLClassExpression description : object.getOperands())
             description.accept(this);
     }
@@ -111,37 +113,37 @@ public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWL
         m_hasNominals=true;
     }
 
-    public void visit(OWLObjectSomeValuesFrom object) {
+    public void visit(@Nonnull OWLObjectSomeValuesFrom object) {
         visitProperty(object.getProperty());
         object.getFiller().accept(this);
     }
 
-    public void visit(OWLObjectHasValue object) {
+    public void visit(@Nonnull OWLObjectHasValue object) {
         m_hasNominals=true;
         visitProperty(object.getProperty());
     }
 
-    public void visit(OWLObjectHasSelf object) {
+    public void visit(@Nonnull OWLObjectHasSelf object) {
         visitProperty(object.getProperty());
     }
 
-    public void visit(OWLObjectAllValuesFrom object) {
-        visitProperty(object.getProperty());
-        object.getFiller().accept(this);
-    }
-
-    public void visit(OWLObjectMinCardinality object) {
+    public void visit(@Nonnull OWLObjectAllValuesFrom object) {
         visitProperty(object.getProperty());
         object.getFiller().accept(this);
     }
 
-    public void visit(OWLObjectMaxCardinality object) {
+    public void visit(@Nonnull OWLObjectMinCardinality object) {
+        visitProperty(object.getProperty());
+        object.getFiller().accept(this);
+    }
+
+    public void visit(@Nonnull OWLObjectMaxCardinality object) {
         m_hasAtMostRestrictions=true;
         visitProperty(object.getProperty());
         object.getFiller().accept(this);
     }
 
-    public void visit(OWLObjectExactCardinality object) {
+    public void visit(@Nonnull OWLObjectExactCardinality object) {
         m_hasAtMostRestrictions=true;
         visitProperty(object.getProperty());
         object.getFiller().accept(this);
@@ -171,15 +173,15 @@ public class OWLAxiomsExpressivity extends OWLAxiomVisitorAdapter implements OWL
         m_hasDatatypes=true;
     }
 
-     public void visit(OWLClassAssertionAxiom object) {
+     public void visit(@Nonnull OWLClassAssertionAxiom object) {
         object.getClassExpression().accept(OWLAxiomsExpressivity.this);
     }
 
-    public void visit(OWLObjectPropertyAssertionAxiom object) {
+    public void visit(@Nonnull OWLObjectPropertyAssertionAxiom object) {
         visitProperty(object.getProperty());
     }
 
-    public void visit(OWLNegativeObjectPropertyAssertionAxiom object) {
+    public void visit(@Nonnull OWLNegativeObjectPropertyAssertionAxiom object) {
         visitProperty(object.getProperty());
     }
 

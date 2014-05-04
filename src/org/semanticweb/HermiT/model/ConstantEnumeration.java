@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A data range that consists of a given set of constants.
  */
@@ -36,6 +39,7 @@ public class ConstantEnumeration extends AtomicDataRange {
     public Constant getConstant(int index) {
         return m_constants[index];
     }
+    @Nullable
     public LiteralDataRange getNegation() {
         return AtomicNegationDataRange.create(this);
     }
@@ -45,7 +49,8 @@ public class ConstantEnumeration extends AtomicDataRange {
     public boolean isAlwaysFalse() {
         return m_constants.length==0;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         buffer.append("{ ");
         for (int index=0;index<m_constants.length;index++) {
@@ -56,12 +61,14 @@ public class ConstantEnumeration extends AtomicDataRange {
         buffer.append(" }");
         return buffer.toString();
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<ConstantEnumeration> s_interningManager=new InterningManager<ConstantEnumeration>() {
-        protected boolean equal(ConstantEnumeration object1,ConstantEnumeration object2) {
+        protected boolean equal(@Nonnull ConstantEnumeration object1, @Nonnull ConstantEnumeration object2) {
             if (object1.m_constants.length!=object2.m_constants.length)
                 return false;
             for (int index=object1.m_constants.length-1;index>=0;--index)
@@ -69,13 +76,13 @@ public class ConstantEnumeration extends AtomicDataRange {
                     return false;
             return true;
         }
-        protected boolean contains(Constant constant,Constant[] constants) {
+        protected boolean contains(Constant constant, @Nonnull Constant[] constants) {
             for (int i=constants.length-1;i>=0;--i)
                 if (constants[i].equals(constant))
                     return true;
             return false;
         }
-        protected int getHashCode(ConstantEnumeration object) {
+        protected int getHashCode(@Nonnull ConstantEnumeration object) {
             int hashCode=0;
             for (int index=object.m_constants.length-1;index>=0;--index)
                 hashCode+=object.m_constants[index].hashCode();
@@ -83,6 +90,7 @@ public class ConstantEnumeration extends AtomicDataRange {
         }
     };
 
+    @Nullable
     public static ConstantEnumeration create(Constant[] constants) {
         return s_interningManager.intern(new ConstantEnumeration(constants));
     }

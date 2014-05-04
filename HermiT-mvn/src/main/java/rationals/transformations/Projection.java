@@ -45,6 +45,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class computes the projection of an Automaton on given alphabet. The
  * projection alphabet is set by the class's constructor.
@@ -70,7 +72,8 @@ public class Projection implements UnaryTransformation {
      * 
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton b = new Automaton();
         Map smap = new HashMap();
         Iterator it = a.delta().iterator();

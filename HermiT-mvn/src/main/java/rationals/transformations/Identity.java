@@ -37,6 +37,8 @@ package rationals.transformations;
 
 import rationals.Automaton;
 
+import javax.annotation.Nonnull;
+
 /**
  * A transformation that simply returns a clone of its argument.
  * 
@@ -48,7 +50,8 @@ public class Identity implements UnaryTransformation {
     /* (non-Javadoc)
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         return (Automaton)a.clone();
     }
 

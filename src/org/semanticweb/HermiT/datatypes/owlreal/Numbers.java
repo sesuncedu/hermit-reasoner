@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.datatypes.owlreal;
 
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -24,10 +25,12 @@ public class Numbers {
     protected enum NumberType {
         INTEGER, LONG, BIG_INTEGER, BIG_DECIMAL, BIG_RATIONAL;
         
-        protected static NumberType getMaxNumberType(NumberType typeN1, NumberType typeN2) {
+        @Nonnull
+        protected static NumberType getMaxNumberType(@Nonnull NumberType typeN1, @Nonnull NumberType typeN2) {
             return (typeN1.ordinal() >= typeN2.ordinal()) ? typeN1 : typeN2;
         }
         
+        @Nonnull
         protected static NumberType getNumberTypeFor(Number n) {
             if (n instanceof Integer)
                 return NumberType.INTEGER;
@@ -91,7 +94,7 @@ public class Numbers {
      * Parses the given string into a Java Number object representing a rational.
      * The Java object is chosen such that .equals() works correctly across all Number-derived objects.
      */
-    public static Number parseRational(String string) throws NumberFormatException {
+    public static Number parseRational(@Nonnull String string) throws NumberFormatException {
         int divideIndex=string.indexOf('/');
         if (divideIndex==-1)
             throw new NumberFormatException("The string does not contain /.");
@@ -121,7 +124,7 @@ public class Numbers {
         }
         return new BigRational(numerator,denominator);
     }
-    public static int compare(Number n1,Number n2) {
+    public static int compare(@Nonnull Number n1, @Nonnull Number n2) {
         if (n1.equals(n2))
             return 0;
         else if (n1.equals(MinusInfinity.INSTANCE) || n2.equals(PlusInfinity.INSTANCE))
@@ -162,7 +165,7 @@ public class Numbers {
         }
     }
 
-    protected static BigInteger toBigInteger(Number n,NumberType nType) {
+    protected static BigInteger toBigInteger(@Nonnull Number n, @Nonnull NumberType nType) {
         switch (nType) {
         case INTEGER:
             // fall through to next case
@@ -174,7 +177,7 @@ public class Numbers {
             throw new IllegalArgumentException();
         }
     }
-    protected static BigDecimal toBigDecimal(Number n,NumberType nType) {
+    protected static BigDecimal toBigDecimal(@Nonnull Number n, @Nonnull NumberType nType) {
         switch (nType) {
         case INTEGER:
         case LONG:
@@ -191,7 +194,8 @@ public class Numbers {
             throw new IllegalArgumentException();
         }
     }
-    protected static BigRational toBigRational(Number n,NumberType nType) {
+    @Nonnull
+    protected static BigRational toBigRational(@Nonnull Number n, @Nonnull NumberType nType) {
         // The resulting rational is not necessarily reduced!
         // This means that .equals() and .hashCode() need not
         // work properly. This, however, should not matter,
@@ -220,7 +224,7 @@ public class Numbers {
         UPPER,LOWER
     }
     
-    public static Number getNearestIntegerInBound(Number bound,BoundaryDirection boundaryDirection,boolean boundIsInclusive) {
+    public static Number getNearestIntegerInBound(@Nonnull Number bound,BoundaryDirection boundaryDirection,boolean boundIsInclusive) {
         switch (NumberType.getNumberTypeFor(bound)) {
         case INTEGER:
             if (boundIsInclusive)
@@ -310,7 +314,7 @@ public class Numbers {
             throw new IllegalArgumentException();
         }
     }
-    public static int subtractIntegerIntervalSizeFrom(Number lowerBoundInclusive,Number upperBoundInclusive,int argument) {
+    public static int subtractIntegerIntervalSizeFrom(@Nonnull Number lowerBoundInclusive, @Nonnull Number upperBoundInclusive,int argument) {
         if (argument<=0)
             return 0;
         if (lowerBoundInclusive.equals(upperBoundInclusive))
@@ -344,7 +348,7 @@ public class Numbers {
             throw new IllegalArgumentException();
         }
     }
-    public static Number nextInteger(Number integer) {
+    public static Number nextInteger(@Nonnull Number integer) {
         switch (NumberType.getNumberTypeFor(integer)) {
         case INTEGER: {
                 int value=integer.intValue();

@@ -30,27 +30,31 @@ import org.semanticweb.HermiT.model.NegatedAtomicRole;
 import org.semanticweb.HermiT.tableau.ExtensionTable;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ShowModelCommand extends AbstractCommand {
 
     public ShowModelCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showModel";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] {
             "","prints all assertions",
             "predicate","prints all assertions for the given predicate"
         };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showModel");
         writer.println("    Prints the entire current model.");
         writer.println("usage: showModel predicate");
         writer.println("    Prints all assertions containing the supplied predicate.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         Set<Object[]> facts=new TreeSet<Object[]>(Printing.FactComparator.INSTANCE);
         String title;
         if (args.length<2) {
@@ -118,14 +122,14 @@ public class ShowModelCommand extends AbstractCommand {
         showTextInWindow(buffer.toString(),title);
         selectConsoleWindow();
     }
-    protected void loadFacts(Set<Object[]> facts,ExtensionTable.Retrieval retrieval) {
+    protected void loadFacts(@Nonnull Set<Object[]> facts, @Nonnull ExtensionTable.Retrieval retrieval) {
         retrieval.open();
         while (!retrieval.afterLast()) {
             facts.add(retrieval.getTupleBuffer().clone());
             retrieval.next();
         }
     }
-    protected void printFact(Object[] fact,PrintWriter writer) {
+    protected void printFact(@Nonnull Object[] fact, @Nonnull PrintWriter writer) {
         Object dlPredicate=fact[0];
         if (dlPredicate instanceof Concept)
             writer.print(((Concept)dlPredicate).toString(m_debugger.getPrefixes()));

@@ -34,6 +34,9 @@ import org.semanticweb.HermiT.model.DatatypeRestriction;
 
 import dk.brics.automaton.Automaton;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
     protected static final String XSD_NS=Prefixes.s_semanticWebPrefixes.get("xsd:");
     protected static final String RDF_NS=Prefixes.s_semanticWebPrefixes.get("rdf:");
@@ -74,10 +77,11 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
         }
     }
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_subsetsByDatatype.keySet();
     }
-    public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
+    public Object parseLiteral(@Nonnull String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert s_subsetsByDatatype.containsKey(datatypeURI);
         Object dataValue;
         if ((RDF_NS+"PlainLiteral").equals(datatypeURI)) {
@@ -98,7 +102,7 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
         else
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         assert s_subsetsByDatatype.containsKey(datatypeURI);
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
@@ -131,7 +135,8 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
                 throw new UnsupportedFacetException("Facet with URI '"+facetURI+"' is not supported on rdf:PlainLiteral; only xsd:minLength, xsd:maxLength, xsd:length, xsd:pattern, and rdf:langRange are supported, but the ontology contains the restriction: "+this.toString());
         }
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         assert s_subsetsByDatatype.containsKey(datatypeURI);
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0)
@@ -155,7 +160,8 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
                 return new RDFPlainLiteralLengthValueSpaceSubset(intervals[0]);
         }
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         assert s_subsetsByDatatype.containsKey(datatypeURI);
         if (valueSpaceSubset==EMPTY_SUBSET)
@@ -200,7 +206,7 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
             }
         }
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         assert s_subsetsByDatatype.containsKey(datatypeURI);
         if (valueSpaceSubset==EMPTY_SUBSET)
@@ -258,7 +264,7 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
             }
         }
     }
-    protected boolean needsAutomatons(DatatypeRestriction datatypeRestriction) {
+    protected boolean needsAutomatons(@Nonnull DatatypeRestriction datatypeRestriction) {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         if (s_subsetsByDatatype.get(datatypeURI) instanceof RDFPlainLiteralLengthValueSpaceSubset) {
             for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
@@ -271,7 +277,8 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
         else
             return true;
     }
-    protected RDFPlainLiteralLengthInterval[] getIntervalsFor(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    protected RDFPlainLiteralLengthInterval[] getIntervalsFor(@Nonnull DatatypeRestriction datatypeRestriction) {
         RDFPlainLiteralLengthInterval[] intervals=new RDFPlainLiteralLengthInterval[2];
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         assert s_subsetsByDatatype.get(datatypeURI) instanceof RDFPlainLiteralLengthValueSpaceSubset;
@@ -300,13 +307,15 @@ public class RDFPlainLiteralDatatypeHandler implements DatatypeHandler {
         }
         return intervals;
     }
+    @Nullable
     protected Automaton getAutomatonFor(ValueSpaceSubset valueSpaceSubset) {
         if (valueSpaceSubset instanceof RDFPlainLiteralPatternValueSpaceSubset)
             return ((RDFPlainLiteralPatternValueSpaceSubset)valueSpaceSubset).m_automaton;
         else
             return RDFPlainLiteralPatternValueSpaceSubset.toAutomaton((RDFPlainLiteralLengthValueSpaceSubset)valueSpaceSubset);
     }
-    protected Automaton getAutomatonFor(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    protected Automaton getAutomatonFor(@Nonnull DatatypeRestriction datatypeRestriction) {
         String datatypeURI=datatypeRestriction.getDatatypeURI();
         Automaton automaton=RDFPlainLiteralPatternValueSpaceSubset.getDatatypeAutomaton(datatypeURI);
         int minLength=0;

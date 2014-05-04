@@ -23,6 +23,8 @@ import org.semanticweb.HermiT.model.DLPredicate;
 import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.Inequality;
 
+import javax.annotation.Nonnull;
+
 public final class DisjunctionBranchingPoint extends BranchingPoint {
     private static final long serialVersionUID=-8855083430836162354L;
 
@@ -30,12 +32,12 @@ public final class DisjunctionBranchingPoint extends BranchingPoint {
     protected final int[] m_sortedDisjunctIndexes;
     protected int m_currentIndex;
 
-    public DisjunctionBranchingPoint(Tableau tableau,GroundDisjunction groundDisjunction,int[] sortedDisjunctIndexes) {
+    public DisjunctionBranchingPoint(@Nonnull Tableau tableau,GroundDisjunction groundDisjunction,int[] sortedDisjunctIndexes) {
         super(tableau);
         m_groundDisjunction=groundDisjunction;
         m_sortedDisjunctIndexes=sortedDisjunctIndexes;
     }
-    public void startNextChoice(Tableau tableau,DependencySet clashDependencySet) {
+    public void startNextChoice(@Nonnull Tableau tableau,DependencySet clashDependencySet) {
         if (tableau.m_useDisjunctionLearning)
             m_groundDisjunction.getGroundDisjunctionHeader().increaseNumberOfBacktrackings(m_sortedDisjunctIndexes[m_currentIndex]);
         m_currentIndex++;

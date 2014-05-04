@@ -39,11 +39,15 @@ import org.semanticweb.HermiT.model.InternalDatatype;
 import org.semanticweb.HermiT.model.LiteralDataRange;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class DatatypeManager implements Serializable {
     private static final long serialVersionUID=-5304869484553471737L;
 
     protected final InterruptFlag m_interruptFlag;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
     protected final ExtensionTable.Retrieval m_assertionsDeltaOldRetrieval;
     protected final ExtensionTable.Retrieval m_inequalityDeltaOldRetrieval;
@@ -51,14 +55,20 @@ public final class DatatypeManager implements Serializable {
     protected final ExtensionTable.Retrieval m_inequality02Retrieval;
     protected final ExtensionTable.Retrieval m_assertions0Retrieval;
     protected final ExtensionTable.Retrieval m_assertions1Retrieval;
+    @Nonnull
     protected final DConjunction m_conjunction;
+    @Nonnull
     protected final List<DVariable> m_auxiliaryVariableList;
+    @Nonnull
     protected final UnionDependencySet m_unionDependencySet;
+    @Nonnull
     protected final boolean[] m_newVariableAdded;
+    @Nullable
     protected final Set<DatatypeRestriction> m_unknownDatatypeRestrictionsPermanent;
+    @Nullable
     protected Set<DatatypeRestriction> m_unknownDatatypeRestrictionsAdditional;
 
-    public DatatypeManager(Tableau tableau) {
+    public DatatypeManager(@Nonnull Tableau tableau) {
         m_interruptFlag=tableau.m_interruptFlag;
         m_tableauMonitor=tableau.m_tableauMonitor;
         m_extensionManager=tableau.m_extensionManager;
@@ -82,7 +92,7 @@ public final class DatatypeManager implements Serializable {
         if (tableau.m_additionalDLOntology!=null)
             additionalDLOntologySet(tableau.m_additionalDLOntology);
     }
-    public void additionalDLOntologySet(DLOntology additionalDLOntology) {
+    public void additionalDLOntologySet(@Nonnull DLOntology additionalDLOntology) {
         m_unknownDatatypeRestrictionsAdditional=additionalDLOntology.getAllUnknownDatatypeRestrictions();
     }
     public void additionalDLOntologyCleared() {
@@ -121,7 +131,7 @@ public final class DatatypeManager implements Serializable {
             m_assertionsDeltaOldRetrieval.next();
         }
     }
-    protected void generateInequalitiesFor(DataRange dataRange1,Node node1,DependencySet dependencySet1,DataRange dataRange2) {
+    protected void generateInequalitiesFor(DataRange dataRange1, @Nonnull Node node1,DependencySet dependencySet1,DataRange dataRange2) {
         m_unionDependencySet.clearConstituents();
         m_unionDependencySet.addConstituent(dependencySet1);
         m_unionDependencySet.addConstituent(null);
@@ -231,7 +241,8 @@ public final class DatatypeManager implements Serializable {
             }
         }
     }
-    protected DVariable getAndInitializeVariableFor(Node node,boolean[] newVariableAdded) {
+    @Nullable
+    protected DVariable getAndInitializeVariableFor(@Nonnull Node node,boolean[] newVariableAdded) {
         DVariable variable=m_conjunction.getVariableForEx(node,newVariableAdded);
         if (m_newVariableAdded[0]) {
             m_assertions1Retrieval.getBindingsBuffer()[1]=variable.m_node;
@@ -249,7 +260,7 @@ public final class DatatypeManager implements Serializable {
         }
         return variable;
     }
-    protected void addDataRange(DVariable variable,DataRange dataRange) {
+    protected void addDataRange(@Nonnull DVariable variable,DataRange dataRange) {
         if (dataRange instanceof InternalDatatype) {
             // Internal datatypes are skipped, as they do not contribute to datatype checking.
             // These are used to encode rdfs:Literal and datatype definitions, and to rename complex data ranges.
@@ -328,13 +339,13 @@ public final class DatatypeManager implements Serializable {
                 m_tableauMonitor.datatypeConjunctionCheckingFinished(m_conjunction,!m_extensionManager.containsClash());
         }
     }
-    protected void normalize(DVariable variable) {
+    protected void normalize(@Nonnull DVariable variable) {
         if (!variable.m_positiveConstantEnumerations.isEmpty())
             normalizeAsEnumeration(variable);
         else if (!variable.m_positiveDatatypeRestrictions.isEmpty())
             normalizeAsValueSpaceSubset(variable);
     }
-    protected void normalizeAsEnumeration(DVariable variable) {
+    protected void normalizeAsEnumeration(@Nonnull DVariable variable) {
         variable.m_hasExplicitDataValues=true;
         List<Object> explicitDataValues=variable.m_explicitDataValues;
         List<ConstantEnumeration> positiveConstantEnumerations=variable.m_positiveConstantEnumerations;
@@ -364,20 +375,20 @@ public final class DatatypeManager implements Serializable {
         if (explicitDataValues.isEmpty())
             setClashFor(variable);
     }
-    protected boolean containsDataValue(ConstantEnumeration constantEnumeration,Object dataValue) {
+    protected boolean containsDataValue(@Nonnull ConstantEnumeration constantEnumeration,Object dataValue) {
         for (int index=constantEnumeration.getNumberOfConstants()-1;index>=0;--index)
             if (constantEnumeration.getConstant(index).getDataValue().equals(dataValue))
                 return true;
         return false;
     }
-    protected void eliminateDataValuesUsingValueSpaceSubset(ValueSpaceSubset valueSpaceSubset,List<Object> explicitDataValues,boolean eliminateWhenValue) {
+    protected void eliminateDataValuesUsingValueSpaceSubset(@Nonnull ValueSpaceSubset valueSpaceSubset, @Nonnull List<Object> explicitDataValues,boolean eliminateWhenValue) {
         for (int valueIndex=explicitDataValues.size()-1;valueIndex>=0;--valueIndex) {
             Object dataValue=explicitDataValues.get(valueIndex);
             if (valueSpaceSubset.containsDataValue(dataValue)==eliminateWhenValue)
                 explicitDataValues.remove(valueIndex);
         }
     }
-    protected void normalizeAsValueSpaceSubset(DVariable variable) {
+    protected void normalizeAsValueSpaceSubset(@Nonnull DVariable variable) {
         String mostSpecificDatatypeURI=variable.m_mostSpecificRestriction.getDatatypeURI();
         variable.m_valueSpaceSubset=DatatypeRegistry.createValueSpaceSubset(variable.m_mostSpecificRestriction);
         List<DatatypeRestriction> positiveDatatypeRestrictions=variable.m_positiveDatatypeRestrictions;
@@ -487,7 +498,7 @@ public final class DatatypeManager implements Serializable {
             return false;
         }
     }
-    protected boolean satisfiesNeighbors(DVariable variable,Object dataValue) {
+    protected boolean satisfiesNeighbors(@Nonnull DVariable variable,Object dataValue) {
         for (int neighborIndex=variable.m_unequalTo.size()-1;neighborIndex>=0;--neighborIndex) {
             Object neighborDataValue=variable.m_unequalTo.get(neighborIndex).m_dataValue;
             if (neighborDataValue!=null && neighborDataValue.equals(dataValue))
@@ -495,12 +506,12 @@ public final class DatatypeManager implements Serializable {
         }
         return true;
     }
-    protected void setClashFor(DVariable variable) {
+    protected void setClashFor(@Nonnull DVariable variable) {
         m_unionDependencySet.clearConstituents();
         loadAssertionDependencySets(variable);
         m_extensionManager.setClash(m_unionDependencySet);
     }
-    protected void setClashFor(List<DVariable> variables) {
+    protected void setClashFor(@Nonnull List<DVariable> variables) {
         m_unionDependencySet.clearConstituents();
         for (int nodeIndex=variables.size()-1;nodeIndex>=0;--nodeIndex) {
             DVariable variable=variables.get(nodeIndex);
@@ -513,7 +524,7 @@ public final class DatatypeManager implements Serializable {
         }
         m_extensionManager.setClash(m_unionDependencySet);
     }
-    protected void loadAssertionDependencySets(DVariable variable) {
+    protected void loadAssertionDependencySets(@Nonnull DVariable variable) {
         Node node=variable.m_node;
         for (int index=variable.m_positiveDatatypeRestrictions.size()-1;index>=0;--index) {
             AtomicDataRange dataRange=variable.m_positiveDatatypeRestrictions.get(index);
@@ -539,8 +550,11 @@ public final class DatatypeManager implements Serializable {
 
     public static class DConjunction implements Serializable {
         private static final long serialVersionUID = 3597740301361593691L;
+        @Nonnull
         protected final List<DVariable> m_unusedVariables;
+        @Nonnull
         protected final List<DVariable> m_usedVariables;
+        @Nonnull
         protected final List<DVariable> m_activeVariables;
         protected DVariable[] m_buckets;
         protected int m_numberOfEntries;
@@ -573,7 +587,8 @@ public final class DatatypeManager implements Serializable {
         public List<DVariable> getActiveVariables() {
             return Collections.unmodifiableList(m_activeVariables);
         }
-        public DVariable getVariableFor(Node node) {
+        @Nullable
+        public DVariable getVariableFor(@Nonnull Node node) {
             int index=getIndexFor(node.hashCode(),m_buckets.length);
             DVariable entry=m_buckets[index];
             while (entry!=null) {
@@ -583,7 +598,8 @@ public final class DatatypeManager implements Serializable {
             }
             return null;
         }
-        protected DVariable getVariableForEx(Node node,boolean[] newVariableAdded) {
+        @Nullable
+        protected DVariable getVariableForEx(@Nonnull Node node,boolean[] newVariableAdded) {
             int index=getIndexFor(node.hashCode(),m_buckets.length);
             DVariable entry=m_buckets[index];
             while (entry!=null) {
@@ -623,7 +639,7 @@ public final class DatatypeManager implements Serializable {
             m_buckets=newBuckets;
             m_resizeThreshold=(int)(newCapacity*0.75);
         }
-        protected void addInequality(DVariable node1,DVariable node2) {
+        protected void addInequality(@Nonnull DVariable node1, @Nonnull DVariable node2) {
             // Inequalities between nodes in the tableau are detected by the ExtensionManager.
             // Consequently, the DConjunction should not contain inequalities between DVariables.
             assert node1!=node2;
@@ -646,10 +662,12 @@ public final class DatatypeManager implements Serializable {
             }
             return true;
         }
+        @Nonnull
         public String toString() {
             return toString(Prefixes.STANDARD_PREFIXES);
         }
-        public String toString(Prefixes prefixes) {
+        @Nonnull
+        public String toString(@Nonnull Prefixes prefixes) {
             StringBuffer buffer=new StringBuffer();
             boolean first=true;
             for (int variableIndex=0;variableIndex<m_activeVariables.size();variableIndex++) {
@@ -675,19 +693,32 @@ public final class DatatypeManager implements Serializable {
 
     public static class DVariable implements Serializable {
         private static final long serialVersionUID = -2490195841140286089L;
+        @Nonnull
         protected final List<ConstantEnumeration> m_positiveConstantEnumerations;
+        @Nonnull
         protected final List<ConstantEnumeration> m_negativeConstantEnumerations;
+        @Nonnull
         protected final List<DatatypeRestriction> m_positiveDatatypeRestrictions;
+        @Nonnull
         protected final List<DatatypeRestriction> m_negativeDatatypeRestrictions;
+        @Nonnull
         protected final List<DVariable> m_unequalTo;
+        @Nonnull
         protected final List<DVariable> m_unequalToDirect;
+        @Nonnull
         protected final List<Object> m_forbiddenDataValues;
+        @Nonnull
         protected final List<Object> m_explicitDataValues;
         protected boolean m_hasExplicitDataValues;
+        @Nullable
         protected DatatypeRestriction m_mostSpecificRestriction;
+        @Nullable
         protected Node m_node;
+        @Nullable
         protected DVariable m_nextEntry;
+        @Nullable
         protected ValueSpaceSubset m_valueSpaceSubset;
+        @Nullable
         protected Object m_dataValue;
 
         protected DVariable() {
@@ -732,6 +763,7 @@ public final class DatatypeManager implements Serializable {
             else
                 return true;
         }
+        @Nullable
         public Node getNode() {
             return m_node;
         }
@@ -750,7 +782,7 @@ public final class DatatypeManager implements Serializable {
         public List<DVariable> getUnequalToDirect() {
             return Collections.unmodifiableList(m_unequalToDirect);
         }
-        public boolean hasSameRestrictions(DVariable that) {
+        public boolean hasSameRestrictions(@Nonnull DVariable that) {
             return this==that || (
                 equals(m_positiveConstantEnumerations,that.m_positiveConstantEnumerations) &&
                 equals(m_negativeConstantEnumerations,that.m_negativeConstantEnumerations) &&
@@ -758,7 +790,7 @@ public final class DatatypeManager implements Serializable {
                 equals(m_negativeDatatypeRestrictions,that.m_negativeDatatypeRestrictions)
             );
         }
-        protected static <T> boolean equals(List<T> first,List<T> second) {
+        protected static <T> boolean equals(@Nonnull List<T> first, @Nonnull List<T> second) {
             if (first.size()!=second.size())
                 return false;
             for (int index=first.size()-1;index>=0;--index) {
@@ -768,10 +800,12 @@ public final class DatatypeManager implements Serializable {
             }
             return true;
         }
+        @Nonnull
         public String toString() {
             return toString(Prefixes.STANDARD_PREFIXES);
         }
-        public String toString(Prefixes prefixes) {
+        @Nonnull
+        public String toString(@Nonnull Prefixes prefixes) {
             StringBuffer buffer=new StringBuffer();
             boolean first=true;
             buffer.append('[');
@@ -820,7 +854,7 @@ public final class DatatypeManager implements Serializable {
         private static final long serialVersionUID = 8838838641444833249L;
         public static final Comparator<DVariable> INSTANCE=new SmallestEnumerationFirst();
 
-        public int compare(DVariable o1,DVariable o2) {
+        public int compare(@Nonnull DVariable o1, @Nonnull DVariable o2) {
             return o1.m_explicitDataValues.size()-o2.m_explicitDataValues.size();
         }
 

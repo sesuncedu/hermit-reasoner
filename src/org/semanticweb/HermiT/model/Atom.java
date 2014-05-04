@@ -23,6 +23,9 @@ import java.util.Set;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an atom in a DL clause.
  */
@@ -53,20 +56,21 @@ public class Atom implements Serializable {
     public Term getArgument(int argumentIndex) {
         return m_arguments[argumentIndex];
     }
+    @Nullable
     public Variable getArgumentVariable(int argumentIndex) {
         if (m_arguments[argumentIndex] instanceof Variable)
             return (Variable)m_arguments[argumentIndex];
         else
             return null;
     }
-    public void getVariables(Set<Variable> variables) {
+    public void getVariables(@Nonnull Set<Variable> variables) {
         for (int argumentIndex=m_arguments.length-1;argumentIndex>=0;--argumentIndex) {
             Term argument=m_arguments[argumentIndex];
             if (argument instanceof Variable)
                 variables.add((Variable)argument);
         }
     }
-    public void getIndividuals(Set<Individual> individuals) {
+    public void getIndividuals(@Nonnull Set<Individual> individuals) {
         for (int argumentIndex=m_arguments.length-1;argumentIndex>=0;--argumentIndex) {
             Term argument=m_arguments[argumentIndex];
             if (argument instanceof Individual)
@@ -79,9 +83,11 @@ public class Atom implements Serializable {
                 return true;
         return false;
     }
+    @Nullable
     public Atom replaceDLPredicate(DLPredicate newDLPredicate) {
         return create(newDLPredicate,m_arguments);
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         if (s_infixPredicates.contains(m_dlPredicate)) {
@@ -121,15 +127,18 @@ public class Atom implements Serializable {
         }
         return buffer.toString();
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<Atom> s_interningManager=new InterningManager<Atom>() {
-        protected boolean equal(Atom object1,Atom object2) {
+        protected boolean equal(@Nonnull Atom object1, @Nonnull Atom object2) {
             if (object1.m_dlPredicate!=object2.m_dlPredicate)
                 return false;
             for (int index=object1.m_arguments.length-1;index>=0;--index)
@@ -137,7 +146,7 @@ public class Atom implements Serializable {
                     return false;
             return true;
         }
-        protected int getHashCode(Atom object) {
+        protected int getHashCode(@Nonnull Atom object) {
             int hashCode=object.m_dlPredicate.hashCode();
             for (int index=object.m_arguments.length-1;index>=0;--index)
                 hashCode+=object.m_arguments[index].hashCode();
@@ -145,6 +154,7 @@ public class Atom implements Serializable {
         }
     };
 
+    @Nullable
     public static Atom create(DLPredicate dlPredicate,Term... arguments) {
         return s_interningManager.intern(new Atom(dlPredicate,arguments));
     }

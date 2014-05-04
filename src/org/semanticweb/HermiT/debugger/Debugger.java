@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -79,16 +81,26 @@ public class Debugger extends TableauMonitorForwarder {
         GRAPH_EXPANSION,EXISTENTIAL_EXPANSION,CLASH,MERGE,DATATYPE_CHECKING,BLOCKING_VALIDATION_STARTED,BLOCKING_VALIDATION_FINISHED
     };
 
+    @Nonnull
     protected final Map<String,DebuggerCommand> m_commandsByName;
     protected final Prefixes m_prefixes;
+    @Nonnull
     protected final DerivationHistory m_derivationHistory;
+    @Nonnull
     protected final ConsoleTextArea m_consoleTextArea;
+    @Nonnull
     protected final JFrame m_mainFrame;
+    @Nonnull
     protected final PrintWriter m_output;
+    @Nonnull
     protected final BufferedReader m_input;
+    @Nonnull
     protected final Set<WaitOption> m_waitOptions;
+    @Nonnull
     protected final Map<Node,NodeCreationInfo> m_nodeCreationInfos;
+    @Nullable
     protected Node m_lastExistentialNode;
+    @Nullable
     protected ExistentialConcept m_lastExistentialConcept;
     protected Tableau m_tableau;
     protected String m_lastCommand;
@@ -155,7 +167,7 @@ public class Debugger extends TableauMonitorForwarder {
         registerCommand(new UnprocessedDisjunctionsCommand(this));
         registerCommand(new WaitForCommand(this));
     }
-    protected void registerCommand(DebuggerCommand command) {
+    protected void registerCommand(@Nonnull DebuggerCommand command) {
         m_commandsByName.put(command.getCommandName().toLowerCase(),command);
     }
     public Map<String,DebuggerCommand> getDebuggerCommands() {
@@ -164,21 +176,25 @@ public class Debugger extends TableauMonitorForwarder {
     public Tableau getTableau() {
         return m_tableau;
     }
+    @Nonnull
     public PrintWriter getOutput() {
         return m_output;
     }
+    @Nonnull
     public JFrame getMainFrame() {
         return m_mainFrame;
     }
     public String getLastCommand() {
         return m_lastCommand;
     }
+    @Nonnull
     public ConsoleTextArea getConsoleTextArea() {
         return m_consoleTextArea;
     }
     public Prefixes getPrefixes() {
         return m_prefixes;
     }
+    @Nonnull
     public DerivationHistory getDerivationHistory() {
         return m_derivationHistory;
     }
@@ -204,7 +220,7 @@ public class Debugger extends TableauMonitorForwarder {
     public boolean removeWaitOption(WaitOption option) {
         return m_waitOptions.remove(option);
     }
-    public DebuggerCommand getCommand(String commandName) {
+    public DebuggerCommand getCommand(@Nonnull String commandName) {
         return m_commandsByName.get(commandName.toLowerCase());
     }
     public void mainLoop() {
@@ -236,6 +252,7 @@ public class Debugger extends TableauMonitorForwarder {
                 m_lastCommand=commandLine;
         }
     }
+    @Nonnull
     protected String[] parse(String command) {
         command=command.trim();
         List<String> arguments=new ArrayList<String>();
@@ -280,12 +297,12 @@ public class Debugger extends TableauMonitorForwarder {
         super.setTableau(tableau);
         m_tableau=tableau;
     }
-    public void isSatisfiableStarted(ReasoningTaskDescription reasoningTaskDescription) {
+    public void isSatisfiableStarted(@Nonnull ReasoningTaskDescription reasoningTaskDescription) {
         super.isSatisfiableStarted(reasoningTaskDescription);
         m_output.println("Reasoning task started: "+reasoningTaskDescription.getTaskDescription(m_prefixes));
         mainLoop();
     }
-    public void isSatisfiableFinished(ReasoningTaskDescription reasoningTaskDescription,boolean result) {
+    public void isSatisfiableFinished(@Nonnull ReasoningTaskDescription reasoningTaskDescription,boolean result) {
         super.isSatisfiableFinished(reasoningTaskDescription,result);
         if (reasoningTaskDescription.flipSatisfiabilityResult())
             result=!result;
@@ -334,7 +351,7 @@ public class Debugger extends TableauMonitorForwarder {
             mainLoop();
         }
     }
-    public void mergeStarted(Node mergeFrom,Node mergeInto) {
+    public void mergeStarted(@Nonnull Node mergeFrom, @Nonnull Node mergeInto) {
         super.mergeStarted(mergeFrom,mergeInto);
         if (m_waitOptions.contains(WaitOption.MERGE)) {
             m_forever=false;
@@ -347,7 +364,7 @@ public class Debugger extends TableauMonitorForwarder {
         m_lastExistentialNode=forNode;
         m_lastExistentialConcept=existentialConcept;
     }
-    public void existentialExpansionFinished(ExistentialConcept existentialConcept,Node forNode) {
+    public void existentialExpansionFinished(ExistentialConcept existentialConcept, @Nonnull Node forNode) {
         super.existentialExpansionFinished(existentialConcept,forNode);
         m_lastExistentialNode=null;
         m_lastExistentialConcept=null;
@@ -398,6 +415,7 @@ public class Debugger extends TableauMonitorForwarder {
         public final Node m_node;
         public final Node m_createdByNode;
         public final ExistentialConcept m_createdByExistential;
+        @Nonnull
         public final List<Node> m_children;
 
         public NodeCreationInfo(Node node,Node createdByNode,ExistentialConcept createdByExistential) {

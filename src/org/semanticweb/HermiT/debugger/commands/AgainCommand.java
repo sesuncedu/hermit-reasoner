@@ -21,18 +21,22 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class AgainCommand extends AbstractCommand {
     
     public AgainCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "a";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","executes the last command again" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: a");
         writer.println("    Executes the last command again.");
     }

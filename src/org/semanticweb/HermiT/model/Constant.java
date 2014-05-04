@@ -21,6 +21,9 @@ import org.semanticweb.HermiT.Prefixes;
 import org.semanticweb.HermiT.datatypes.DatatypeRegistry;
 import org.semanticweb.HermiT.datatypes.MalformedLiteralException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a constants.
  */
@@ -48,10 +51,12 @@ public class Constant extends Term {
     public boolean isAnonymous() {
         return "internal:anonymous-constants".equals(m_datatypeURI);
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         buffer.append('"');
         for (int index=0;index<m_lexicalForm.length();index++) {
@@ -72,23 +77,27 @@ public class Constant extends Term {
         buffer.append(prefixes.abbreviateIRI(m_datatypeURI));
         return buffer.toString();
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<Constant> s_interningManager=new InterningManager<Constant>() {
-        protected boolean equal(Constant object1,Constant object2) {
+        protected boolean equal(@Nonnull Constant object1, @Nonnull Constant object2) {
             return object1.m_lexicalForm.equals(object2.m_lexicalForm) && object1.m_datatypeURI.equals(object2.m_datatypeURI);
         }
-        protected int getHashCode(Constant object) {
+        protected int getHashCode(@Nonnull Constant object) {
             return object.m_lexicalForm.hashCode()+object.m_datatypeURI.hashCode();
         }
     };
 
+    @Nullable
     public static Constant create(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         Object dataValue=DatatypeRegistry.parseLiteral(lexicalForm,datatypeURI);
         return s_interningManager.intern(new Constant(lexicalForm,datatypeURI,dataValue));
     }
+    @Nullable
     public static Constant createAnonymous(String id) {
         return create(id,"internal:anonymous-constants");
     }

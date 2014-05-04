@@ -22,20 +22,24 @@ import java.io.PrintWriter;
 import org.semanticweb.HermiT.debugger.Debugger;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ShowSubtreeCommand extends AbstractCommand {
 
     public ShowSubtreeCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showSubtree";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] {
             "nodeID","shows the subtree rooted at nodeID"
         };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showSubtree nodeID");
         writer.println("    Shows the subtree of the model rooted at the given node.");
         writer.println("    black: root node");
@@ -47,7 +51,7 @@ public class ShowSubtreeCommand extends AbstractCommand {
         writer.println("    magenta: description graph node");
         writer.println("    blue: concrete/data value node");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Node ID is missing.");
             return;

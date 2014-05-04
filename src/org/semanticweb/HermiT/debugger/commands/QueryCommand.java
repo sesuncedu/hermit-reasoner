@@ -29,28 +29,32 @@ import org.semanticweb.HermiT.model.DLPredicate;
 import org.semanticweb.HermiT.tableau.ExtensionTable;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class QueryCommand extends AbstractCommand {
 
     public QueryCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "query";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] {
             "","prints whether there is a clash",
             "?|predicate [?|nodeID]+","prints all facts matching the query; ? is a joker",
         };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: query");
         writer.println("    Prints whether the model contains a clash.");
         writer.println("usage: ?|predicate [?|nodeID]+");
         writer.println("    Prints all facts matching the query, which is a partially specified atom.");
         writer.println("    Parts of the atom are either specified fully, or by using ? as a joker.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         Object[] tuple=new Object[args.length-1];
         if (tuple.length==0) {
             // no further argument, so just check for a clash
@@ -134,7 +138,7 @@ public class QueryCommand extends AbstractCommand {
             selectConsoleWindow();
         }
     }
-    protected void printFact(Object[] fact,PrintWriter writer) {
+    protected void printFact(@Nonnull Object[] fact, @Nonnull PrintWriter writer) {
         Object dlPredicate=fact[0];
         if (dlPredicate instanceof Concept)
             writer.print(((Concept)dlPredicate).toString(m_debugger.getPrefixes()));

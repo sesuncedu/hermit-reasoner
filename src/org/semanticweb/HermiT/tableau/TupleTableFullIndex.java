@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 public final class TupleTableFullIndex implements Serializable {
@@ -27,6 +28,7 @@ public final class TupleTableFullIndex implements Serializable {
 
     protected final TupleTable m_tupleTable;
     protected final int m_indexedArity;
+    @Nonnull
     protected final EntryManager m_entryManager;
     protected int[] m_buckets;
     protected int m_resizeThreshold;

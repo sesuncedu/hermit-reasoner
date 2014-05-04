@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -26,12 +28,16 @@ public class BranchingPoint implements Serializable {
     private static final long serialVersionUID=7306881534568051692L;
 
     protected final int m_level;
+    @Nullable
     protected final Node m_lastTableauNode;
+    @Nullable
     protected final Node m_lastMergedOrPrunedNode;
+    @Nullable
     protected final GroundDisjunction m_firstGroundDisjunction;
+    @Nullable
     protected final GroundDisjunction m_firstUnprocessedGroundDisjunction;
 
-    public BranchingPoint(Tableau tableau) {
+    public BranchingPoint(@Nonnull Tableau tableau) {
         m_level=tableau.m_currentBranchingPoint+1;
         m_lastTableauNode=tableau.m_lastTableauNode;
         m_lastMergedOrPrunedNode=tableau.m_lastMergedOrPrunedNode;

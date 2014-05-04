@@ -30,14 +30,19 @@ import org.semanticweb.HermiT.tableau.DLClauseEvaluator;
 import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class AnywhereBlocking implements BlockingStrategy,Serializable {
     private static final long serialVersionUID=-2959900333817197464L;
 
     protected final DirectBlockingChecker m_directBlockingChecker;
+    @Nonnull
     protected final BlockersCache m_currentBlockersCache;
     protected final BlockingSignatureCache m_blockingSignatureCache;
     protected Tableau m_tableau;
     protected boolean m_useBlockingSignatureCache;
+    @Nullable
     protected Node m_firstChangedNode;
 
     public AnywhereBlocking(DirectBlockingChecker directBlockingChecker,BlockingSignatureCache blockingSignatureCache) {
@@ -142,14 +147,14 @@ public class AnywhereBlocking implements BlockingStrategy,Serializable {
     public void nodeStatusChanged(Node node) {
         updateNodeChange(node);
     }
-    protected final void updateNodeChange(Node node) {
+    protected final void updateNodeChange(@Nullable Node node) {
         if (node!=null && (m_firstChangedNode==null || node.getNodeID()<m_firstChangedNode.getNodeID()))
             m_firstChangedNode=node;
     }
     public void nodeInitialized(Node node) {
         m_directBlockingChecker.nodeInitialized(node);
     }
-    public void nodeDestroyed(Node node) {
+    public void nodeDestroyed(@Nonnull Node node) {
         m_currentBlockersCache.removeNode(node);
         m_directBlockingChecker.nodeDestroyed(node);
         if (m_firstChangedNode!=null && m_firstChangedNode.getNodeID()>=node.getNodeID())
@@ -170,7 +175,7 @@ public class AnywhereBlocking implements BlockingStrategy,Serializable {
     public boolean isExact() {
         return true;
     }
-    public void dlClauseBodyCompiled(List<DLClauseEvaluator.Worker> workers,DLClause dlClause,List<Variable> variables,Object[] valuesBuffer,boolean[] coreVariables) {
+    public void dlClauseBodyCompiled(List<DLClauseEvaluator.Worker> workers,DLClause dlClause,List<Variable> variables,Object[] valuesBuffer, @Nonnull boolean[] coreVariables) {
         for (int i=0;i<coreVariables.length;i++) {
             coreVariables[i]=true;
         }
@@ -184,6 +189,7 @@ class BlockersCache implements Serializable {
     protected CacheEntry[] m_buckets;
     protected int m_numberOfElements;
     protected int m_threshold;
+    @Nullable
     protected CacheEntry m_emptyEntries;
 
     public BlockersCache(DirectBlockingChecker directBlockingChecker) {
@@ -199,7 +205,7 @@ class BlockersCache implements Serializable {
         m_numberOfElements=0;
         m_emptyEntries=null;
     }
-    public void removeNode(Node node) {
+    public void removeNode(@Nonnull Node node) {
         // Check addNode() for an explanation of why we associate the entry with the node.
         BlockersCache.CacheEntry removeEntry=(BlockersCache.CacheEntry)node.getBlockingCargo();
         if (removeEntry!=null) {
@@ -226,7 +232,7 @@ class BlockersCache implements Serializable {
             throw new IllegalStateException("Internal error: entry not in cache!");
         }
     }
-    public void addNode(Node node) {
+    public void addNode(@Nonnull Node node) {
         int hashCode=m_directBlockingChecker.blockingHashCode(node);
         int bucketIndex=getIndexFor(hashCode,m_buckets.length);
         CacheEntry entry=m_buckets[bucketIndex];
@@ -268,6 +274,7 @@ class BlockersCache implements Serializable {
         m_buckets=newBuckets;
         m_threshold=(int)(newCapacity*0.75);
     }
+    @Nullable
     public Node getBlocker(Node node) {
         if (m_directBlockingChecker.canBeBlocked(node)) {
             int hashCode=m_directBlockingChecker.blockingHashCode(node);
@@ -292,8 +299,10 @@ class BlockersCache implements Serializable {
     public static class CacheEntry implements Serializable {
         private static final long serialVersionUID=-7047487963170250200L;
 
+        @Nullable
         protected Node m_node;
         protected int m_hashCode;
+        @Nullable
         protected CacheEntry m_nextEntry;
 
         public void initialize(Node node,int hashCode,CacheEntry nextEntry) {

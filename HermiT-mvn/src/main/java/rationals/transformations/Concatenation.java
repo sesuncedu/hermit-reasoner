@@ -10,6 +10,8 @@ import rationals.State;
 import rationals.Transition;
 import rationals.properties.ContainsEpsilon;
 
+import javax.annotation.Nonnull;
+
 /**
  * Compute the concatenation of two automata.
  * <ul>
@@ -36,7 +38,8 @@ import rationals.properties.ContainsEpsilon;
  */
 public class Concatenation implements BinaryTransformation {
 
-    public Automaton transform(Automaton a, Automaton b) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a, @Nonnull Automaton b) {
         Automaton ap = new Normalizer().transform(a);
         Automaton bp = new Normalizer().transform(b);
         ContainsEpsilon ce = new ContainsEpsilon();

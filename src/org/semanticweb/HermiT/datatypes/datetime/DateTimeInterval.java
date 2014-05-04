@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.datetime;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class DateTimeInterval {
@@ -38,7 +40,8 @@ public class DateTimeInterval {
      * Computes the intersection of this interval with the supplied one. If the two intervals
      * do not intersect, the result is null.
      */
-    public DateTimeInterval intersectWith(DateTimeInterval that) {
+    @Nullable
+    public DateTimeInterval intersectWith(@Nonnull DateTimeInterval that) {
         if (m_intervalType!=that.m_intervalType)
             return null;
         long newLowerBound;
@@ -133,7 +136,7 @@ public class DateTimeInterval {
             }
         }
     }
-    public boolean containsDateTime(DateTime dateTime) {
+    public boolean containsDateTime(@Nonnull DateTime dateTime) {
         if (dateTime.hasTimeZoneOffset()) {
             if (m_intervalType==IntervalType.WITHOUT_TIMEZONE)
                 return false;
@@ -149,7 +152,7 @@ public class DateTimeInterval {
             return false;
         return true;
     }
-    public void enumerateDateTimes(Collection<Object> dateTimes) {
+    public void enumerateDateTimes(@Nonnull Collection<Object> dateTimes) {
         if (m_lowerBound==m_upperBound) {
             // Since the interval is not empty, both bounds must be inclusive.
             assert m_lowerBoundType==BoundType.INCLUSIVE;
@@ -192,6 +195,7 @@ public class DateTimeInterval {
     protected static boolean isIntervalEmpty(IntervalType intervalType,long lowerBound,BoundType lowerBoundType,long upperBound,BoundType upperBoundType) {
         return lowerBound>upperBound ||(lowerBound==upperBound && (lowerBoundType==BoundType.EXCLUSIVE || upperBoundType==BoundType.EXCLUSIVE));
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append(m_intervalType.toString());

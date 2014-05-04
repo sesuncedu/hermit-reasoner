@@ -31,6 +31,9 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription.StandardTestType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class CountingMonitor extends TableauMonitorAdapter {
     private static final long serialVersionUID=-8144444618897251350L;
 
@@ -42,6 +45,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
     protected int m_numberOfBacktrackings;
     protected int m_numberOfNodes;
     protected int m_numberOfBlockedNodes;
+    @Nullable
     protected ReasoningTaskDescription m_reasoningTaskDescription;
     protected boolean m_testResult;
     // validated blocking
@@ -115,7 +119,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
         m_noValidations=0;
         m_validationTime=0;
     }
-    public void isSatisfiableFinished(ReasoningTaskDescription reasoningTaskDescription,boolean result) {
+    public void isSatisfiableFinished(@Nonnull ReasoningTaskDescription reasoningTaskDescription,boolean result) {
         super.isSatisfiableFinished(reasoningTaskDescription,result);
         if (reasoningTaskDescription.flipSatisfiabilityResult())
             result=!result;
@@ -179,16 +183,20 @@ public class CountingMonitor extends TableauMonitorAdapter {
     	    m_initiallyInvalid=noInvalidlyBlocked;
     }
     // getters for test records
+    @Nonnull
     public Set<String> getUsedMessagePatterns() {
         return m_testRecords.keySet();
     }
+    @Nonnull
     public List<TestRecord> getTimeSortedTestRecords(int limit) {
         return getTimeSortedTestRecords(limit,(String)null);
     }
-    public List<TestRecord> getTimeSortedTestRecords(int limit, StandardTestType standardTestType) {
+    @Nonnull
+    public List<TestRecord> getTimeSortedTestRecords(int limit, @Nonnull StandardTestType standardTestType) {
         return getTimeSortedTestRecords(limit, standardTestType.messagePattern);
     }
-    public List<TestRecord> getTimeSortedTestRecords(int limit, String messagePattern) {
+    @Nonnull
+    public List<TestRecord> getTimeSortedTestRecords(int limit, @Nullable String messagePattern) {
         List<TestRecord> filteredRecords=new ArrayList<TestRecord>();;
         if (messagePattern==null) {
             for (List<TestRecord> records : m_testRecords.values())
@@ -252,7 +260,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
 	public int getOverallNumberOfTests() {
 		return m_overallNumberOfTests;
 	}
-	public int getOverallNumberOfTests(StandardTestType testType) {
+	public int getOverallNumberOfTests(@Nonnull StandardTestType testType) {
 		return m_testRecords.containsKey(testType.messagePattern) ? m_testRecords.get(testType.messagePattern).size() : 0;
 	}
 	public int getOverallNumberOfClashes() {
@@ -347,6 +355,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
         return m_overallValidationTime/m_testNo;
     }
 
+    @Nonnull
     public static String millisToHoursMinutesSecondsString(long millis) {
         long time=millis/1000;
         long ms=time%1000;
@@ -372,7 +381,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
 	        m_testDescription=testDescription;
 	        m_testResult=result;
 	    }
-        public int compareTo(TestRecord that) {
+        public int compareTo(@Nonnull TestRecord that) {
             if (this==that) return 0;
             int result=((Long)that.m_testTime).compareTo(m_testTime);
             if (result!=0) return result;
@@ -387,6 +396,7 @@ public class CountingMonitor extends TableauMonitorAdapter {
         public boolean getTestResult() {
             return m_testResult;
         }
+        @Nonnull
         public String toString() {
             return m_testTime+" ms"+(m_testTime>1000?" ("+CountingMonitor.millisToHoursMinutesSecondsString(m_testTime)+")":"")+" for "+m_testDescription+" (result: "+m_testResult+")";
         }

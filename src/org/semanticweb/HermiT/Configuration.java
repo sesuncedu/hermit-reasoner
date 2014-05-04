@@ -34,6 +34,9 @@ import org.semanticweb.owlapi.reasoner.IndividualNodeSetPolicy;
 import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration;
 import org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class Configuration implements Serializable,Cloneable,OWLReasonerConfiguration {
     private static final long serialVersionUID=7741510316249774519L;
 
@@ -171,11 +174,13 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
      * warning() method of the interface, e.g., if it ignores an unsupported datatype. HermiT does not provide an
      * implementation for the interface itself though.
      */
+    @Nullable
     public WarningMonitor warningMonitor;
     /**
      * If a progress monitor is set, HermiT will report the progress of a classification task. This is used for
      * example by Protege.
      */
+    @Nullable
     public ReasonerProgressMonitor reasonerProgressMonitor;
     public TableauMonitorType tableauMonitorType;
     public DirectBlockingType directBlockingType;
@@ -190,6 +195,7 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
     /**
      * Can be used to set a custom Tableau monitor.
      */
+    @Nullable
     public TableauMonitor monitor;
     /**
      * The parameters are passed to the Tableau class instance, but currently no parameters are used.
@@ -224,6 +230,7 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
      */
     public boolean throwInconsistentOntologyException;
 
+    @Nullable
     public PrepareReasonerInferences prepareReasonerInferences;
 
     /**
@@ -255,18 +262,19 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
     protected void setIndividualReuseStrategyReuseAlways(Set<? extends AtomicConcept> concepts) {
         parameters.put("IndividualReuseStrategy.reuseAlways",concepts);
     }
-    public void loadIndividualReuseStrategyReuseAlways(File file) throws IOException {
+    public void loadIndividualReuseStrategyReuseAlways(@Nonnull File file) throws IOException {
         Set<AtomicConcept> concepts=loadConceptsFromFile(file);
         setIndividualReuseStrategyReuseAlways(concepts);
     }
     protected void setIndividualReuseStrategyReuseNever(Set<? extends AtomicConcept> concepts) {
         parameters.put("IndividualReuseStrategy.reuseNever",concepts);
     }
-    public void loadIndividualReuseStrategyReuseNever(File file) throws IOException {
+    public void loadIndividualReuseStrategyReuseNever(@Nonnull File file) throws IOException {
         Set<AtomicConcept> concepts=loadConceptsFromFile(file);
         setIndividualReuseStrategyReuseNever(concepts);
     }
-    protected Set<AtomicConcept> loadConceptsFromFile(File file) throws IOException {
+    @Nonnull
+    protected Set<AtomicConcept> loadConceptsFromFile(@Nonnull File file) throws IOException {
         Set<AtomicConcept> result=new HashSet<AtomicConcept>();
         BufferedReader reader=new BufferedReader(new FileReader(file));
         try {
@@ -281,6 +289,7 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
             reader.close();
         }
     }
+    @Nullable
     public Configuration clone() {
         try {
             Configuration result=(Configuration)super.clone();
@@ -300,7 +309,8 @@ public class Configuration implements Serializable,Cloneable,OWLReasonerConfigur
 	public IndividualNodeSetPolicy getIndividualNodeSetPolicy() {
 		return individualNodeSetPolicy;
 	}
-	public ReasonerProgressMonitor getProgressMonitor() {
+	@Nullable
+    public ReasonerProgressMonitor getProgressMonitor() {
 		return reasonerProgressMonitor;
 	}
 	public FreshEntityPolicy getFreshEntityPolicy() {

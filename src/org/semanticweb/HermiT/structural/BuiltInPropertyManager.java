@@ -58,6 +58,8 @@ import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.util.OWLAxiomVisitorAdapter;
 
+import javax.annotation.Nonnull;
+
 public class BuiltInPropertyManager {
     protected final OWLDataFactory m_factory;
     protected final OWLObjectProperty m_topObjectProperty;
@@ -72,7 +74,7 @@ public class BuiltInPropertyManager {
         m_topDataProperty=m_factory.getOWLDataProperty(IRI.create(AtomicRole.TOP_DATA_ROLE.getIRI()));
         m_bottomDataProperty=m_factory.getOWLDataProperty(IRI.create(AtomicRole.BOTTOM_DATA_ROLE.getIRI()));
     }
-    public void axiomatizeBuiltInPropertiesAsNeeded(OWLAxioms axioms,boolean skipTopObjectProperty,boolean skipBottomObjectProperty,boolean skipTopDataProperty,boolean skipBottomDataProperty) {
+    public void axiomatizeBuiltInPropertiesAsNeeded(@Nonnull OWLAxioms axioms,boolean skipTopObjectProperty,boolean skipBottomObjectProperty,boolean skipTopDataProperty,boolean skipBottomDataProperty) {
         Checker checker=new Checker(axioms);
         if (checker.m_usesTopObjectProperty && !skipTopObjectProperty)
             axiomatizeTopObjectProperty(axioms);
@@ -83,10 +85,10 @@ public class BuiltInPropertyManager {
         if (checker.m_usesBottomDataProperty && !skipBottomDataProperty)
             axiomatizeBottomDataProperty(axioms);
     }
-    public void axiomatizeBuiltInPropertiesAsNeeded(OWLAxioms axioms) {
+    public void axiomatizeBuiltInPropertiesAsNeeded(@Nonnull OWLAxioms axioms) {
         axiomatizeBuiltInPropertiesAsNeeded(axioms,false,false,false,false);
     }
-    protected void axiomatizeTopObjectProperty(OWLAxioms axioms) {
+    protected void axiomatizeTopObjectProperty(@Nonnull OWLAxioms axioms) {
         // TransitiveObjectProperty( owl:topObjectProperty )
         axioms.m_complexObjectPropertyInclusions.add(new OWLAxioms.ComplexObjectPropertyInclusion(m_topObjectProperty));
         // SymmetricObjectProperty( owl:topObjectProperty )
@@ -97,17 +99,17 @@ public class BuiltInPropertyManager {
         OWLObjectSomeValuesFrom hasTopNewIndividual=m_factory.getOWLObjectSomeValuesFrom(m_topObjectProperty,oneOfNewIndividual);
         axioms.m_conceptInclusions.add(new OWLClassExpression[] { hasTopNewIndividual });
     }
-    protected void axiomatizeBottomObjectProperty(OWLAxioms axioms) {
+    protected void axiomatizeBottomObjectProperty(@Nonnull OWLAxioms axioms) {
         axioms.m_conceptInclusions.add(new OWLClassExpression[] { m_factory.getOWLObjectAllValuesFrom(m_bottomObjectProperty,m_factory.getOWLNothing()) });
     }
-    protected void axiomatizeTopDataProperty(OWLAxioms axioms) {
+    protected void axiomatizeTopDataProperty(@Nonnull OWLAxioms axioms) {
         OWLDatatype anonymousConstantsDatatype=m_factory.getOWLDatatype(IRI.create("internal:anonymous-constants"));
         OWLLiteral newConstant=m_factory.getOWLLiteral("internal:constant",anonymousConstantsDatatype);
         OWLDataOneOf oneOfNewConstant=m_factory.getOWLDataOneOf(newConstant);
         OWLDataSomeValuesFrom hasTopNewConstant=m_factory.getOWLDataSomeValuesFrom(m_topDataProperty,oneOfNewConstant);
         axioms.m_conceptInclusions.add(new OWLClassExpression[] { hasTopNewConstant });
     }
-    protected void axiomatizeBottomDataProperty(OWLAxioms axioms) {
+    protected void axiomatizeBottomDataProperty(@Nonnull OWLAxioms axioms) {
         axioms.m_conceptInclusions.add(new OWLClassExpression[] { m_factory.getOWLDataAllValuesFrom(m_bottomDataProperty,m_factory.getOWLDataComplementOf(m_factory.getTopDatatype())) });
     }
 
@@ -117,7 +119,7 @@ public class BuiltInPropertyManager {
         public boolean m_usesTopDataProperty;
         public boolean m_usesBottomDataProperty;
 
-        public Checker(OWLAxioms axioms) {
+        public Checker(@Nonnull OWLAxioms axioms) {
             for (OWLClassExpression[] inclusion : axioms.m_conceptInclusions)
                 for (OWLClassExpression description : inclusion)
                     description.accept(this);
@@ -150,14 +152,14 @@ public class BuiltInPropertyManager {
             for (OWLIndividualAxiom fact : axioms.m_facts)
                 fact.accept(factVisitor);
         }
-        protected void visitProperty(OWLObjectPropertyExpression object) {
+        protected void visitProperty(@Nonnull OWLObjectPropertyExpression object) {
             if (object.getNamedProperty().equals(m_topObjectProperty))
                 m_usesTopObjectProperty=true;
             else if (object.getNamedProperty().equals(m_bottomObjectProperty))
                 m_usesBottomObjectProperty=true;
         }
 
-        protected void visitProperty(OWLDataPropertyExpression object) {
+        protected void visitProperty(@Nonnull OWLDataPropertyExpression object) {
             if (object.asOWLDataProperty().equals(m_topDataProperty))
                 m_usesTopDataProperty=true;
             else if (object.asOWLDataProperty().equals(m_bottomDataProperty))
@@ -167,16 +169,16 @@ public class BuiltInPropertyManager {
         public void visit(OWLClass object) {
         }
 
-        public void visit(OWLObjectComplementOf object) {
+        public void visit(@Nonnull OWLObjectComplementOf object) {
             object.getOperand().accept(this);
         }
 
-        public void visit(OWLObjectIntersectionOf object) {
+        public void visit(@Nonnull OWLObjectIntersectionOf object) {
             for (OWLClassExpression description : object.getOperands())
                 description.accept(this);
         }
 
-        public void visit(OWLObjectUnionOf object) {
+        public void visit(@Nonnull OWLObjectUnionOf object) {
             for (OWLClassExpression description : object.getOperands())
                 description.accept(this);
         }
@@ -184,60 +186,60 @@ public class BuiltInPropertyManager {
         public void visit(OWLObjectOneOf object) {
         }
 
-        public void visit(OWLObjectSomeValuesFrom object) {
+        public void visit(@Nonnull OWLObjectSomeValuesFrom object) {
             visitProperty(object.getProperty());
             object.getFiller().accept(this);
         }
 
-        public void visit(OWLObjectHasValue object) {
+        public void visit(@Nonnull OWLObjectHasValue object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLObjectHasSelf object) {
+        public void visit(@Nonnull OWLObjectHasSelf object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLObjectAllValuesFrom object) {
-            visitProperty(object.getProperty());
-            object.getFiller().accept(this);
-        }
-
-        public void visit(OWLObjectMinCardinality object) {
+        public void visit(@Nonnull OWLObjectAllValuesFrom object) {
             visitProperty(object.getProperty());
             object.getFiller().accept(this);
         }
 
-        public void visit(OWLObjectMaxCardinality object) {
+        public void visit(@Nonnull OWLObjectMinCardinality object) {
             visitProperty(object.getProperty());
             object.getFiller().accept(this);
         }
 
-        public void visit(OWLObjectExactCardinality object) {
+        public void visit(@Nonnull OWLObjectMaxCardinality object) {
             visitProperty(object.getProperty());
             object.getFiller().accept(this);
         }
 
-        public void visit(OWLDataHasValue object) {
+        public void visit(@Nonnull OWLObjectExactCardinality object) {
+            visitProperty(object.getProperty());
+            object.getFiller().accept(this);
+        }
+
+        public void visit(@Nonnull OWLDataHasValue object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLDataSomeValuesFrom object) {
+        public void visit(@Nonnull OWLDataSomeValuesFrom object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLDataAllValuesFrom object) {
+        public void visit(@Nonnull OWLDataAllValuesFrom object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLDataMinCardinality object) {
+        public void visit(@Nonnull OWLDataMinCardinality object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLDataMaxCardinality object) {
+        public void visit(@Nonnull OWLDataMaxCardinality object) {
             visitProperty(object.getProperty());
         }
 
-        public void visit(OWLDataExactCardinality object) {
+        public void visit(@Nonnull OWLDataExactCardinality object) {
             visitProperty(object.getProperty());
         }
 
@@ -249,23 +251,23 @@ public class BuiltInPropertyManager {
             public void visit(OWLDifferentIndividualsAxiom object) {
             }
 
-            public void visit(OWLClassAssertionAxiom object) {
+            public void visit(@Nonnull OWLClassAssertionAxiom object) {
                 object.getClassExpression().accept(Checker.this);
             }
 
-            public void visit(OWLObjectPropertyAssertionAxiom object) {
+            public void visit(@Nonnull OWLObjectPropertyAssertionAxiom object) {
                 visitProperty(object.getProperty());
             }
 
-            public void visit(OWLNegativeObjectPropertyAssertionAxiom object) {
+            public void visit(@Nonnull OWLNegativeObjectPropertyAssertionAxiom object) {
                 visitProperty(object.getProperty());
             }
 
-            public void visit(OWLDataPropertyAssertionAxiom object) {
+            public void visit(@Nonnull OWLDataPropertyAssertionAxiom object) {
                 visitProperty(object.getProperty());
             }
 
-            public void visit(OWLNegativeDataPropertyAssertionAxiom object) {
+            public void visit(@Nonnull OWLNegativeDataPropertyAssertionAxiom object) {
                 visitProperty(object.getProperty());
             }
         }

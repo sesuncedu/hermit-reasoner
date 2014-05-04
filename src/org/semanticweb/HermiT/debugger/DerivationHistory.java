@@ -43,14 +43,20 @@ import org.semanticweb.HermiT.tableau.DatatypeManager;
 import org.semanticweb.HermiT.tableau.GroundDisjunction;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class DerivationHistory extends TableauMonitorAdapter {
     private static final long serialVersionUID=-3963478091986772947L;
 
     protected static final Object[] EMPTY_TUPLE=new Object[0];
 
+    @Nonnull
     protected final Map<AtomKey,Atom> m_derivedAtoms;
+    @Nonnull
     protected final Map<GroundDisjunction,Disjunction> m_derivedDisjunctions;
+    @Nonnull
     protected final Stack<Derivation> m_derivations;
+    @Nonnull
     protected final Stack<Atom> m_mergeAtoms;
 
     public DerivationHistory() {
@@ -66,7 +72,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         m_derivations.push(BaseFact.INSTANCE);
         m_mergeAtoms.clear();
     }
-    public void dlClauseMatchedStarted(DLClauseEvaluator dlClauseEvaluator,int dlClauseIndex) {
+    public void dlClauseMatchedStarted(@Nonnull DLClauseEvaluator dlClauseEvaluator,int dlClauseIndex) {
         int regularBodyAtomsNumber=0;
         for (int index=0;index<dlClauseEvaluator.getBodyLength();index++) {
             DLPredicate dlPredicate=dlClauseEvaluator.getBodyAtom(index).getDLPredicate();
@@ -85,7 +91,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public void dlClauseMatchedFinished(DLClauseEvaluator dlClauseEvaluator) {
         m_derivations.pop();
     }
-    public void addFactFinished(Object[] tuple,boolean isCore,boolean factAdded) {
+    public void addFactFinished(@Nonnull Object[] tuple,boolean isCore,boolean factAdded) {
         if (factAdded)
             addAtom(tuple);
     }
@@ -93,7 +99,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         Atom equalityAtom=addAtom(new Object[] { Equality.INSTANCE,nodeFrom,nodeInto });
         m_mergeAtoms.add(equalityAtom);
     }
-    public void mergeFactStarted(Node mergeFrom,Node mergeInto,Object[] sourceTuple,Object[] targetTuple) {
+    public void mergeFactStarted(Node mergeFrom,Node mergeInto, @Nonnull Object[] sourceTuple,Object[] targetTuple) {
         m_derivations.push(new Merging(m_mergeAtoms.peek(),getAtom(sourceTuple)));
     }
     public void mergeFactFinished(Node mergeFrom,Node mergeInto,Object[] sourceTuple,Object[] targetTuple) {
@@ -102,7 +108,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public void mergeFinished(Node nodeFrom,Node nodeInto) {
         m_mergeAtoms.pop();
     }
-    public void clashDetectionStarted(Object[]... tuples) {
+    public void clashDetectionStarted(@Nonnull Object[]... tuples) {
         Atom[] atoms=new Atom[tuples.length];
         for (int index=0;index<tuples.length;index++)
             atoms[index]=getAtom(tuples[index]);
@@ -114,13 +120,13 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public void clashDetected() {
         addAtom(EMPTY_TUPLE);
     }
-    public void tupleRemoved(Object[] tuple) {
+    public void tupleRemoved(@Nonnull Object[] tuple) {
         m_derivedAtoms.remove(new AtomKey(tuple));
     }
     public void backtrackToFinished(BranchingPoint newCurrentBrancingPoint) {
         m_derivedAtoms.remove(new AtomKey(EMPTY_TUPLE));
     }
-    public void groundDisjunctionDerived(GroundDisjunction groundDisjunction) {
+    public void groundDisjunctionDerived(@Nonnull GroundDisjunction groundDisjunction) {
         Disjunction disjunction=new Disjunction(groundDisjunction,m_derivations.peek());
         m_derivedDisjunctions.put(groundDisjunction,disjunction);
     }
@@ -154,7 +160,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public void unknownDatatypeRestrictionDetectionFinished(DataRange dataRange1,Node node1, DataRange dataRange2,Node node2) {
         m_derivations.pop();
     }
-    public void datatypeConjunctionCheckingStarted(DatatypeManager.DConjunction conjunction) {
+    public void datatypeConjunctionCheckingStarted(@Nonnull DatatypeManager.DConjunction conjunction) {
         List<Atom> atoms=new ArrayList<Atom>();
         for (DatatypeManager.DVariable variable : conjunction.getActiveVariables()) {
             Node node=variable.getNode();
@@ -176,13 +182,14 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public void datatypeConjunctionCheckingFinished(DatatypeManager.DConjunction conjunction,boolean result) {
         m_derivations.pop();
     }
-    public Atom getAtom(Object[] tuple) {
+    public Atom getAtom(@Nonnull Object[] tuple) {
         return m_derivedAtoms.get(new AtomKey(tuple));
     }
     public Disjunction getDisjunction(GroundDisjunction groundDisjunction) {
         return m_derivedDisjunctions.get(groundDisjunction);
     }
-    protected Atom addAtom(Object[] tuple) {
+    @Nonnull
+    protected Atom addAtom(@Nonnull Object[] tuple) {
         Object[] clonedTuple=tuple.clone();
         Atom newAtom=new Atom(clonedTuple,m_derivations.peek());
         m_derivedAtoms.put(new AtomKey(clonedTuple),newAtom);
@@ -192,10 +199,11 @@ public class DerivationHistory extends TableauMonitorAdapter {
     protected static class AtomKey implements Serializable {
         private static final long serialVersionUID=1409033744982881556L;
 
+        @Nonnull
         protected final Object[] m_tuple;
         protected final int m_hashCode;
 
-        public AtomKey(Object[] tuple) {
+        public AtomKey(@Nonnull Object[] tuple) {
             m_tuple=tuple;
             int hashCode=0;
             for (int index=0;index<tuple.length;index++)
@@ -221,6 +229,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
     }
 
     protected static interface Fact extends Serializable {
+        @Nonnull
         String toString(Prefixes prefixes);
         Derivation getDerivation();
     }
@@ -241,12 +250,14 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public int getArity() {
             return m_tuple.length-1;
         }
+        @Nonnull
         public Node getArgument(int index) {
             return (Node)m_tuple[index+1];
         }
         public Derivation getDerivation() {
             return m_derivedBy;
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             if (m_tuple.length==0)
                 return "[ ]";
@@ -278,6 +289,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
                 return buffer.toString();
             }
         }
+        @Nonnull
         public String toString() {
             return toString(Prefixes.STANDARD_PREFIXES);
         }
@@ -286,10 +298,11 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public static class Disjunction implements Fact {
         private static final long serialVersionUID=-6645342875287836609L;
 
+        @Nonnull
         protected final Object[][] m_atoms;
         protected final Derivation m_derivedBy;
 
-        public Disjunction(GroundDisjunction groundDisjunction,Derivation derivedBy) {
+        public Disjunction(@Nonnull GroundDisjunction groundDisjunction,Derivation derivedBy) {
             m_atoms=new Object[groundDisjunction.getNumberOfDisjuncts()][];
             for (int disjunctIndex=0;disjunctIndex<groundDisjunction.getNumberOfDisjuncts();disjunctIndex++) {
                 DLPredicate dlPredicate=groundDisjunction.getDLPredicate(disjunctIndex);
@@ -307,12 +320,14 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public Object getDLPredicate(int disjunctIndex) {
             return m_atoms[disjunctIndex][0];
         }
+        @Nonnull
         public Node getArgument(int disjunctIndex,int argumentIndex) {
             return (Node)m_atoms[disjunctIndex][argumentIndex+1];
         }
         public Derivation getDerivation() {
             return m_derivedBy;
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             StringBuffer buffer=new StringBuffer();
             for (int disjunctIndex=0;disjunctIndex<m_atoms.length;disjunctIndex++) {
@@ -335,6 +350,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
             }
             return buffer.toString();
         }
+        @Nonnull
         public String toString() {
             return toString(Prefixes.STANDARD_PREFIXES);
         }
@@ -342,7 +358,9 @@ public class DerivationHistory extends TableauMonitorAdapter {
 
     @SuppressWarnings("serial")
     public abstract static class Derivation implements Serializable {
+        @Nonnull
         public abstract String toString(Prefixes prefixes);
+        @Nonnull
         public String toString() {
             return toString(Prefixes.STANDARD_PREFIXES);
         }
@@ -369,6 +387,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public Fact getPremise(int premiseIndex) {
             return m_premises[premiseIndex];
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "  <--  "+m_dlClause.toString(prefixes);
         }
@@ -398,6 +417,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
                 throw new IndexOutOfBoundsException();
             }
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "  |  "+String.valueOf(m_disjunctIndex);
         }
@@ -426,6 +446,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
                 throw new IndexOutOfBoundsException();
             }
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "   <--|";
         }
@@ -458,6 +479,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
                 throw new IndexOutOfBoundsException();
             }
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "   << DGRAPHS | "+m_position1+" and "+m_position2;
         }
@@ -482,6 +504,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
                 throw new IndexOutOfBoundsException();
             }
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return " <<  EXISTS";
         }
@@ -500,6 +523,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public Fact getPremise(int premiseIndex) {
             return m_causes[premiseIndex];
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "   << CLASH";
         }
@@ -518,6 +542,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public Fact getPremise(int premiseIndex) {
             return m_causes[premiseIndex];
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "   << DATATYPES";
         }
@@ -536,6 +561,7 @@ public class DerivationHistory extends TableauMonitorAdapter {
         public Fact getPremise(int premiseIndex) {
             return m_causes[premiseIndex];
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return "   << UNKNOWN DATATYPE";
         }
@@ -544,14 +570,17 @@ public class DerivationHistory extends TableauMonitorAdapter {
     public static class BaseFact extends Derivation {
         private static final long serialVersionUID=-5998349862414502218L;
 
+        @Nonnull
         public static Derivation INSTANCE=new BaseFact();
 
         public int getNumberOfPremises() {
             return 0;
         }
+        @Nonnull
         public Fact getPremise(int premiseIndex) {
             throw new IndexOutOfBoundsException();
         }
+        @Nonnull
         public String toString(Prefixes prefixes) {
             return ".";
         }

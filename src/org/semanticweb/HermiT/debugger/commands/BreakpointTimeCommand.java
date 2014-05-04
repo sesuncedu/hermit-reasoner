@@ -21,23 +21,27 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class BreakpointTimeCommand extends AbstractCommand {
 
     public BreakpointTimeCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "bpTime";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "timeInSeconds","sets the break point time" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: bpTime timeInSeconds");
         writer.println("    Sets the breakpoint time -- that is, after timeInSeconds,");
         writer.println("    the debugger will return control to the user.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("Time is missing.");
             return;

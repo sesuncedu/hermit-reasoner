@@ -40,6 +40,8 @@ import java.util.Map;
 
 import rationals.Automaton;
 
+import javax.annotation.Nonnull;
+
 /**
  * Test if two automaton are isomorphic.
  * Two automata are isomorphic iff there exists a bijection
@@ -54,7 +56,7 @@ public class AreIsomorph implements BinaryTest {
     /* (non-Javadoc)
      * @see rationals.properties.BinaryTest#test(rationals.Automaton, rationals.Automaton)
      */
-    public boolean test(Automaton a, Automaton b) {
+    public boolean test(@Nonnull Automaton a, @Nonnull Automaton b) {
         /* basic test */
         if(a.states().size() != b.states().size() || a.initials().size() != b.initials().size() || a.terminals().size() != b.terminals().size())
             return false;

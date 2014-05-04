@@ -93,9 +93,13 @@ import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.SWRLRule;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
     private final OWLDataFactory factory;
     private final Reasoner reasoner;
+    @Nonnull
     protected Set<OWLAxiom> anonymousIndividualAxioms=new HashSet<OWLAxiom>();
 
     public EntailmentChecker(Reasoner reasoner,OWLDataFactory factory) {
@@ -110,7 +114,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
      *            the axioms that should be checked for enailment
      * @return true if all axioms follow from the loaded ontology and false otherwise.
      */
-    public boolean entails(Set<? extends OWLAxiom> axioms) {
+    public boolean entails(@Nonnull Set<? extends OWLAxiom> axioms) {
         anonymousIndividualAxioms.clear();
         for (OWLAxiom axiom : axioms) {
             if (axiom.isLogicalAxiom())
@@ -127,7 +131,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
      *            an axiom for which entailment is to be checked
      * @return true if the loaded ontology entails the axiom and false otherwise
      */
-    public boolean entails(OWLAxiom axiom) {
+    public boolean entails(@Nonnull OWLAxiom axiom) {
         if (!axiom.accept(this))
             return false;
         return checkAnonymousIndividuals();
@@ -175,7 +179,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
 
     // ************ assertions ****************************
 
-    public Boolean visit(OWLDifferentIndividualsAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDifferentIndividualsAxiom axiom) {
         // see OWL 2 Syntax, Sec 11.2
         // No axiom in Ax of the following form contains anonymous individuals:
         // SameIndividual, DifferentIndividuals, NegativeObjectPropertyAssertion, and NegativeDataPropertyAssertion.
@@ -195,7 +199,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLSameIndividualAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSameIndividualAxiom axiom) {
         // see OWL 2 Syntax, Sec 11.2
         // No axiom in Ax of the following form contains anonymous individuals:
         // SameIndividual, DifferentIndividuals, NegativeObjectPropertyAssertion, and NegativeDataPropertyAssertion.
@@ -215,7 +219,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLClassAssertionAxiom axiom) {
+    public Boolean visit(@Nonnull OWLClassAssertionAxiom axiom) {
         OWLIndividual ind=axiom.getIndividual();
         if (ind.isAnonymous()) {
             anonymousIndividualAxioms.add(axiom);
@@ -224,7 +228,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         OWLClassExpression c=axiom.getClassExpression();
         return reasoner.hasType(ind.asOWLNamedIndividual(),c,false);
     }
-    public Boolean visit(OWLObjectPropertyAssertionAxiom axiom) {
+    public Boolean visit(@Nonnull OWLObjectPropertyAssertionAxiom axiom) {
         OWLIndividual sub=axiom.getSubject();
         OWLIndividual obj=axiom.getObject();
         if (sub.isAnonymous()||obj.isAnonymous()) {
@@ -233,7 +237,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return reasoner.hasObjectPropertyRelationship(sub.asOWLNamedIndividual(),axiom.getProperty(),obj.asOWLNamedIndividual());
     }
-    public Boolean visit(OWLNegativeObjectPropertyAssertionAxiom axiom) {
+    public Boolean visit(@Nonnull OWLNegativeObjectPropertyAssertionAxiom axiom) {
         // see OWL 2 Syntax, Sec 11.2
         // No axiom in Ax of the following form contains anonymous individuals:
         // SameIndividual, DifferentIndividuals, NegativeObjectPropertyAssertion, and NegativeDataPropertyAssertion.
@@ -244,7 +248,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         OWLClassExpression doesNotHaveValue=factory.getOWLObjectComplementOf(hasValue);
         return reasoner.hasType(axiom.getSubject().asOWLNamedIndividual(),doesNotHaveValue,false);
     }
-    public Boolean visit(OWLDataPropertyAssertionAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDataPropertyAssertionAxiom axiom) {
         OWLIndividual sub=axiom.getSubject();
         if (sub.isAnonymous()) {
             anonymousIndividualAxioms.add(axiom);
@@ -253,7 +257,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         OWLClassExpression hasValue=factory.getOWLDataHasValue(axiom.getProperty(),axiom.getObject());
         return reasoner.hasType(axiom.getSubject().asOWLNamedIndividual(),hasValue,false);
     }
-    public Boolean visit(OWLNegativeDataPropertyAssertionAxiom axiom) {
+    public Boolean visit(@Nonnull OWLNegativeDataPropertyAssertionAxiom axiom) {
         // see OWL 2 Syntax, Sec 11.2
         // No axiom in Ax of the following form contains anonymous individuals:
         // SameIndividual, DifferentIndividuals, NegativeObjectPropertyAssertion, and NegativeDataPropertyAssertion.
@@ -267,33 +271,34 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
 
     // ************ object properties ****************************
 
-    public Boolean visit(OWLObjectPropertyDomainAxiom axiom) {
+    public Boolean visit(@Nonnull OWLObjectPropertyDomainAxiom axiom) {
         return reasoner.isSubClassOf(factory.getOWLObjectSomeValuesFrom(axiom.getProperty(),factory.getOWLThing()),axiom.getDomain());
     }
-    public Boolean visit(OWLObjectPropertyRangeAxiom axiom) {
+    public Boolean visit(@Nonnull OWLObjectPropertyRangeAxiom axiom) {
         return reasoner.isSubClassOf(factory.getOWLThing(),factory.getOWLObjectAllValuesFrom(axiom.getProperty(),axiom.getRange()));
     }
-    public Boolean visit(OWLInverseObjectPropertiesAxiom axiom) {
+    @Nonnull
+    public Boolean visit(@Nonnull OWLInverseObjectPropertiesAxiom axiom) {
         OWLObjectPropertyExpression objectPropertyExpression1=axiom.getFirstProperty().getInverseProperty();
         OWLObjectPropertyExpression objectPropertyExpression2=axiom.getSecondProperty();
         return reasoner.isSubObjectPropertyExpressionOf(objectPropertyExpression1,objectPropertyExpression2) && reasoner.isSubObjectPropertyExpressionOf(objectPropertyExpression2,objectPropertyExpression1);
     }
-    public Boolean visit(OWLSymmetricObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSymmetricObjectPropertyAxiom axiom) {
         return reasoner.isSymmetric(axiom.getProperty());
     }
-    public Boolean visit(OWLTransitiveObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLTransitiveObjectPropertyAxiom axiom) {
         return reasoner.isTransitive(axiom.getProperty());
     }
-    public Boolean visit(OWLReflexiveObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLReflexiveObjectPropertyAxiom axiom) {
         return reasoner.isReflexive(axiom.getProperty());
     }
-    public Boolean visit(OWLIrreflexiveObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLIrreflexiveObjectPropertyAxiom axiom) {
         return reasoner.isIrreflexive(axiom.getProperty());
     }
-    public Boolean visit(OWLAsymmetricObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLAsymmetricObjectPropertyAxiom axiom) {
         return reasoner.isAsymmetric(axiom.getProperty());
     }
-    public Boolean visit(OWLEquivalentObjectPropertiesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLEquivalentObjectPropertiesAxiom axiom) {
         Set<OWLObjectPropertyExpression> props=axiom.getProperties();
         Iterator<OWLObjectPropertyExpression> it=props.iterator();
         if (it.hasNext()) {
@@ -306,13 +311,13 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLSubObjectPropertyOfAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSubObjectPropertyOfAxiom axiom) {
         return reasoner.isSubObjectPropertyExpressionOf(axiom.getSubProperty(),axiom.getSuperProperty());
     }
-    public Boolean visit(OWLSubPropertyChainOfAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSubPropertyChainOfAxiom axiom) {
         return reasoner.isSubObjectPropertyExpressionOf(axiom.getPropertyChain(),axiom.getSuperProperty());
     }
-    public Boolean visit(OWLDisjointObjectPropertiesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDisjointObjectPropertiesAxiom axiom) {
         int n=axiom.getProperties().size();
         OWLObjectPropertyExpression[] props=axiom.getProperties().toArray(new OWLObjectPropertyExpression[n]);
         for (int i=0;i<n-1;i++)
@@ -320,22 +325,22 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
                 if (!reasoner.isDisjointObjectProperty(props[i],props[j])) return Boolean.FALSE;
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLFunctionalObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLFunctionalObjectPropertyAxiom axiom) {
         return reasoner.isFunctional(axiom.getProperty());
     }
-    public Boolean visit(OWLInverseFunctionalObjectPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLInverseFunctionalObjectPropertyAxiom axiom) {
         return reasoner.isInverseFunctional(axiom.getProperty());
     }
 
     // ************ data properties ****************************
 
-    public Boolean visit(OWLDataPropertyDomainAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDataPropertyDomainAxiom axiom) {
         return reasoner.isSubClassOf(factory.getOWLDataSomeValuesFrom(axiom.getProperty(),factory.getTopDatatype()),axiom.getDomain());
     }
-    public Boolean visit(OWLDataPropertyRangeAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDataPropertyRangeAxiom axiom) {
         return reasoner.isSubClassOf(factory.getOWLThing(),factory.getOWLDataAllValuesFrom(axiom.getProperty(),axiom.getRange()));
     }
-    public Boolean visit(OWLEquivalentDataPropertiesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLEquivalentDataPropertiesAxiom axiom) {
         Set<OWLDataPropertyExpression> props=axiom.getProperties();
         Iterator<OWLDataPropertyExpression> it=props.iterator();
         if (it.hasNext()) {
@@ -349,10 +354,10 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLSubDataPropertyOfAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSubDataPropertyOfAxiom axiom) {
         return reasoner.isSubDataPropertyOf(axiom.getSubProperty().asOWLDataProperty(),axiom.getSuperProperty().asOWLDataProperty());
     }
-    public Boolean visit(OWLDisjointDataPropertiesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDisjointDataPropertiesAxiom axiom) {
         int n=axiom.getProperties().size();
         OWLDataPropertyExpression[] props=axiom.getProperties().toArray(new OWLDataPropertyExpression[n]);
         for (int i=0;i<n-1;i++) {
@@ -367,16 +372,16 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLFunctionalDataPropertyAxiom axiom) {
+    public Boolean visit(@Nonnull OWLFunctionalDataPropertyAxiom axiom) {
         return reasoner.isFunctional(axiom.getProperty().asOWLDataProperty());
     }
 
     // ************ class axioms ****************************
 
-    public Boolean visit(OWLSubClassOfAxiom axiom) {
+    public Boolean visit(@Nonnull OWLSubClassOfAxiom axiom) {
         return reasoner.isSubClassOf(axiom.getSubClass(),axiom.getSuperClass());
     }
-    public Boolean visit(OWLEquivalentClassesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLEquivalentClassesAxiom axiom) {
         boolean isEntailed=true;
         Iterator<OWLClassExpression> i=axiom.getClassExpressions().iterator();
         if (i.hasNext()) {
@@ -388,7 +393,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return isEntailed;
     }
-    public Boolean visit(OWLDisjointClassesAxiom axiom) {
+    public Boolean visit(@Nonnull OWLDisjointClassesAxiom axiom) {
         int n=axiom.getClassExpressions().size();
         OWLClassExpression[] classes=axiom.getClassExpressions().toArray(new OWLClassExpression[n]);
         for (int i=0;i<n-1;i++) {
@@ -400,7 +405,8 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         }
         return Boolean.TRUE;
     }
-    public Boolean visit(OWLDisjointUnionAxiom axiom) {
+    @Nonnull
+    public Boolean visit(@Nonnull OWLDisjointUnionAxiom axiom) {
         // C = C1 or ... or Cn, for 1 <= i < j <= n: Ci and Cj -> bottom
         OWLClass c=axiom.getOWLClass();
         Set<OWLClassExpression> cs=new HashSet<OWLClassExpression>(axiom.getClassExpressions());
@@ -425,7 +431,8 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
 
     // ************ datatype definitions ****************************
 
-    public Boolean visit(OWLDatatypeDefinitionAxiom axiom) {
+    @Nonnull
+    public Boolean visit(@Nonnull OWLDatatypeDefinitionAxiom axiom) {
         reasoner.throwInconsistentOntologyExceptionIfNecessary();
         if (!reasoner.isConsistent())
             return true;
@@ -449,13 +456,15 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
 
     // ************ rules ****************************
 
+    @Nonnull
     public Boolean visit(SWRLRule rule) {
         throw new UnsupportedOperationException();
     }
 
     // ************ keys****************************
 
-    public Boolean visit(OWLHasKeyAxiom axiom) {
+    @Nonnull
+    public Boolean visit(@Nonnull OWLHasKeyAxiom axiom) {
         reasoner.throwFreshEntityExceptionIfNecessary(axiom);
         reasoner.throwInconsistentOntologyExceptionIfNecessary();
         if (!reasoner.isConsistent())
@@ -519,7 +528,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
          * @param axioms
          *            The axioms from the conclusion ontology. After executing this method, the axioms that contain anonymous individuals can be discarded. Instead the methods getAssertions() and getConcepts() can be used to check entailment of the conclusion ontology.
          */
-        public void constructConceptsForAnonymousIndividuals(OWLDataFactory factory,Set<OWLAxiom> axioms) {
+        public void constructConceptsForAnonymousIndividuals(@Nonnull OWLDataFactory factory, @Nonnull Set<OWLAxiom> axioms) {
             // The anonymous individuals together with the object property assertions
             // induce a labelled forest with anonymous individuals as nodes and edges labelled
             // with an object property and nodes labelled with a set of concepts.
@@ -572,6 +581,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
          *
          * @return a set of assertions without anonymous individuals that have to be entailed by the premise ontology
          */
+        @Nonnull
         public Set<OWLAxiom> getAnonIndAxioms() {
             return anonIndAxioms;
         }
@@ -580,6 +590,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
          *
          * @return a set of axioms without anonymous individuals that have make the premise ontology inconsistent for the entailment to hold
          */
+        @Nonnull
         public Set<OWLAxiom> getAnonNoNamedIndAxioms() {
             return anonNoNamedIndAxioms;
         }
@@ -596,7 +607,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         // public Set<OWLClassExpression> getConcepts() {
         // return concepts;
         // }
-        protected OWLClassExpression getClassExpressionFor(OWLDataFactory factory,OWLAnonymousIndividual node,OWLAnonymousIndividual predecessor) {
+        protected OWLClassExpression getClassExpressionFor(@Nonnull OWLDataFactory factory,OWLAnonymousIndividual node,OWLAnonymousIndividual predecessor) {
             Set<OWLAnonymousIndividual> successors=edges.get(node);
             if (successors==null||(successors.size()==1&&successors.iterator().next()==predecessor)) {
                 // the tree consists of a single node
@@ -631,7 +642,8 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
             return concepts.size()==1 ? concepts.iterator().next() : factory.getOWLObjectIntersectionOf(concepts);
         }
 
-        protected Map<Set<OWLAnonymousIndividual>,OWLAnonymousIndividual> findSuitableRoots(Set<Set<OWLAnonymousIndividual>> components) {
+        @Nonnull
+        protected Map<Set<OWLAnonymousIndividual>,OWLAnonymousIndividual> findSuitableRoots(@Nonnull Set<Set<OWLAnonymousIndividual>> components) {
             Map<Set<OWLAnonymousIndividual>,OWLAnonymousIndividual> componentsToRoots=new HashMap<Set<OWLAnonymousIndividual>,OWLAnonymousIndividual>();
             for (Set<OWLAnonymousIndividual> component : components) {
                 // We have to find a node with at most one relation to the named individuals
@@ -661,6 +673,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
             }
             return componentsToRoots;
         }
+        @Nonnull
         protected Set<Set<OWLAnonymousIndividual>> getComponents() {
             Set<Set<OWLAnonymousIndividual>> components=new HashSet<Set<OWLAnonymousIndividual>>();
             if (nodes.isEmpty())
@@ -699,7 +712,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
             }
             return components;
         }
-        public void visit(OWLClassAssertionAxiom axiom) {
+        public void visit(@Nonnull OWLClassAssertionAxiom axiom) {
             if (axiom.getClassExpression().isOWLThing())
                 return;
             OWLIndividual node=axiom.getIndividual();
@@ -718,7 +731,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
                 }
             }
         }
-        public void visit(OWLObjectPropertyAssertionAxiom axiom) {
+        public void visit(@Nonnull OWLObjectPropertyAssertionAxiom axiom) {
             OWLIndividual sub=axiom.getSubject();
             OWLIndividual obj=axiom.getObject();
             OWLObjectPropertyExpression ope=axiom.getProperty().getSimplified();
@@ -796,7 +809,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
                 edgeOPLabels.put(new Edge(subAnon,objAnon),op);
             }
         }
-        public void visit(OWLDataPropertyAssertionAxiom axiom) {
+        public void visit(@Nonnull OWLDataPropertyAssertionAxiom axiom) {
             if (!axiom.getSubject().isAnonymous()) {
                 return; // not interesting for the anonymous individual forest
             }
@@ -897,7 +910,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
         public int hashCode() {
             return 13+(3*(first!=null ? first.hashCode() : 0))+(7*(second!=null ? second.hashCode() : 0));
         }
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o==this)
                 return true;
             if (o==null||getClass()!=o.getClass())
@@ -905,6 +918,7 @@ public class EntailmentChecker implements OWLAxiomVisitorEx<Boolean> {
             Edge other=(Edge)o;
             return this.first.equals(other.first)&&this.second.equals(other.second);
         }
+        @Nonnull
         public String toString() {
             return "("+first+", "+second+")";
         }

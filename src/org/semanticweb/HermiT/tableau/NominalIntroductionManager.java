@@ -21,6 +21,9 @@ import java.io.Serializable;
 
 import org.semanticweb.HermiT.model.AnnotatedEquality;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Implements the nominal introduction rule.
  */
@@ -28,13 +31,20 @@ public final class NominalIntroductionManager implements Serializable {
     private static final long serialVersionUID=5863617010809297861L;
 
     protected final Tableau m_tableau;
+    @Nonnull
     protected final DependencySetFactory m_dependencySetFactory;
     protected final InterruptFlag m_interruptFlag;
+    @Nonnull
     protected final MergingManager m_mergingManager;
+    @Nonnull
     protected final TupleTable m_annotatedEqualities;
+    @Nonnull
     protected final Object[] m_bufferForAnnotatedEquality;
+    @Nonnull
     protected final TupleTable m_newRootNodesTable;
+    @Nonnull
     protected final TupleTableFullIndex m_newRootNodesIndex;
+    @Nonnull
     protected final Object[] m_bufferForRootNodes;
     protected int[] m_indicesByBranchingPoint;
     protected int m_firstUnprocessedAnnotatedEquality;
@@ -105,10 +115,10 @@ public final class NominalIntroductionManager implements Serializable {
         }
         return result;
     }
-    public boolean canForgetAnnotation(AnnotatedEquality annotatedEquality,Node node0,Node node1,Node node2) {
+    public boolean canForgetAnnotation(AnnotatedEquality annotatedEquality, @Nonnull Node node0, @Nonnull Node node1, @Nonnull Node node2) {
         return node0.isRootNode() || node1.isRootNode() || !node2.isRootNode() || (node2.isParentOf(node0) && node2.isParentOf(node1));
     }
-    public boolean addAnnotatedEquality(AnnotatedEquality annotatedEquality,Node node0,Node node1,Node node2,DependencySet dependencySet) {
+    public boolean addAnnotatedEquality(@Nonnull AnnotatedEquality annotatedEquality, @Nonnull Node node0, @Nonnull Node node1, @Nonnull Node node2,DependencySet dependencySet) {
         if (!node0.isActive() || !node1.isActive() || !node2.isActive())
             return false;
         else if (canForgetAnnotation(annotatedEquality,node0,node1,node2))
@@ -127,7 +137,7 @@ public final class NominalIntroductionManager implements Serializable {
             return true;
         }
     }
-    protected boolean applyNIRule(AnnotatedEquality annotatedEquality,Node node0,Node node1,Node node2,DependencySet dependencySet) {
+    protected boolean applyNIRule(@Nonnull AnnotatedEquality annotatedEquality, @Nonnull Node node0, @Nonnull Node node1, @Nonnull Node node2,DependencySet dependencySet) {
         if (node0.isPruned() || node1.isPruned() || node2.isPruned())
             return false;
         dependencySet=node0.addCanonicalNodeDependencySet(dependencySet);
@@ -172,6 +182,7 @@ public final class NominalIntroductionManager implements Serializable {
             return true;
         }
     }
+    @Nullable
     protected Node getNIRootFor(DependencySet dependencySet,Node rootNode,AnnotatedEquality annotatedEquality,int number) {
         m_bufferForRootNodes[0]=rootNode;
         m_bufferForRootNodes[1]=annotatedEquality;
@@ -197,7 +208,7 @@ public final class NominalIntroductionManager implements Serializable {
         protected final AnnotatedEquality m_annotatedEquality;
         protected int m_currentRootNode;
 
-        public NominalIntroductionBranchingPoint(Tableau tableau,Node rootNode,Node niTargetNode,Node otherNode,AnnotatedEquality annotatedEquality) {
+        public NominalIntroductionBranchingPoint(@Nonnull Tableau tableau,Node rootNode,Node niTargetNode,Node otherNode,AnnotatedEquality annotatedEquality) {
             super(tableau);
             m_rootNode=rootNode;
             m_niTargetNode=niTargetNode;
@@ -205,7 +216,7 @@ public final class NominalIntroductionManager implements Serializable {
             m_annotatedEquality=annotatedEquality;
             m_currentRootNode=1; // This reflects the assumption that the first merge is performed from the NominalIntroductionManager
         }
-        public void startNextChoice(Tableau tableau,DependencySet clashDepdendencySet) {
+        public void startNextChoice(@Nonnull Tableau tableau,DependencySet clashDepdendencySet) {
             m_currentRootNode++;
             assert m_currentRootNode<=m_annotatedEquality.getCaridnality();
             DependencySet dependencySet=clashDepdendencySet;

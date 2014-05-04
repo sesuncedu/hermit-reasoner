@@ -21,6 +21,8 @@ import java.io.Serializable;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents the built-in predicate that is used to enforce ordering on nodes in the translation of at-most concepts.
  */
@@ -33,15 +35,19 @@ public class NodeIDLessEqualThan implements DLPredicate,Serializable {
     public int getArity() {
         return 2;
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "<=";
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
+    @Nonnull
     protected Object readResolve() {
         return INSTANCE;
     }
+    @Nonnull
     public static NodeIDLessEqualThan create() {
         return INSTANCE;
     }

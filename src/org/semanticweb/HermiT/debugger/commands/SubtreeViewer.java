@@ -47,6 +47,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -77,12 +79,16 @@ import org.semanticweb.HermiT.tableau.Node;
 @SuppressWarnings("serial")
 public class SubtreeViewer extends JFrame {
     protected final Debugger m_debugger;
+    @Nonnull
     protected final SubtreeTreeModel m_subtreeTreeModel;
+    @Nonnull
     protected final JTextArea m_nodeInfoTextArea;
+    @Nonnull
     protected final JTree m_tableauTree;
+    @Nonnull
     protected final JTextField m_nodeIDField;
 
-    public SubtreeViewer(Debugger debugger,Node rootNode) {
+    public SubtreeViewer(Debugger debugger, @Nonnull Node rootNode) {
         super("Subtree for node "+rootNode.getNodeID());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         m_debugger=debugger;
@@ -153,7 +159,7 @@ public class SubtreeViewer extends JFrame {
     public void refresh() {
         m_subtreeTreeModel.refresh();
     }
-    public void findNode(Node node) {
+    public void findNode(@Nonnull Node node) {
         List<Node> pathToRoot=new ArrayList<Node>();
         Node currentNode=node;
         while (currentNode!=null && currentNode!=m_subtreeTreeModel.getRoot()) {
@@ -171,7 +177,7 @@ public class SubtreeViewer extends JFrame {
         m_tableauTree.setSelectionPath(treePath);
         m_tableauTree.scrollPathToVisible(treePath);
     }
-    public void showNodeLabels(Node node) {
+    public void showNodeLabels(@Nullable Node node) {
         if (node==null)
             m_nodeInfoTextArea.setText("");
         else {
@@ -185,6 +191,7 @@ public class SubtreeViewer extends JFrame {
     }
 
     protected static class SubtreeTreeModel implements TreeModel {
+        @Nonnull
         protected final EventListenerList m_eventListeners;
         protected final Debugger m_debugger;
         protected final Node m_root;
@@ -200,6 +207,7 @@ public class SubtreeViewer extends JFrame {
         public void removeTreeModelListener(TreeModelListener listener) {
             m_eventListeners.remove(TreeModelListener.class,listener);
         }
+        @Nullable
         public Node getChild(Object parent,int index) {
             NodeCreationInfo nodeCreationInfo = null;
             if (parent instanceof Node) {
@@ -260,6 +268,7 @@ public class SubtreeViewer extends JFrame {
         public NodeCellRenderer(Debugger debugger) {
             m_debugger=debugger;
         }
+        @Nonnull
         public Component getTreeCellRendererComponent(JTree tree,Object value,boolean selected,boolean expanded,boolean leaf,int row,boolean hasFocus) {
             Node node=(Node)value;
             StringBuffer buffer=new StringBuffer();
@@ -324,7 +333,7 @@ public class SubtreeViewer extends JFrame {
         public int getIconWidth() {
             return 16;
         }
-        public void paintIcon(Component c,Graphics g,int x,int y) {
+        public void paintIcon(Component c, @Nonnull Graphics g,int x,int y) {
             Color oldColor=g.getColor();
             g.setColor(m_color);
             g.fillOval(x+2,y+2,x+12,y+12);
@@ -333,10 +342,10 @@ public class SubtreeViewer extends JFrame {
     }
 
     protected static class MyTreePath extends TreePath {
-        public MyTreePath(Object object) {
+        public MyTreePath(@Nonnull Object object) {
             super(object);
         }
-        public MyTreePath(TreePath treePath,Object object) {
+        public MyTreePath(TreePath treePath, @Nonnull Object object) {
             super(treePath,object);
         }
     }

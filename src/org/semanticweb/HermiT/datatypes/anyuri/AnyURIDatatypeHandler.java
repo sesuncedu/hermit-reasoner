@@ -32,16 +32,21 @@ import org.semanticweb.HermiT.model.DatatypeRestriction;
 
 import dk.brics.automaton.Automaton;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class AnyURIDatatypeHandler implements DatatypeHandler {
     protected static final String XSD_NS=Prefixes.s_semanticWebPrefixes.get("xsd:");
     protected static final ValueSpaceSubset ANY_URI_ALL=new AnyURIValueSpaceSubset(AnyURIValueSpaceSubset.s_anyURI);
     protected static final ValueSpaceSubset EMPTY_SUBSET=new AnyURIValueSpaceSubset(AnyURIValueSpaceSubset.s_empty);
     protected static final Set<String> s_managedDatatypeURIs=Collections.singleton(XSD_NS+"anyURI");
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_managedDatatypeURIs;
     }
-    public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
+    @Nonnull
+    public Object parseLiteral(@Nonnull String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert s_managedDatatypeURIs.contains(datatypeURI);
         if (!AnyURIValueSpaceSubset.s_anyURI.run(lexicalForm))
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
@@ -52,7 +57,7 @@ public class AnyURIDatatypeHandler implements DatatypeHandler {
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
         }
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
             String facetURI=datatypeRestriction.getFacetURI(index);
@@ -80,7 +85,8 @@ public class AnyURIDatatypeHandler implements DatatypeHandler {
                 throw new UnsupportedFacetException("Facet with URI '"+facetURI+"' is not supported on xsd:anyURI; only xsd:minLength, xsd:maxLength, xsd:length, and xsd:pattern are supported, but the ontology contains the restriction: "+this.toString());
         }
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return ANY_URI_ALL;
@@ -92,7 +98,8 @@ public class AnyURIDatatypeHandler implements DatatypeHandler {
                 return new AnyURIValueSpaceSubset(automaton);
         }
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(@Nonnull ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         if (valueSpaceSubset==EMPTY_SUBSET || datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return valueSpaceSubset;
@@ -104,7 +111,8 @@ public class AnyURIDatatypeHandler implements DatatypeHandler {
                 return new AnyURIValueSpaceSubset(restrictionAutomaton);
         }
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDRNegation(@Nonnull ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         if (valueSpaceSubset==EMPTY_SUBSET || datatypeRestriction.getNumberOfFacetRestrictions()==0)
             return EMPTY_SUBSET;
@@ -119,7 +127,8 @@ public class AnyURIDatatypeHandler implements DatatypeHandler {
                 return new AnyURIValueSpaceSubset(difference);
         }
     }
-    protected Automaton getAutomatonFor(Automaton automaton,DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    protected Automaton getAutomatonFor(Automaton automaton, @Nonnull DatatypeRestriction datatypeRestriction) {
         int minLength=0;
         int maxLength=Integer.MAX_VALUE;
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {

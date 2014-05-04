@@ -23,6 +23,8 @@ import org.semanticweb.HermiT.Prefixes;
 import org.semanticweb.HermiT.tableau.BranchingPoint;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 
+import javax.annotation.Nonnull;
+
 public class Timer extends TableauMonitorAdapter {
     private static final long serialVersionUID=-8144444618897251350L;
 
@@ -38,6 +40,7 @@ public class Timer extends TableauMonitorAdapter {
     public Timer(PrintWriter inOutput) {
         m_output=inOutput;
     }
+    @Nonnull
     protected Object readResolve() {
         m_output=new PrintWriter(System.out);
         return this;
@@ -47,12 +50,12 @@ public class Timer extends TableauMonitorAdapter {
         m_problemStartTime=System.currentTimeMillis();
         m_lastStatusTime=m_problemStartTime;
     }
-    public void isSatisfiableStarted(ReasoningTaskDescription reasoningTaskDescription) {
+    public void isSatisfiableStarted(@Nonnull ReasoningTaskDescription reasoningTaskDescription) {
         m_output.print(reasoningTaskDescription.getTaskDescription(Prefixes.STANDARD_PREFIXES)+" ...");
         m_output.flush();
         start();
     }
-    public void isSatisfiableFinished(ReasoningTaskDescription reasoningTaskDescription,boolean result) {
+    public void isSatisfiableFinished(@Nonnull ReasoningTaskDescription reasoningTaskDescription,boolean result) {
         if (reasoningTaskDescription.flipSatisfiabilityResult())
             result=!result;
         m_output.println(result ? "YES" : "NO");

@@ -37,6 +37,8 @@ package rationals.expr;
 
 import rationals.algebra.SemiRing;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author nono
  * @version $Id: RationalExpr.java 2 2006-08-24 14:41:48Z oqube $
@@ -46,6 +48,7 @@ public abstract class RationalExpr implements SemiRing {
     
     public static final RationalExpr zero = new RationalExpr() {
         
+        @Nonnull
         public SemiRing mult(SemiRing s1) {
             return zero;
         }
@@ -62,6 +65,7 @@ public abstract class RationalExpr implements SemiRing {
             return -1;
         }
         
+        @Nonnull
         public String toString() {
             return "0";
         }
@@ -79,11 +83,13 @@ public abstract class RationalExpr implements SemiRing {
     /* (non-Javadoc)
      * @see rationals.SemiRing#zero()
      */
+    @Nonnull
     public final SemiRing zero() {
         return zero;
     }
     
     
+    @Nonnull
     public SemiRing mult(SemiRing s2) {
         if(s2 == zero)
             return zero;

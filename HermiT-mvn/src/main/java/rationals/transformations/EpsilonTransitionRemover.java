@@ -13,6 +13,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class allows to remove epsilon transitions in an automaton. Epsilon
  * transition are transitions (q , l , q') where l is null.
@@ -27,7 +29,8 @@ public class EpsilonTransitionRemover implements UnaryTransformation {
      * 
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton ret = new Automaton(); /* resulting automaton */
         Map /* < HashValue, State > */ sm = new HashMap();
         Set done = new HashSet();
@@ -76,7 +79,8 @@ public class EpsilonTransitionRemover implements UnaryTransformation {
         return ret;
     }
 
-    private Map /* < Object, Set > */instructions(Set /* < Transition > */s,Automaton a) {
+    @Nonnull
+    private Map /* < Object, Set > */instructions(@Nonnull Set /* < Transition > */s, @Nonnull Automaton a) {
         Map /* < Object, Set > */m = new HashMap();
         Iterator it = s.iterator();
         while (it.hasNext()) {

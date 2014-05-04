@@ -31,9 +31,13 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Role;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class HierarchyPrinterFSS {
     protected final PrintWriter m_out;
     protected final String m_defaultPrefixIRI;
+    @Nonnull
     protected final Set<String> m_prefixIRIs;
     protected Prefixes m_prefixes;
 
@@ -44,7 +48,7 @@ public class HierarchyPrinterFSS {
         m_prefixIRIs.add(defaultPrefixIRI);
         m_prefixIRIs.add(Prefixes.s_semanticWebPrefixes.get("owl:"));
     }
-    public void loadAtomicConceptPrefixIRIs(Collection<AtomicConcept> atomicConcepts) {
+    public void loadAtomicConceptPrefixIRIs(@Nonnull Collection<AtomicConcept> atomicConcepts) {
         for (AtomicConcept atomicConcept : atomicConcepts) {
             String uri=atomicConcept.getIRI();
             int hashIndex=uri.indexOf('#');
@@ -56,7 +60,7 @@ public class HierarchyPrinterFSS {
             }
         }
     }
-    public void loadAtomicRolePrefixIRIs(Collection<AtomicRole> atomicRoles) {
+    public void loadAtomicRolePrefixIRIs(@Nonnull Collection<AtomicRole> atomicRoles) {
         for (AtomicRole atomicRole : atomicRoles) {
             String uri=atomicRole.getIRI();
             int hashIndex=uri.indexOf('#');
@@ -86,13 +90,13 @@ public class HierarchyPrinterFSS {
         m_out.println("Ontology(<"+m_prefixes.getPrefixIRIsByPrefixName().get(":")+">");
         m_out.println();
     }
-    public void printAtomicConceptHierarchy(Hierarchy<AtomicConcept> atomicConceptHierarchy) {
+    public void printAtomicConceptHierarchy(@Nonnull Hierarchy<AtomicConcept> atomicConceptHierarchy) {
         Hierarchy<AtomicConcept> sortedAtomicConceptHierarchy=atomicConceptHierarchy.transform(new IdentityTransformer<AtomicConcept>(),AtomicConceptComparator.INSTANCE);
         AtomicConceptPrinter atomicConceptPrinter=new AtomicConceptPrinter(sortedAtomicConceptHierarchy.getBottomNode());
         sortedAtomicConceptHierarchy.traverseDepthFirst(atomicConceptPrinter);
         atomicConceptPrinter.printNode(0,sortedAtomicConceptHierarchy.getBottomNode(),null,true);
     }
-    public void printRoleHierarchy(Hierarchy<? extends Role> roleHierarchy,boolean objectProperties) {
+    public void printRoleHierarchy(@Nonnull Hierarchy<? extends Role> roleHierarchy,boolean objectProperties) {
         Hierarchy<Role> sortedRoleHierarchy=roleHierarchy.transform(new IdentityTransformer<Role>(),RoleComparator.INSTANCE);
         RolePrinter rolePrinter=new RolePrinter(sortedRoleHierarchy,objectProperties);
         sortedRoleHierarchy.traverseDepthFirst(rolePrinter);
@@ -113,11 +117,11 @@ public class HierarchyPrinterFSS {
         public boolean redirect(HierarchyNode<AtomicConcept>[] nodes) {
             return true;
         }
-        public void visit(int level,HierarchyNode<AtomicConcept> node,HierarchyNode<AtomicConcept> parentNode,boolean firstVisit) {
+        public void visit(int level, @Nonnull HierarchyNode<AtomicConcept> node,HierarchyNode<AtomicConcept> parentNode,boolean firstVisit) {
             if (!node.equals(m_bottomNode))
                 printNode(level,node,parentNode,firstVisit);
         }
-        public void printNode(int level,HierarchyNode<AtomicConcept> node,HierarchyNode<AtomicConcept> parentNode,boolean firstVisit) {
+        public void printNode(int level, @Nonnull HierarchyNode<AtomicConcept> node, @Nullable HierarchyNode<AtomicConcept> parentNode,boolean firstVisit) {
             Set<AtomicConcept> equivalences=node.getEquivalentElements();
             boolean printSubClasOf=(parentNode!=null);
             boolean printEquivalences=firstVisit && equivalences.size()>1;
@@ -164,7 +168,7 @@ public class HierarchyPrinterFSS {
                 m_out.println();
             }
         }
-        protected void print(AtomicConcept atomicConcept) {
+        protected void print(@Nonnull AtomicConcept atomicConcept) {
             m_out.print(m_prefixes.abbreviateIRI(atomicConcept.getIRI()));
         }
         protected boolean needsDeclaration(AtomicConcept atomicConcept) {
@@ -183,11 +187,11 @@ public class HierarchyPrinterFSS {
         public boolean redirect(HierarchyNode<Role>[] nodes) {
             return true;
         }
-        public void visit(int level,HierarchyNode<Role> node,HierarchyNode<Role> parentNode,boolean firstVisit) {
+        public void visit(int level, @Nonnull HierarchyNode<Role> node,HierarchyNode<Role> parentNode,boolean firstVisit) {
             if (!node.equals(m_hierarchy.getBottomNode()))
                 printNode(level,node,parentNode,firstVisit);
         }
-        public void printNode(int level,HierarchyNode<Role> node,HierarchyNode<Role> parentNode,boolean firstVisit) {
+        public void printNode(int level, @Nonnull HierarchyNode<Role> node, @Nullable HierarchyNode<Role> parentNode,boolean firstVisit) {
             Set<Role> equivalences=node.getEquivalentElements();
             boolean printSubPropertyOf=(parentNode!=null);
             boolean printEquivalences=firstVisit && equivalences.size()>1;
@@ -253,7 +257,7 @@ public class HierarchyPrinterFSS {
                 m_out.print(" )");
             }
         }
-        protected void print(AtomicRole atomicRole) {
+        protected void print(@Nonnull AtomicRole atomicRole) {
             m_out.print(m_prefixes.abbreviateIRI(atomicRole.getIRI()));
         }
         protected boolean needsDeclaration(Role role) {
@@ -299,7 +303,7 @@ public class HierarchyPrinterFSS {
     protected static class AtomicConceptComparator implements Comparator<AtomicConcept> {
         public static final AtomicConceptComparator INSTANCE=new AtomicConceptComparator();
 
-        public int compare(AtomicConcept atomicConcept1,AtomicConcept atomicConcept2) {
+        public int compare(@Nonnull AtomicConcept atomicConcept1, @Nonnull AtomicConcept atomicConcept2) {
             int comparison=getAtomicConceptClass(atomicConcept1)-getAtomicConceptClass(atomicConcept2);
             if (comparison!=0)
                 return comparison;
@@ -320,7 +324,7 @@ public class HierarchyPrinterFSS {
         public E transform(E object) {
             return object;
         }
-        public E determineRepresentative(E oldRepresentative,Set<E> newEquivalentElements) {
+        public E determineRepresentative(E oldRepresentative, @Nonnull Set<E> newEquivalentElements) {
             return ((SortedSet<E>)newEquivalentElements).first();
         }
     }

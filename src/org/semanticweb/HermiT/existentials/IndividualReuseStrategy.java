@@ -35,15 +35,24 @@ import org.semanticweb.HermiT.tableau.Node;
 import org.semanticweb.HermiT.tableau.Tableau;
 import org.semanticweb.HermiT.tableau.TupleTable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class IndividualReuseStrategy extends AbstractExpansionStrategy implements Serializable {
     private static final long serialVersionUID=-7373787507623860081L;
 
     protected final boolean m_isDeterministic;
+    @Nonnull
     protected final Map<AtomicConcept,NodeBranchingPointPair> m_reusedNodes;
+    @Nonnull
     protected final Set<AtomicConcept> m_doReuseConceptsAlways;
+    @Nonnull
     protected final Set<AtomicConcept> m_dontReuseConceptsThisRun;
+    @Nonnull
     protected final Set<AtomicConcept> m_dontReuseConceptsEver;
+    @Nonnull
     protected final TupleTable m_reuseBacktrackingTable;
+    @Nonnull
     protected final Object[] m_auxiliaryBuffer;
     protected int[] m_indicesByBranchingPoint;
 
@@ -59,7 +68,7 @@ public class IndividualReuseStrategy extends AbstractExpansionStrategy implement
         m_indicesByBranchingPoint=new int[10];
     }
     @SuppressWarnings("unchecked")
-    public void initialize(Tableau tableau) {
+    public void initialize(@Nonnull Tableau tableau) {
         super.initialize(tableau);
         m_doReuseConceptsAlways.clear();
         m_dontReuseConceptsEver.clear();
@@ -105,16 +114,18 @@ public class IndividualReuseStrategy extends AbstractExpansionStrategy implement
     public boolean isDeterministic() {
         return m_isDeterministic;
     }
+    @Nullable
     public AtomicConcept getConceptForNode(Node node) {
         for (Map.Entry<AtomicConcept,NodeBranchingPointPair> entry : m_reusedNodes.entrySet())
             if (entry.getValue().m_node==node)
                 return entry.getKey();
         return null;
     }
+    @Nonnull
     public Set<AtomicConcept> getDontReuseConceptsEver() {
         return m_dontReuseConceptsEver;
     }
-    protected void expandExistential(AtLeast atLeast,Node forNode) {
+    protected void expandExistential(@Nonnull AtLeast atLeast, @Nonnull Node forNode) {
         // Mark existential as processed BEFORE branching takes place!
         m_existentialExpansionManager.markExistentialProcessed(atLeast,forNode);
         if (!m_existentialExpansionManager.tryFunctionalExpansion(atLeast,forNode)) 
@@ -127,7 +138,7 @@ public class IndividualReuseStrategy extends AbstractExpansionStrategy implement
                         m_existentialExpansionManager.doNormalExpansion(atLeastConcept,forNode);
             }
     }
-    protected boolean tryParentReuse(AtLeastConcept atLeastConcept,Node node) {
+    protected boolean tryParentReuse(@Nonnull AtLeastConcept atLeastConcept, @Nonnull Node node) {
         if (atLeastConcept.getNumber()==1) {
             Node parent=node.getParent();
             if (parent!=null && m_extensionManager.containsConceptAssertion(atLeastConcept.getToConcept(),parent)) {
@@ -143,7 +154,7 @@ public class IndividualReuseStrategy extends AbstractExpansionStrategy implement
         }
         return false;
     }
-    protected boolean expandWithModelReuse(AtLeastConcept atLeastConcept,Node node) {
+    protected boolean expandWithModelReuse(@Nonnull AtLeastConcept atLeastConcept, @Nonnull Node node) {
         if (!(atLeastConcept.getToConcept() instanceof AtomicConcept))
             return false;
         AtomicConcept toConcept=(AtomicConcept)atLeastConcept.getToConcept();
@@ -191,13 +202,13 @@ public class IndividualReuseStrategy extends AbstractExpansionStrategy implement
         protected final Node m_node;
         protected final boolean m_wasParentReuse;
 
-        public IndividualReuseBranchingPoint(Tableau tableau,AtLeastConcept existential,Node node,boolean wasParentReuse) {
+        public IndividualReuseBranchingPoint(@Nonnull Tableau tableau,AtLeastConcept existential,Node node,boolean wasParentReuse) {
             super(tableau);
             m_existential=existential;
             m_node=node;
             m_wasParentReuse=wasParentReuse;
         }
-        public void startNextChoice(Tableau tableau,DependencySet clashDependencySet) {
+        public void startNextChoice(@Nonnull Tableau tableau,DependencySet clashDependencySet) {
             if (!m_wasParentReuse)
                 m_dontReuseConceptsThisRun.add((AtomicConcept)m_existential.getToConcept());
             DependencySet dependencySet=tableau.getDependencySetFactory().removeBranchingPoint(clashDependencySet,m_level);

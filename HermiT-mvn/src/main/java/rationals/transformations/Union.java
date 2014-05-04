@@ -8,6 +8,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Compute the union of two automaton.
  * <ul>
@@ -24,7 +26,8 @@ import rationals.Transition;
 public class Union implements BinaryTransformation {
 
 
-  public Automaton transform(Automaton a , Automaton b) {
+  @Nonnull
+  public Automaton transform(@Nonnull Automaton a , @Nonnull Automaton b) {
     Automaton ap = (Automaton) a.clone() ;
     Map map = new HashMap() ;
     Iterator i = b.states().iterator() ;

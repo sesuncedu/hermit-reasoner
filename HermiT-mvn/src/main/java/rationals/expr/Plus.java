@@ -35,6 +35,8 @@
  */
 package rationals.expr;
 
+import javax.annotation.Nonnull;
+
 /**
  * A plus expression.
  * 
@@ -54,6 +56,7 @@ public class Plus extends BinaryExpr {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Nonnull
     public String toString() {
         return getLeft() + "+"+getRight();
     }

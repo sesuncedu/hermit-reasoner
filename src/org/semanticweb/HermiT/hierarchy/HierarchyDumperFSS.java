@@ -27,13 +27,15 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Role;
 
+import javax.annotation.Nonnull;
+
 public class HierarchyDumperFSS {
     protected final PrintWriter m_out;
 
     public HierarchyDumperFSS(PrintWriter out) {
         m_out=out;
     }
-    public void printAtomicConceptHierarchy(Hierarchy<AtomicConcept> atomicConceptHierarchy) {
+    public void printAtomicConceptHierarchy(@Nonnull Hierarchy<AtomicConcept> atomicConceptHierarchy) {
         for (HierarchyNode<AtomicConcept> node : atomicConceptHierarchy.getAllNodesSet()) {
             SortedSet<AtomicConcept> equivs=new TreeSet<AtomicConcept>(AtomicConceptComparator.INSTANCE);
             equivs.addAll(node.getEquivalentElements());
@@ -72,7 +74,7 @@ public class HierarchyDumperFSS {
         }
         m_out.println();
     }
-    public void printObjectPropertyHierarchy(Hierarchy<Role> objectRoleHierarchy) {
+    public void printObjectPropertyHierarchy(@Nonnull Hierarchy<Role> objectRoleHierarchy) {
         for (HierarchyNode<Role> node : objectRoleHierarchy.getAllNodesSet()) {
             SortedSet<Role> equivs=new TreeSet<Role>(ObjectRoleComparator.INSTANCE);
             equivs.addAll(node.getEquivalentElements());
@@ -109,7 +111,7 @@ public class HierarchyDumperFSS {
         }
         m_out.println();
     }
-    public void printDataPropertyHierarchy(Hierarchy<AtomicRole> dataRoleHierarchy) {
+    public void printDataPropertyHierarchy(@Nonnull Hierarchy<AtomicRole> dataRoleHierarchy) {
         for (HierarchyNode<AtomicRole> node : dataRoleHierarchy.getAllNodesSet()) {
             SortedSet<AtomicRole> equivs=new TreeSet<AtomicRole>(DataRoleComparator.INSTANCE);
             equivs.addAll(node.getEquivalentElements());
@@ -157,7 +159,7 @@ public class HierarchyDumperFSS {
             m_out.print(" )");
         }
     }
-    protected void print(AtomicRole atomicRole) {
+    protected void print(@Nonnull AtomicRole atomicRole) {
         m_out.print("<");
         m_out.print(atomicRole.getIRI());
         m_out.print(">");
@@ -166,7 +168,7 @@ public class HierarchyDumperFSS {
     protected static class AtomicConceptComparator implements Comparator<AtomicConcept> {
         public static final AtomicConceptComparator INSTANCE=new AtomicConceptComparator();
 
-        public int compare(AtomicConcept atomicConcept1,AtomicConcept atomicConcept2) {
+        public int compare(@Nonnull AtomicConcept atomicConcept1, @Nonnull AtomicConcept atomicConcept2) {
             int comparison=getAtomicConceptClass(atomicConcept1)-getAtomicConceptClass(atomicConcept2);
             if (comparison!=0)
                 return comparison;
@@ -216,7 +218,7 @@ public class HierarchyDumperFSS {
     protected static class DataRoleComparator implements Comparator<AtomicRole> {
         public static final DataRoleComparator INSTANCE=new DataRoleComparator();
 
-        public int compare(AtomicRole atomicRole1,AtomicRole atomicRole2) {
+        public int compare(@Nonnull AtomicRole atomicRole1, @Nonnull AtomicRole atomicRole2) {
             int comparison=getAtomicRoleClass(atomicRole1)-getAtomicRoleClass(atomicRole2);
             if (comparison!=0)
                 return comparison;

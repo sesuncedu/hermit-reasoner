@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import javax.annotation.Nonnull;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -33,7 +34,9 @@ import javax.swing.text.PlainDocument;
 
 @SuppressWarnings("serial")
 public class ConsoleTextArea extends JTextArea {
+    @Nonnull
     protected final ConsoleWriter m_writer;
+    @Nonnull
     protected final ConsoleReader m_reader;
     protected int m_userTypedTextStart;
 
@@ -43,9 +46,11 @@ public class ConsoleTextArea extends JTextArea {
         m_reader=new ConsoleReader();
         enableEvents(KeyEvent.KEY_EVENT_MASK);
     }
+    @Nonnull
     public Writer getWriter() {
         return m_writer;
     }
+    @Nonnull
     public Reader getReader() {
         return m_reader;
     }
@@ -65,7 +70,7 @@ public class ConsoleTextArea extends JTextArea {
         moveToEndIfNecessary();
         super.replaceSelection(string);
     }
-    protected void processKeyEvent(KeyEvent event) {
+    protected void processKeyEvent(@Nonnull KeyEvent event) {
         if (event.getKeyCode()!=KeyEvent.VK_ENTER)
             super.processKeyEvent(event);
         if (event.getID()==KeyEvent.KEY_PRESSED && event.getKeyCode()==KeyEvent.VK_ENTER) {
@@ -98,7 +103,9 @@ public class ConsoleTextArea extends JTextArea {
     }
 
     protected class ConsoleWriter extends Writer implements ActionListener {
+        @Nonnull
         protected final char[] m_buffer;
+        @Nonnull
         protected final Timer m_timer;
         protected int m_firstFreeChar;
 
@@ -127,7 +134,7 @@ public class ConsoleTextArea extends JTextArea {
                 }
             }
         }
-        public void write(char[] buffer,int offset,int count) {
+        public void write(@Nonnull char[] buffer,int offset,int count) {
             synchronized (lock) {
                 int lastPosition=offset+count;
                 while (offset!=lastPosition) {
@@ -161,7 +168,7 @@ public class ConsoleTextArea extends JTextArea {
             m_nextCharToRead=0;
             m_firstFreeChar=0;
         }
-        public void addToBuffer(String string) {
+        public void addToBuffer(@Nonnull String string) {
             synchronized (lock) {
                 if (m_nextCharToRead==m_firstFreeChar) {
                     m_nextCharToRead=0;
@@ -186,7 +193,7 @@ public class ConsoleTextArea extends JTextArea {
         }
         public void close() throws IOException {
         }
-        public int read(char[] buffer,int offset,int length) throws IOException {
+        public int read(@Nonnull char[] buffer,int offset,int length) throws IOException {
             m_writer.flush();
             synchronized (lock) {
                 while (m_nextCharToRead==m_firstFreeChar)

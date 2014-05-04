@@ -17,16 +17,23 @@ import org.semanticweb.HermiT.tableau.ExtensionTable.View;
 import org.semanticweb.HermiT.tableau.HyperresolutionManager;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ConjunctiveQuery {
+    @Nonnull
     protected final DatalogEngine m_datalogEngine;
     protected final Atom[] m_queryAtoms;
+    @Nonnull
     protected final Term[] m_answerTerms;
     protected final Term[] m_resultBuffer;
+    @Nonnull
     protected final OneEmptyTupleRetrieval m_firstRetrieval;
+    @Nonnull
     protected final QueryResultCollector[] m_queryResultCollector;
+    @Nonnull
     protected final Worker[] m_workers;
 
-    public ConjunctiveQuery(DatalogEngine datalogEngine,Atom[] queryAtoms,Term[] answerTerms) {
+    public ConjunctiveQuery(@Nonnull DatalogEngine datalogEngine,Atom[] queryAtoms, @Nonnull Term[] answerTerms) {
         if (!datalogEngine.materialize())
             throw new IllegalStateException("The supplied DL ontology is unsatisfiable.");
         m_datalogEngine=datalogEngine;
@@ -41,6 +48,7 @@ public class ConjunctiveQuery {
         m_workers=new Worker[queryCompiler.m_workers.size()];
         queryCompiler.m_workers.toArray(m_workers);
     }
+    @Nonnull
     public DatalogEngine getDatalogEngine() {
         return m_datalogEngine;
     }
@@ -78,24 +86,30 @@ public class ConjunctiveQuery {
         public OneEmptyTupleRetrieval() {
             m_afterLast=true;
         }
+        @Nonnull
         public ExtensionTable getExtensionTable() {
             throw new UnsupportedOperationException();
         }
+        @Nonnull
         public View getExtensionView() {
             return View.TOTAL;
         }
         public void clear() {
             throw new UnsupportedOperationException();
         }
+        @Nonnull
         public int[] getBindingPositions() {
             return s_noBindings;
         }
+        @Nonnull
         public Object[] getBindingsBuffer() {
             return s_noObjects;
         }
+        @Nonnull
         public Object[] getTupleBuffer() {
             return s_noObjects;
         }
+        @Nonnull
         public DependencySet getDependencySet() {
             throw new UnsupportedOperationException();
         }
@@ -138,19 +152,22 @@ public class ConjunctiveQuery {
             m_queryResultCollector[0].processResult(m_conjunctiveQuery,m_resultBuffer);
             return programCounter+1;
         }
+        @Nonnull
         public String toString() {
             return "Call query consumer";
         }
     }
 
     protected static final class QueryCompiler extends DLClauseEvaluator.ConjunctionCompiler {
+        @Nonnull
         protected final ConjunctiveQuery m_conjunctiveQuery;
+        @Nonnull
         protected final Term[] m_answerTerms;
         protected final Map<Node,Term> m_nodesToTerms;
         protected final Term[] m_resultBuffer;
         protected final QueryResultCollector[] m_queryResultCollector;
 
-        public QueryCompiler(ConjunctiveQuery conjunctiveQuery,DLClause queryDLClause,Term[] answerTerms,Map<Term,Node> termsToNodes,Map<Node,Term> nodesToTerms,Term[] resultBuffer,QueryResultCollector[] queryResultCollector,ExtensionTable.Retrieval oneEmptyTupleRetrieval) {
+        public QueryCompiler(@Nonnull ConjunctiveQuery conjunctiveQuery, @Nonnull DLClause queryDLClause, @Nonnull Term[] answerTerms, @Nonnull Map<Term,Node> termsToNodes,Map<Node,Term> nodesToTerms,Term[] resultBuffer,QueryResultCollector[] queryResultCollector, @Nonnull ExtensionTable.Retrieval oneEmptyTupleRetrieval) {
             super(new DLClauseEvaluator.BufferSupply(),new DLClauseEvaluator.ValuesBufferManager(Collections.singleton(queryDLClause),termsToNodes),null,conjunctiveQuery.m_datalogEngine.m_extensionManager,queryDLClause.getBodyAtoms(),getAnswerVariables(answerTerms));
             m_conjunctiveQuery=conjunctiveQuery;
             m_answerTerms=answerTerms;
@@ -171,7 +188,8 @@ public class ConjunctiveQuery {
             m_workers.add(new QueryAnswerCallback(m_conjunctiveQuery,m_nodesToTerms,m_resultBuffer,m_queryResultCollector,copyAnswers.toArray(new int[copyAnswers.size()][]),m_valuesBufferManager.m_valuesBuffer));
         }
         
-        protected static List<Variable> getAnswerVariables(Term[] answerTerms) {
+        @Nonnull
+        protected static List<Variable> getAnswerVariables(@Nonnull Term[] answerTerms) {
             List<Variable> result=new ArrayList<Variable>();
             for (Term answerTerm : answerTerms)
                 if (answerTerm instanceof Variable)

@@ -11,6 +11,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Computes the minimal automaton from a deterministic automaton.
  * <p />
@@ -25,7 +27,7 @@ public class Reducer implements UnaryTransformation {
     /*
      * equivalence on DFA
      */
-    private boolean same(State e1, State e2, Automaton a, Map m) {
+    private boolean same(State e1, State e2, @Nonnull Automaton a, @Nonnull Map m) {
         if (!m.get(e1).equals(m.get(e2)))
             return false;
         /* iterate over all transitions */
@@ -56,6 +58,7 @@ public class Reducer implements UnaryTransformation {
         return true;
     }
 
+    @Nonnull
     public Automaton transform(Automaton a) {
         Automaton b = new ToDFA().transform(a);
         Map current = new HashMap();

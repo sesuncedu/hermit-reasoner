@@ -35,6 +35,8 @@
  */
 package rationals.expr;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author nono
  * @version $Id: Iteration.java 2 2006-08-24 14:41:48Z oqube $
@@ -65,6 +67,7 @@ public class Iteration extends RationalExpr{
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Nonnull
     public String toString() {
        return expr.toString() + "*";
     }

@@ -17,11 +17,14 @@
 */
 package org.semanticweb.HermiT.model;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a literal concept -- that is, an atomic concept, a negation of an atomic concept, or a data range.
  */
 public abstract class LiteralConcept extends Concept {
     private static final long serialVersionUID=-2302452747339289424L;
     
+    @Nullable
     public abstract LiteralConcept getNegation();
 }

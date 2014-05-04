@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a variable.
  */
@@ -39,19 +42,22 @@ public class Variable extends Term {
     public String toString(Prefixes prefixes) {
         return m_name;
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<Variable> s_interningManager=new InterningManager<Variable>() {
-        protected boolean equal(Variable object1,Variable object2) {
+        protected boolean equal(@Nonnull Variable object1, @Nonnull Variable object2) {
             return object1.m_name.equals(object2.m_name);
         }
-        protected int getHashCode(Variable object) {
+        protected int getHashCode(@Nonnull Variable object) {
             return object.m_name.hashCode();
         }
     };
     
+    @Nullable
     public static Variable create(String name) {
         return s_interningManager.intern(new Variable(name));
     }

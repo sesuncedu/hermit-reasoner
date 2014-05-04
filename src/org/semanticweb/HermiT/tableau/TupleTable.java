@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.tableau;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 /**
@@ -48,7 +49,7 @@ public final class TupleTable implements Serializable {
     public int getFirstFreeTupleIndex() {
         return m_firstFreeTupleIndex;
     }
-    public int addTuple(Object[] tupleBuffer) {
+    public int addTuple(@Nonnull Object[] tupleBuffer) {
         int newTupleIndex=m_firstFreeTupleIndex;
         if (newTupleIndex==m_tupleCapacity) {
             if (m_numberOfPages==m_pages.length) {
@@ -69,7 +70,7 @@ public final class TupleTable implements Serializable {
     public boolean tupleEquals(Object[] tupleBuffer,int[] positionIndexes,int tupleIndex,int compareLength) {
         return m_pages[tupleIndex / PAGE_SIZE].tupleEquals(tupleBuffer,positionIndexes,(tupleIndex % PAGE_SIZE)*m_arity,compareLength);
     }
-    public void retrieveTuple(Object[] tupleBuffer,int tupleIndex) {
+    public void retrieveTuple(@Nonnull Object[] tupleBuffer,int tupleIndex) {
         m_pages[tupleIndex / PAGE_SIZE].retrieveTuple((tupleIndex % PAGE_SIZE)*m_arity,tupleBuffer);
     }
     public Object getTupleObject(int tupleIndex,int objectIndex) {
@@ -106,10 +107,10 @@ public final class TupleTable implements Serializable {
         public int sizeInMemory() {
             return m_objects.length*4;
         }
-        public void storeTuple(int tupleStartIndex,Object[] tupleBuffer) {
+        public void storeTuple(int tupleStartIndex, @Nonnull Object[] tupleBuffer) {
             System.arraycopy(tupleBuffer,0,m_objects,tupleStartIndex,tupleBuffer.length);
         }
-        public void retrieveTuple(int tupleStartIndex,Object[] tupleBuffer) {
+        public void retrieveTuple(int tupleStartIndex, @Nonnull Object[] tupleBuffer) {
             System.arraycopy(m_objects,tupleStartIndex,tupleBuffer,0,tupleBuffer.length);
         }
         public void nullifyTuple(int tupleStartIndex) {

@@ -11,6 +11,9 @@ import java.util.Set;
 
 import rationals.transformations.TransformationsToolBox;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A class defining Automaton objects
  * 
@@ -49,6 +52,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   /**
    * @return Returns the id.
    */
+  @Nonnull
   public Object getId() {
     return id == null ? "automaton" : id;
   }
@@ -89,13 +93,16 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   private Map<Key, Set<Transition>> reverse;
 
   // bonte
+  @Nonnull
   private StateFactory stateFactory = new DefaultStateFactory(this);
 
+  @Nonnull
   private Map<Object, State> labels = new HashMap<Object, State>();
 
   /**
    * @return
    */
+  @Nonnull
   public StateFactory getStateFactory() {
     return this.stateFactory;
   }
@@ -103,7 +110,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   /**
    * @param factory
    */
-  public void setStateFactory(StateFactory factory) {
+  public void setStateFactory(@Nonnull StateFactory factory) {
     this.stateFactory = factory;
     factory.setAutomaton(this);
   }
@@ -114,6 +121,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * word.
    * @return an automaton which recognizes <em>@</em>
    */
+  @Nonnull
   public static Automaton epsilonAutomaton() {
     Automaton v = new Automaton();
     v.addState(true, true);
@@ -128,6 +136,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          any object that will be used as a label.
    * @return an automaton which recognizes <em>label</em>
    */
+  @Nonnull
   public static Automaton labelAutomaton(Object label) {
     Automaton v = new Automaton();
     State start = v.addState(true, false);
@@ -147,7 +156,8 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          a List of Object interpreted as a word
    * @return an automaton which recognizes <em>label</em>
    */
-  public static Automaton labelAutomaton(List word) {
+  @Nonnull
+  public static Automaton labelAutomaton(@Nonnull List word) {
     Automaton v = new Automaton();
     State start = null;
     if (word.isEmpty()) {
@@ -183,7 +193,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          the StateFactory object to use for creating new states. May be
    *          null.
    */
-  public Automaton(StateFactory sf) {
+  public Automaton(@Nullable StateFactory sf) {
     this.stateFactory = sf == null ? new DefaultStateFactory(this) : sf;
     alphabet = new HashSet<Object>();
     states = stateFactory.stateSet();
@@ -269,7 +279,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   // Computes and return the set of all accessible states, starting
   // from a given set of states and using transitions
   // contained in a given Map
-  protected Set<State> access(Set<State> start, Map<Key, Set<Transition>> map) {
+  protected Set<State> access(Set<State> start, @Nonnull Map<Key, Set<Transition>> map) {
     Set<State> current = start;
     Set<State> old;
     do {
@@ -374,7 +384,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   // Computes and return the set of all transitions, starting
   // from a given state and labelled by a given label
   // contained in a given Map
-  protected Set<Transition> find(Map<Key, Set<Transition>> m, State e, Object l) {
+  protected Set<Transition> find(@Nonnull Map<Key, Set<Transition>> m, State e, Object l) {
     Key n = new Key(e, l);
     if (!m.containsKey(n))
       return new HashSet<Transition>();
@@ -382,7 +392,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
   }
 
   // add a given transition in a given Map
-  protected void add(Map<Key, Set<Transition>> m, Transition t) {
+  protected void add(@Nonnull Map<Key, Set<Transition>> m, @Nonnull Transition t) {
     Key n = new Key(t.start(), t.label());
     Set<Transition> s;
     if (!m.containsKey(n)) {
@@ -400,6 +410,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *         contained in this set are instances of class <tt>Transition</tt>.
    * @see Transition
    */
+  @Nonnull
   public Set<Transition> delta() {
     Set<Transition> s = new HashSet<Transition>();
     for (Set<Transition> tr : transitions.values())
@@ -435,7 +446,8 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          ending state
    * @return a Set of Transition objects
    */
-  public Set<Transition> deltaFrom(State from, State to) {
+  @Nonnull
+  public Set<Transition> deltaFrom(State from, @Nonnull State to) {
     Set<Transition> t = delta(from);
     for (Iterator i = t.iterator(); i.hasNext();) {
       Transition tr = (Transition) i.next();
@@ -452,6 +464,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          start state
    * @return a new Set of transitions (maybe empty)
    */
+  @Nonnull
   public Set<Transition> delta(State state) {
     Set<Transition> s = new HashSet<Transition>();
     for (Object lt : alphabet)
@@ -466,7 +479,8 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          a Set of State objects
    * @return a Set of Transition objects
    */
-  public Set<Transition> delta(Set<State> s) {
+  @Nonnull
+  public Set<Transition> delta(@Nonnull Set<State> s) {
     Set<Transition> ds = new HashSet<Transition>();
     for (State st : s)
       ds.addAll(delta(st));
@@ -479,6 +493,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * 
    * @return a Map
    */
+  @Nonnull
   public Map couples() {
     // loop on transition map keys
     Iterator<Map.Entry<Key, Set<Transition>>> it = transitions.entrySet()
@@ -532,7 +547,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * <em>q'</em> does not belong to <em>Q</em> the set of the states
    * of this automaton.
    */
-  public void addTransition(Transition transition) throws NoSuchStateException {
+  public void addTransition(@Nonnull Transition transition) throws NoSuchStateException {
     if (!states.contains(transition.start())
         || !states.contains(transition.end()))
       throw new NoSuchStateException();
@@ -552,7 +567,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param alph
    *          the alphabet to project on
    */
-  public void projectOn(Set alph) {
+  public void projectOn(@Nonnull Set alph) {
     // remove unwanted transitions from ret
     Iterator<Map.Entry<Key, Set<Transition>>> trans = transitions.entrySet()
         .iterator();
@@ -625,7 +640,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
       this.l = l;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
       if (o == null)
         return false;
       try {
@@ -664,7 +679,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param word
    * @return
    */
-  public boolean prefixProjection(List word) {
+  public boolean prefixProjection(@Nonnull List word) {
     Set s = stepsProject(word);
     return !s.isEmpty();
   }
@@ -676,7 +691,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param l
    * @return
    */
-  public Set<State> stepsProject(List word) {
+  public Set<State> stepsProject(@Nonnull List word) {
     Set<State> s = initials();
     Iterator it = word.iterator();
     while (it.hasNext()) {
@@ -695,7 +710,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * 
    * @see rationals.Acceptor#accept(java.util.List)
    */
-  public boolean accept(List<Object> word) {
+  public boolean accept(@Nonnull List<Object> word) {
     Set<State> s = TransformationsToolBox.epsilonClosure(steps(word), this);
     s.retainAll(terminals());
     return !s.isEmpty();
@@ -713,7 +728,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @return true if there exists a path labelled by word from s to at least one
    *         other state in this automaton.
    */
-  public boolean accept(State state, List<Object> word) {
+  public boolean accept(State state, @Nonnull List<Object> word) {
     Set<State> s = stateFactory.stateSet();
     s.add(state);
     return !steps(s, word).isEmpty();
@@ -724,7 +739,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * 
    * @see rationals.Acceptor#steps(java.util.List)
    */
-  public Set<State> steps(List<Object> word) {
+  public Set<State> steps(@Nonnull List<Object> word) {
     Set<State> s = TransformationsToolBox.epsilonClosure(initials(), this);
     return steps(s, word);
   }
@@ -739,7 +754,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          the word to read.
    * @return the set of reached states.
    */
-  public Set<State> steps(Set<State> s, List<Object> word) {
+  public Set<State> steps(Set<State> s, @Nonnull List<Object> word) {
     Iterator it = word.iterator();
     while (it.hasNext()) {
       Object o = it.next();
@@ -760,7 +775,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          the word to read.
    * @return the set of reached states.
    */
-  public Set<State> steps(State st, List<Object> word) {
+  public Set<State> steps(State st, @Nonnull List<Object> word) {
     Set<State> s = stateFactory.stateSet();
     s.add(st);
     Iterator it = word.iterator();
@@ -781,7 +796,8 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param word
    * @param start
    */
-  public List<Set<State>> traceStates(List<Object> word, State start) {
+  @Nullable
+  public List<Set<State>> traceStates(@Nonnull List<Object> word, @Nullable State start) {
     List<Set<State>> ret = new ArrayList<Set<State>>();
     Set<State> s = null;
     if (start != null) {
@@ -811,7 +827,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param word
    * @return
    */
-  public int longestPrefixWithProjection(List word) {
+  public int longestPrefixWithProjection(@Nonnull List word) {
     int lret = 0;
     Set<State> s = initials();
     Iterator it = word.iterator();
@@ -837,7 +853,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param o
    * @return
    */
-  public Set<State> step(Set<State> s, Object o) {
+  public Set<State> step(@Nonnull Set<State> s, Object o) {
     Set<State> ns = stateFactory.stateSet();
     Set<State> ec = TransformationsToolBox.epsilonClosure(s, this);
     Iterator it = ec.iterator();
@@ -857,7 +873,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param tr
    * @param msg
    */
-  public void updateTransitionWith(Transition tr, Object msg) {
+  public void updateTransitionWith(@Nonnull Transition tr, Object msg) {
     Object lbl = tr.label();
     alphabet.remove(lbl);
     alphabet.add(msg);
@@ -878,6 +894,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    * @param st
    * @return
    */
+  @Nonnull
   public Set<Transition> deltaMinusOne(State st) {
     Set<Transition> s = new HashSet<Transition>();
     Iterator alphit = alphabet().iterator();
@@ -896,6 +913,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
    *          maximal length of words.
    * @return a Set of List of Object
    */
+  @Nonnull
   public Set enumerate(int ln) {
     Set<List> ret = new HashSet<List>();
     class EnumState {
@@ -903,7 +921,7 @@ public class Automaton<T extends Builder<T>> implements Acceptor, StateMachine,
        * @param s
        * @param list
        */
-      public EnumState(State s, List<Object> list) {
+      public EnumState(State s, @Nonnull List<Object> list) {
         st = s;
         word = new ArrayList<Object>(list);
       }

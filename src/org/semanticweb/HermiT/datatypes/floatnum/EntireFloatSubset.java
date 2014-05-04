@@ -21,6 +21,8 @@ import java.util.Collection;
 
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 
+import javax.annotation.Nonnull;
+
 public class EntireFloatSubset implements ValueSpaceSubset {
 
     public boolean hasCardinalityAtLeast(int number) {
@@ -32,7 +34,7 @@ public class EntireFloatSubset implements ValueSpaceSubset {
         assert dataValue instanceof Float;
         return true;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         dataValues.add(Float.NaN);
         float number=Float.NEGATIVE_INFINITY;
         while (!FloatInterval.areIdentical(number,Float.POSITIVE_INFINITY)) {
@@ -41,6 +43,7 @@ public class EntireFloatSubset implements ValueSpaceSubset {
         }
         dataValues.add(Float.POSITIVE_INFINITY);
     }
+    @Nonnull
     public String toString() {
         return "xsd:float";
     }

@@ -45,6 +45,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Computes the prefix closure of given automaton.
  * <p>
@@ -68,7 +70,8 @@ public class PrefixClosure implements UnaryTransformation {
      * 
      * @see rationals.transformations.UnaryTransformation#transform(rationals.Automaton)
      */
-    public Automaton transform(Automaton a) {
+    @Nonnull
+    public Automaton transform(@Nonnull Automaton a) {
         Automaton ret = new Automaton();
         Map sm = new HashMap();
         for (Iterator it = a.states().iterator(); it.hasNext();) {

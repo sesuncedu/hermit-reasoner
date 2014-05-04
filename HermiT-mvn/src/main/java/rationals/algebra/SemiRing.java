@@ -35,6 +35,8 @@
  */
 package rationals.algebra;
 
+import javax.annotation.Nonnull;
+
 /**
  * An interface implemented by objects that can be coefficients of a 
  * Matrix.
@@ -70,6 +72,7 @@ public interface SemiRing {
      * @param s2
      * @return
      */
+    @Nonnull
     public SemiRing mult(SemiRing s2);
     
     /**
@@ -84,6 +87,7 @@ public interface SemiRing {
      * 
      * @return
      */
+    @Nonnull
     public SemiRing zero();
     
 }

@@ -28,15 +28,19 @@ import org.semanticweb.HermiT.datatypes.UnsupportedFacetException;
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+
 public class XMLLiteralDatatypeHandler implements DatatypeHandler {
     protected static final String RDF_XML_LITERAL=Prefixes.s_semanticWebPrefixes.get("rdf:")+"XMLLiteral";
     protected static final ValueSpaceSubset XML_LITERAL_ALL=new XMLLiteralAll();
     protected static final ValueSpaceSubset EMPTY=new XMLLiteralNone();
     protected final static Set<String> s_managedDatatypeURIs=Collections.singleton(RDF_XML_LITERAL);
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_managedDatatypeURIs;
     }
+    @Nonnull
     public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert RDF_XML_LITERAL.equals(datatypeURI);
         try {
@@ -46,22 +50,25 @@ public class XMLLiteralDatatypeHandler implements DatatypeHandler {
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
         }
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert RDF_XML_LITERAL.equals(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()>0)
             throw new UnsupportedFacetException("The rdf:XMLLiteral datatype does not provide any facets, but the ontology contains a restriction on boolean with facets: "+this.toString());
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert RDF_XML_LITERAL.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return XML_LITERAL_ALL;
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert RDF_XML_LITERAL.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return XML_LITERAL_ALL;
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert RDF_XML_LITERAL.equals(datatypeRestriction.getDatatypeURI());
         assert datatypeRestriction.getNumberOfFacetRestrictions()==0;
         return EMPTY;

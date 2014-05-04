@@ -36,25 +36,37 @@ import org.semanticweb.HermiT.model.NodeIDsAscendingOrEqual;
 import org.semanticweb.HermiT.model.Term;
 import org.semanticweb.HermiT.model.Variable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Applies the rules during the expansion of a tableau.
  */
 public final class HyperresolutionManager implements Serializable {
     private static final long serialVersionUID=-4880817508962130189L;
 
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
+    @Nonnull
     protected final ExtensionTable.Retrieval[] m_deltaOldRetrievals;
     protected final ExtensionTable.Retrieval m_binaryTableRetrieval;
+    @Nonnull
     protected final Map<DLPredicate,CompiledDLClauseInfo> m_tupleConsumersByDeltaPredicate;
+    @Nonnull
     protected final Map<AtomicRole,CompiledDLClauseInfo> m_atomicRoleTupleConsumersUnguarded;
+    @Nonnull
     protected final HashMap<AtomicRole,Map<AtomicConcept,CompiledDLClauseInfo>> m_atomicRoleTupleConsumersByGuardConcept1;
+    @Nonnull
     protected final HashMap<AtomicRole,Map<AtomicConcept,CompiledDLClauseInfo>> m_atomicRoleTupleConsumersByGuardConcept2;
+    @Nonnull
     protected final Object[][] m_buffersToClear;
+    @Nonnull
     protected final UnionDependencySet[] m_unionDependencySetsToClear;
+    @Nonnull
     protected final Object[] m_valuesBuffer;
     protected final int m_maxNumberOfVariables;
 
-    public HyperresolutionManager(Tableau tableau,Set<DLClause> dlClauses) {
+    public HyperresolutionManager(@Nonnull Tableau tableau, @Nonnull Set<DLClause> dlClauses) {
         InterruptFlag interruptFlag=tableau.m_interruptFlag;
         m_extensionManager=tableau.m_extensionManager;
         m_tupleConsumersByDeltaPredicate=new HashMap<DLPredicate,CompiledDLClauseInfo>();
@@ -145,7 +157,7 @@ public final class HyperresolutionManager implements Serializable {
         m_valuesBuffer=valuesBufferManager.m_valuesBuffer;
         m_maxNumberOfVariables=valuesBufferManager.m_maxNumberOfVariables;
     }
-    protected void getAtomicRoleClauseGuards(DLClause swappedDLClause,List<Atom> guardingAtomicConceptAtoms1,List<Atom> guardingAtomicConceptAtoms2) {
+    protected void getAtomicRoleClauseGuards(@Nonnull DLClause swappedDLClause, @Nonnull List<Atom> guardingAtomicConceptAtoms1, @Nonnull List<Atom> guardingAtomicConceptAtoms2) {
         guardingAtomicConceptAtoms1.clear();
         guardingAtomicConceptAtoms2.clear();
         Atom deltaOldAtom=swappedDLClause.getBodyAtom(0);
@@ -270,9 +282,13 @@ public final class HyperresolutionManager implements Serializable {
 
     public static final class BodyAtomsSwapper {
         protected final DLClause m_dlClause;
+        @Nonnull
         protected final List<Atom> m_nodeIDComparisonAtoms;
+        @Nonnull
         protected final boolean[] m_usedAtoms;
+        @Nonnull
         protected final List<Atom> m_reorderedAtoms;
+        @Nonnull
         protected final Set<Variable> m_boundVariables;
 
         public BodyAtomsSwapper(DLClause dlClause) {
@@ -282,6 +298,7 @@ public final class HyperresolutionManager implements Serializable {
             m_reorderedAtoms=new ArrayList<Atom>(m_dlClause.getBodyLength());
             m_boundVariables=new HashSet<Variable>();
         }
+        @Nullable
         public DLClause getSwappedDLClause(int bodyIndex) {
             m_nodeIDComparisonAtoms.clear();
             for (int index=m_usedAtoms.length-1;index>=0;--index) {
@@ -319,7 +336,7 @@ public final class HyperresolutionManager implements Serializable {
             m_reorderedAtoms.toArray(bodyAtoms);
             return m_dlClause.getChangedDLClause(null,bodyAtoms);
         }
-        protected int getAtomGoodness(Atom atom) {
+        protected int getAtomGoodness(@Nonnull Atom atom) {
             if (NodeIDLessEqualThan.INSTANCE.equals(atom.getDLPredicate())) {
                 if (m_boundVariables.contains(atom.getArgumentVariable(0)) && m_boundVariables.contains(atom.getArgumentVariable(1)))
                     return 1000;
@@ -385,7 +402,7 @@ public final class HyperresolutionManager implements Serializable {
                 hashCode+=m_dlClause.getBodyAtom(atomIndex).hashCode();
             m_hashCode=hashCode;
         }
-        public boolean equals(Object that) {
+        public boolean equals(@Nonnull Object that) {
             if (this==that)
                 return true;
             DLClause thatDLClause=((DLClauseBodyKey)that).m_dlClause;

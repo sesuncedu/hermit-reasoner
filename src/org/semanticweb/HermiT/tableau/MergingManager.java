@@ -22,6 +22,9 @@ import java.io.Serializable;
 import org.semanticweb.HermiT.model.DescriptionGraph;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Implements the merge rule and is used whenever the merge rule needs to be applied
  * during the expansion of the tableau object used in the constructor of the class.
@@ -31,12 +34,16 @@ public final class MergingManager implements Serializable {
 
     protected final Tableau m_tableau;
     protected final TableauMonitor m_tableauMonitor;
+    @Nonnull
     protected final ExtensionManager m_extensionManager;
     protected final ExtensionTable.Retrieval m_binaryExtensionTableSearch1Bound;
     protected final ExtensionTable.Retrieval m_ternaryExtensionTableSearch1Bound;
     protected final ExtensionTable.Retrieval m_ternaryExtensionTableSearch2Bound;
+    @Nonnull
     protected final Object[] m_binaryAuxiliaryTuple;
+    @Nonnull
     protected final Object[] m_ternaryAuxiliaryTuple;
+    @Nonnull
     protected final UnionDependencySet m_binaryUnionDependencySet;
 
     public MergingManager(Tableau tableau) {
@@ -65,7 +72,7 @@ public final class MergingManager implements Serializable {
      * automatically figured out which node has to be merged into which -- that is,
      * the order between node0 and node1 is not important.
      */
-    public boolean mergeNodes(Node node0,Node node1,DependencySet dependencySet) {
+    public boolean mergeNodes(@Nonnull Node node0, @Nonnull Node node1,DependencySet dependencySet) {
         assert node0.getNodeType().isAbstract()==node1.getNodeType().isAbstract();
         if (!node0.isActive() || !node1.isActive() || node0==node1)
             return false;
@@ -193,7 +200,7 @@ public final class MergingManager implements Serializable {
             return true;
         }
     }
-    protected boolean isDescendantOfAtMostThreeLevels(Node descendant,Node ancestor) {
+    protected boolean isDescendantOfAtMostThreeLevels(@Nullable Node descendant,Node ancestor) {
         // The method tests ancestry, but only up to three levels.
         // Merges over more levels should not happen.
         if (descendant!=null) {

@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an atomic concept.
  */
@@ -36,6 +39,7 @@ public class AtomicConcept extends LiteralConcept implements DLPredicate {
     public int getArity() {
         return 1;
     }
+    @Nullable
     public LiteralConcept getNegation() {
         if (this==THING)
             return NOTHING;
@@ -50,27 +54,34 @@ public class AtomicConcept extends LiteralConcept implements DLPredicate {
     public boolean isAlwaysFalse() {
         return this==NOTHING;
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return prefixes.abbreviateIRI(m_iri);
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<AtomicConcept> s_interningManager=new InterningManager<AtomicConcept>() {
-        protected boolean equal(AtomicConcept object1,AtomicConcept object2) {
+        protected boolean equal(@Nonnull AtomicConcept object1, @Nonnull AtomicConcept object2) {
             return object1.m_iri.equals(object2.m_iri);
         }
-        protected int getHashCode(AtomicConcept object) {
+        protected int getHashCode(@Nonnull AtomicConcept object) {
             return object.m_iri.hashCode();
         }
     };
     
+    @Nullable
     public static AtomicConcept create(String uri) {
         return s_interningManager.intern(new AtomicConcept(uri));
     }
 
+    @Nullable
     public static final AtomicConcept THING=create("http://www.w3.org/2002/07/owl#Thing");
+    @Nullable
     public static final AtomicConcept NOTHING=create("http://www.w3.org/2002/07/owl#Nothing");
+    @Nullable
     public static final AtomicConcept INTERNAL_NAMED=create("internal:nam#Named");
 }

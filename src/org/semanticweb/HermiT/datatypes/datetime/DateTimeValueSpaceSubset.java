@@ -24,13 +24,16 @@ import java.util.List;
 
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class DateTimeValueSpaceSubset implements ValueSpaceSubset {
     protected final List<DateTimeInterval> m_intervals;
     
     public DateTimeValueSpaceSubset() {
         m_intervals=Collections.emptyList();
     }
-    public DateTimeValueSpaceSubset(DateTimeInterval interval1,DateTimeInterval interval2) {
+    public DateTimeValueSpaceSubset(@Nullable DateTimeInterval interval1, @Nullable DateTimeInterval interval2) {
         m_intervals=new ArrayList<DateTimeInterval>(2);
         if (interval1!=null)
             m_intervals.add(interval1);
@@ -55,10 +58,11 @@ public class DateTimeValueSpaceSubset implements ValueSpaceSubset {
         }
         return false;
     }
-    public void enumerateDataValues(Collection<Object> dataValues) {
+    public void enumerateDataValues(@Nonnull Collection<Object> dataValues) {
         for (int index=m_intervals.size()-1;index>=0;--index)
             m_intervals.get(index).enumerateDateTimes(dataValues);
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append("xsd:dateTime{");

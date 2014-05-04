@@ -29,6 +29,9 @@ import org.semanticweb.HermiT.datatypes.UnsupportedFacetException;
 import org.semanticweb.HermiT.datatypes.ValueSpaceSubset;
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Implements a handler for xsd:dateTime.
  */
@@ -39,6 +42,7 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
     protected static final DateTimeInterval INTERVAL_ALL_WITH_TIMEZONE=new DateTimeInterval(IntervalType.WITH_TIMEZONE,Long.MIN_VALUE,BoundType.EXCLUSIVE,Long.MAX_VALUE,BoundType.EXCLUSIVE);
     protected static final DateTimeInterval INTERVAL_ALL_WITHOUT_TIMEZONE=new DateTimeInterval(IntervalType.WITHOUT_TIMEZONE,Long.MIN_VALUE,BoundType.EXCLUSIVE,Long.MAX_VALUE,BoundType.EXCLUSIVE);
     protected static final DateTimeValueSpaceSubset ENTIRE_SUBSET=new DateTimeValueSpaceSubset(INTERVAL_ALL_WITH_TIMEZONE,INTERVAL_ALL_WITHOUT_TIMEZONE);
+    @Nullable
     protected static final DateTimeValueSpaceSubset WITH_TIMEZONE_SUBSET=new DateTimeValueSpaceSubset(INTERVAL_ALL_WITH_TIMEZONE,null);
     protected static final DateTimeValueSpaceSubset EMPTY_SUBSET=new DateTimeValueSpaceSubset();
     protected static final Set<String> s_managedDatatypeURIs=new HashSet<String>();
@@ -54,17 +58,19 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
         s_supportedFacetURIs.add(XSD_NS+"maxExclusive");
     }
 
+    @Nonnull
     public Set<String> getManagedDatatypeURIs() {
         return s_managedDatatypeURIs;
     }
-    public Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException {
+    @Nullable
+    public Object parseLiteral(@Nonnull String lexicalForm,String datatypeURI) throws MalformedLiteralException {
         assert s_managedDatatypeURIs.contains(datatypeURI);
         DateTime dateTime=DateTime.parse(lexicalForm);
         if (dateTime==null || (XSD_DATE_TIME_STAMP.equals(datatypeURI) && !dateTime.hasTimeZoneOffset()))
             throw new MalformedLiteralException(lexicalForm,datatypeURI);
         return dateTime;
     }
-    public void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
+    public void validateDatatypeRestriction(@Nonnull DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         for (int index=datatypeRestriction.getNumberOfFacetRestrictions()-1;index>=0;--index) {
             String facetURI=datatypeRestriction.getFacetURI(index);
@@ -75,7 +81,8 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
                 throw new UnsupportedFacetException("Facet with URI '"+facetURI+"' supports only date/time values, but "+facetDataValue+" is not a date/time instance in the restriction "+this.toString()+".");
         }
     }
-    public ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction) {
+    @Nullable
+    public ValueSpaceSubset createValueSpaceSubset(@Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         if (datatypeRestriction.getNumberOfFacetRestrictions()==0) {
             if (XSD_DATE_TIME.equals(datatypeRestriction.getDatatypeURI()))
@@ -89,7 +96,8 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
         else
             return new DateTimeValueSpaceSubset(intervals[0],intervals[1]);
     }
-    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    public ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         DateTimeInterval[] intervals=getIntervalsFor(datatypeRestriction);
         if (intervals[0]==null && intervals[1]==null)
@@ -117,7 +125,7 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
                 return new DateTimeValueSpaceSubset(newIntervals);
         }
     }
-    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction) {
+    public ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset, @Nonnull DatatypeRestriction datatypeRestriction) {
         assert s_managedDatatypeURIs.contains(datatypeRestriction.getDatatypeURI());
         DateTimeInterval[] intervals=getIntervalsFor(datatypeRestriction);
         if (intervals[0]==null && intervals[1]==null)
@@ -158,7 +166,8 @@ public class DateTimeDatatypeHandler implements DatatypeHandler {
                 return new DateTimeValueSpaceSubset(newIntervals);
         }
     }
-    protected DateTimeInterval[] getIntervalsFor(DatatypeRestriction datatypeRestriction) {
+    @Nonnull
+    protected DateTimeInterval[] getIntervalsFor(@Nonnull DatatypeRestriction datatypeRestriction) {
         DateTimeInterval[] intervals=new DateTimeInterval[2];
         intervals[0]=INTERVAL_ALL_WITH_TIMEZONE;
         if (XSD_DATE_TIME.equals(datatypeRestriction.getDatatypeURI()))

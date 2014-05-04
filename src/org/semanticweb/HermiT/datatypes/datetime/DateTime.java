@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.datetime;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,6 +73,7 @@ public class DateTime {
         m_lastDayInstant=lastDayInstant;
         m_timeZoneOffset=timeZoneOffset;
     }
+    @Nonnull
     public String toString() {
         long timeOnTimeline=m_timeOnTimeline;
         if (m_timeZoneOffset!=NO_TIMEZONE)
@@ -176,7 +179,7 @@ public class DateTime {
     public int getTimeZoneOffset() {
         return m_timeZoneOffset;
     }
-    protected void appendPadded(StringBuffer buffer,int value,int digits) {
+    protected void appendPadded(@Nonnull StringBuffer buffer,int value,int digits) {
         if (value<0)
             buffer.append('-');
         String stringAbsValue=String.valueOf(Math.abs(value));
@@ -184,7 +187,8 @@ public class DateTime {
             buffer.append('0');
         buffer.append(stringAbsValue);
     }
-    public static DateTime parse(String lexicalForm) {
+    @Nullable
+    public static DateTime parse(@Nonnull String lexicalForm) {
         Matcher matcher=s_dateTimePattern.matcher(lexicalForm.trim());
         if (!matcher.matches())
             return null;

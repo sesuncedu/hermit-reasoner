@@ -23,17 +23,21 @@ import java.io.PrintWriter;
 import org.semanticweb.HermiT.debugger.Debugger;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ActiveNodesCommand extends AbstractCommand {
     public ActiveNodesCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "activeNodes";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","shows all active nodes" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: activeNodes");
         writer.println("    Prints list of all active (non-blocked) nodes in the current model.");
     }

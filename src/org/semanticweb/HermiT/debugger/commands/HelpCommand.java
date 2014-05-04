@@ -21,27 +21,31 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class HelpCommand extends AbstractCommand {
 
     public HelpCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "help";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] {
             "","prints this list of command",
             "commandName","prints help for a command"
         };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: help");
         writer.println("    Prints this message.");
         writer.println("usage: help commandName");
         writer.println("    Prints help for the command commandName.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length>1) {
             String commandName=args[1];
             DebuggerCommand command=m_debugger.getCommand(commandName);

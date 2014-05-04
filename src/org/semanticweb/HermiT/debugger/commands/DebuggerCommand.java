@@ -17,9 +17,11 @@
 */
 package org.semanticweb.HermiT.debugger.commands;
 
+import javax.annotation.Nonnull;
 import java.io.PrintWriter;
 
 public interface DebuggerCommand {
+    @Nonnull
     String getCommandName();
     String[] getDescription();
     void printHelp(PrintWriter writer);

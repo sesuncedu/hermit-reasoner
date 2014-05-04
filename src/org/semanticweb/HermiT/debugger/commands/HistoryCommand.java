@@ -21,22 +21,26 @@ import java.io.PrintWriter;
 
 import org.semanticweb.HermiT.debugger.Debugger;
 
+import javax.annotation.Nonnull;
+
 public class HistoryCommand extends AbstractCommand {
 
     public HistoryCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "history";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "on|off","switch derivation history on/off" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: history on/off");
         writer.println("    Switches the derivation history on or off.");
     }
-    public void execute(String[] args) {
+    public void execute(@Nonnull String[] args) {
         if (args.length<2) {
             m_debugger.getOutput().println("The status is missing.");
             return;

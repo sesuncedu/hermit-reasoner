@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.binarydata;
 
+import javax.annotation.Nonnull;
+
 public class Base64 {
 
     private static final char[] TO_BASE_64= {
@@ -25,7 +27,8 @@ public class Base64 {
         '0','1','2','3','4','5','6','7','8','9','+','/'
     };
     
-    public static String base64Encode(byte[] array) {
+    @Nonnull
+    public static String base64Encode(@Nonnull byte[] array) {
         int arrayLength=array.length;
         int nummerOfFullGroups=arrayLength/3;
         int bytesInLastGroup=arrayLength-3*nummerOfFullGroups;
@@ -73,7 +76,8 @@ public class Base64 {
         49, 50, 51
     };
 
-    public static byte[] decodeBase64(String string) throws IllegalArgumentException {
+    @Nonnull
+    public static byte[] decodeBase64(@Nonnull String string) throws IllegalArgumentException {
         int stringLength=string.length();
         if ((stringLength % 4)!=0)
             throw new IllegalArgumentException("The length of the string must be divisible by 4.");

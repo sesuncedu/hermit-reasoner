@@ -9,6 +9,8 @@ import rationals.NoSuchStateException;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * Removes states that neither accessible nor coaccessible.
  * 
@@ -17,7 +19,8 @@ import rationals.Transition;
  */
 public class Pruner implements UnaryTransformation {
 
-  public Automaton transform(Automaton a) {
+  @Nonnull
+  public Automaton transform(@Nonnull Automaton a) {
     Map conversion = new HashMap() ;
     Iterator i = a.accessibleAndCoAccessibleStates().iterator();
     Automaton b = new Automaton() ;

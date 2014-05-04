@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an inverse role.
  */
@@ -36,25 +39,30 @@ public class InverseRole extends Role {
     public Role getInverse() {
         return m_inverseOf;
     }
+    @Nullable
     public Atom getRoleAssertion(Term term0,Term term1) {
         return Atom.create(m_inverseOf,term1,term0);
     }
-    public String toString(Prefixes prefixes) {
+    @Nonnull
+    public String toString(@Nonnull Prefixes prefixes) {
         return "inv("+m_inverseOf.toString(prefixes)+")";
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<InverseRole> s_interningManager=new InterningManager<InverseRole>() {
-        protected boolean equal(InverseRole object1,InverseRole object2) {
+        protected boolean equal(@Nonnull InverseRole object1, @Nonnull InverseRole object2) {
             return object1.m_inverseOf==object2.m_inverseOf;
         }
-        protected int getHashCode(InverseRole object) {
+        protected int getHashCode(@Nonnull InverseRole object) {
             return -object.m_inverseOf.hashCode();
         }
     };
 
+    @Nullable
     public static InverseRole create(AtomicRole inverseOf) {
         return s_interningManager.intern(new InverseRole(inverseOf));
     }

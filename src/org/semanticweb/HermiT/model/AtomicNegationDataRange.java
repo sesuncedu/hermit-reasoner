@@ -19,6 +19,9 @@ package org.semanticweb.HermiT.model;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a negation of a data range.
  */
@@ -45,22 +48,26 @@ public class AtomicNegationDataRange extends LiteralDataRange {
     public boolean isNegatedInternalDatatype() {
         return m_negatedDataRange.isInternalDatatype();
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         return "not("+m_negatedDataRange.toString(prefixes)+")";
     }
+    @Nullable
     protected Object readResolve() {
         return s_interningManager.intern(this);
     }
 
+    @Nonnull
     protected static InterningManager<AtomicNegationDataRange> s_interningManager=new InterningManager<AtomicNegationDataRange>() {
-        protected boolean equal(AtomicNegationDataRange object1,AtomicNegationDataRange object2) {
+        protected boolean equal(@Nonnull AtomicNegationDataRange object1, @Nonnull AtomicNegationDataRange object2) {
             return object1.m_negatedDataRange==object2.m_negatedDataRange;
         }
-        protected int getHashCode(AtomicNegationDataRange object) {
+        protected int getHashCode(@Nonnull AtomicNegationDataRange object) {
             return -object.m_negatedDataRange.hashCode();
         }
     };
     
+    @Nullable
     public static AtomicNegationDataRange create(AtomicDataRange negatedDataRange) {
         return s_interningManager.intern(new AtomicNegationDataRange(negatedDataRange));
     }

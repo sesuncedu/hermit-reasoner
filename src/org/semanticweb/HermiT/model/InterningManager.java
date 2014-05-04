@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
@@ -26,6 +28,7 @@ import java.lang.ref.WeakReference;
 public abstract class InterningManager<E> {
     protected static final double LOAD_FACTOR=0.75;
 
+    @Nonnull
     protected final ReferenceQueue<E> m_referenceQueue;
     protected Entry<E>[] m_entries;
     protected int m_size;
@@ -37,6 +40,7 @@ public abstract class InterningManager<E> {
         m_size=0;
         m_resizeThreshold=(int)(m_entries.length*LOAD_FACTOR);
     }
+    @Nullable
     public synchronized E intern(E object) {
         processQueue();
         int hashCode=getHashCode(object);
@@ -88,7 +92,7 @@ public abstract class InterningManager<E> {
     protected final int getIndexFor(int hashCode,int entriesLength) {
         return hashCode & (entriesLength-1);
     }
-    protected void removeEntry(Entry<E> entry) {
+    protected void removeEntry(@Nonnull Entry<E> entry) {
         int index=getIndexFor(entry.m_hashCode,m_entries.length);
         Entry<E> previousEntry=null;
         for (Entry<E> current=m_entries[index];current!=null;current=current.m_next) {
@@ -111,6 +115,7 @@ public abstract class InterningManager<E> {
             entry=(Entry<E>)m_referenceQueue.poll();
         }
     }
+    @Nonnull
     @SuppressWarnings("unchecked")
     protected final Entry<E>[] createEntries(int size) {
         return (Entry<E>[])new Entry[size];

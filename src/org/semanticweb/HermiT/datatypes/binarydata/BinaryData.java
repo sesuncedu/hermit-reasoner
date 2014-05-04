@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.binarydata;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -36,11 +38,12 @@ public class BinaryData {
             HEX_TO_INT[i]=i-'a'+10;
     }
     
+    @Nonnull
     protected final BinaryDataType m_binaryDataType;
     protected final byte[] m_data;
     protected final int m_hashCode;
     
-    public BinaryData(BinaryDataType binaryDataType,byte[] data) {
+    public BinaryData(@Nonnull BinaryDataType binaryDataType,byte[] data) {
         m_binaryDataType=binaryDataType;
         m_data=data;
         int hashCode=binaryDataType.hashCode();
@@ -48,6 +51,7 @@ public class BinaryData {
             hashCode=hashCode*3+m_data[index];
         m_hashCode=hashCode;
     }
+    @Nonnull
     public BinaryDataType getBinaryDataType() {
         return m_binaryDataType;
     }
@@ -73,6 +77,7 @@ public class BinaryData {
     public int hashCode() {
         return m_hashCode;
     }
+    @Nonnull
     public String toString() {
         switch (m_binaryDataType) {
         case HEX_BINARY:
@@ -83,6 +88,7 @@ public class BinaryData {
             throw new IllegalStateException("Internal error: invalid binary data type.");
         }
     }
+    @Nonnull
     protected String toHexBinary() {
         StringBuffer buffer=new StringBuffer();
         for (int index=0;index<m_data.length;index++) {
@@ -94,7 +100,8 @@ public class BinaryData {
         }
         return buffer.toString();
     }
-    public static BinaryData parseHexBinary(String lexicalForm) {
+    @Nullable
+    public static BinaryData parseHexBinary(@Nonnull String lexicalForm) {
         try {
             if ((lexicalForm.length() % 2)!=0)
                 return null;
@@ -117,6 +124,7 @@ public class BinaryData {
             return null;
         }
     }
+    @Nullable
     public static BinaryData parseBase64Binary(String lexicalForm) {
         lexicalForm=removeWhitespace(lexicalForm);
         try {

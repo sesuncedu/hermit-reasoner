@@ -35,6 +35,8 @@
  */
 package rationals.algebra;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -48,6 +50,7 @@ import java.util.Arrays;
 public final class Matrix implements SemiRing {
 
     /* matrices for transitions, initial and terminal states */
+    @Nonnull
     protected final SemiRing[][] matrix;
 
     private int line;
@@ -63,7 +66,7 @@ public final class Matrix implements SemiRing {
     /**
      * @param matrix
      */
-    public Matrix(Matrix matrix) {
+    public Matrix(@Nonnull Matrix matrix) {
         this(matrix.line);
         for (int i = 0; i < line; i++) 
             for (int j = 0; j < col; j++) 
@@ -92,7 +95,8 @@ public final class Matrix implements SemiRing {
      * @return the result Matrix object with transition matrix equals the n
      *         <sup>th </sup> power of this matrix's transition.
      */
-    public Matrix power(int n, Matrix res) {
+    @Nonnull
+    public Matrix power(int n, @Nonnull Matrix res) {
         int l = line;
         if(line != col)
             throw new IllegalStateException("Cannot compute power of a non square matrix");
@@ -125,6 +129,7 @@ public final class Matrix implements SemiRing {
      * 
      * @return
      */
+    @Nullable
     public Matrix star() {
         return null;
     }
@@ -133,6 +138,7 @@ public final class Matrix implements SemiRing {
         return line;
     }
     
+    @Nonnull
     public String toString() {
         final String ln = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
@@ -151,7 +157,8 @@ public final class Matrix implements SemiRing {
     /* (non-Javadoc)
      * @see rationals.algebra.SemiRing#plus(rationals.algebra.SemiRing)
      */
-    public SemiRing plus(SemiRing s2) {
+    @Nonnull
+    public SemiRing plus(@Nullable SemiRing s2) {
         if(s2 == null)
             throw new IllegalArgumentException("Null argument");
         Matrix o = (Matrix)s2; // maybe ClassCastException
@@ -169,7 +176,8 @@ public final class Matrix implements SemiRing {
     /* (non-Javadoc)
      * @see rationals.algebra.SemiRing#mult(rationals.algebra.SemiRing)
      */
-    public SemiRing mult(SemiRing s2) {
+    @Nonnull
+    public SemiRing mult(@Nullable SemiRing s2) {
         if(s2 == null)
             throw new IllegalArgumentException("Null argument");
         Matrix o = (Matrix)s2; // maybe ClassCastException
@@ -194,6 +202,7 @@ public final class Matrix implements SemiRing {
     /* (non-Javadoc)
      * @see rationals.algebra.SemiRing#one()
      */
+    @Nonnull
     public SemiRing one() {
         if(line != col)
             throw new IllegalStateException("Cannot get unit matrix on non-square matrices");
@@ -203,6 +212,7 @@ public final class Matrix implements SemiRing {
     /* (non-Javadoc)
      * @see rationals.algebra.SemiRing#zero()
      */
+    @Nonnull
     public SemiRing zero() {
         return zero(line,col,matrix[0][0]);
     }
@@ -218,7 +228,8 @@ public final class Matrix implements SemiRing {
      * @param sr a SemiRing instance. Used to get one and zero.
      * @return a new zero matrix.
      */
-    public static Matrix zero(int line,int col,SemiRing sr) {
+    @Nonnull
+    public static Matrix zero(int line,int col, @Nonnull SemiRing sr) {
         Matrix m = new Matrix(line,col);
         for(int i=0;i<line;i++)
             for(int j=0;j<col;j++)
@@ -233,7 +244,8 @@ public final class Matrix implements SemiRing {
      * @param sr a SemiRing instance. Used to get one and zero.
      * @return a new unit square matrix.
      */
-    public static Matrix one(int dim,SemiRing sr) {
+    @Nonnull
+    public static Matrix one(int dim, @Nonnull SemiRing sr) {
         Matrix m = new Matrix(dim);
         for(int i=0;i<dim;i++)
             for(int j=0;j<dim;j++)

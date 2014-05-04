@@ -26,18 +26,22 @@ import org.semanticweb.HermiT.debugger.Debugger.NodeCreationInfo;
 import org.semanticweb.HermiT.model.ExistentialConcept;
 import org.semanticweb.HermiT.tableau.Node;
 
+import javax.annotation.Nonnull;
+
 public class ShowExistsCommand extends AbstractCommand {
 
     public ShowExistsCommand(Debugger debugger) {
         super(debugger);
     }
+    @Nonnull
     public String getCommandName() {
         return "showExists";
     }
+    @Nonnull
     public String[] getDescription() {
         return new String[] { "","prints nodes with unprocessed existentials" };
     }
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(@Nonnull PrintWriter writer) {
         writer.println("usage: showExists");
         writer.println("    Prints a list of nodes that have unprocessed existentials, together with information that generated these nodes.");
     }
@@ -66,7 +70,7 @@ public class ShowExistsCommand extends AbstractCommand {
         showTextInWindow(buffer.toString(),"Nodes with existentials");
         selectConsoleWindow();
     }
-    protected void printStartExistential(Node node,PrintWriter writer) {
+    protected void printStartExistential(Node node, @Nonnull PrintWriter writer) {
         NodeCreationInfo nodeCreationInfo=m_debugger.getNodeCreationInfo(node);
         ExistentialConcept startExistential=nodeCreationInfo.m_createdByExistential;
         if (startExistential==null)

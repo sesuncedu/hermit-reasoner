@@ -23,6 +23,9 @@ import java.util.Set;
 
 import org.semanticweb.HermiT.Prefixes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents a DL clause. The body is a conjunction of atoms and the head is a disjunction of atoms.
  */
@@ -54,6 +57,7 @@ public class DLClause implements Serializable {
     public Atom[] getBodyAtoms() {
         return m_bodyAtoms.clone();
     }
+    @Nullable
     public DLClause getSafeVersion(DLPredicate safeMakingPredicate) {
         Set<Variable> variables=new HashSet<Variable>();
         // collect all the variables that occur in the head into the set variables
@@ -90,7 +94,8 @@ public class DLClause implements Serializable {
             return DLClause.create(m_headAtoms,newBodyAtoms);
         }
     }
-    public DLClause getChangedDLClause(Atom[] headAtoms,Atom[] bodyAtoms) {
+    @Nullable
+    public DLClause getChangedDLClause(@Nullable Atom[] headAtoms, @Nullable Atom[] bodyAtoms) {
         if (headAtoms==null)
             headAtoms=m_headAtoms;
         if (bodyAtoms==null)
@@ -212,6 +217,7 @@ public class DLClause implements Serializable {
         }
         return false;
     }
+    @Nonnull
     public String toString(Prefixes prefixes) {
         StringBuffer buffer=new StringBuffer();
         for (int headIndex=0;headIndex<m_headAtoms.length;headIndex++) {
@@ -227,12 +233,14 @@ public class DLClause implements Serializable {
         }
         return buffer.toString();
     }
+    @Nonnull
     public String toString() {
         return toString(Prefixes.STANDARD_PREFIXES);
     }
 
+    @Nonnull
     protected static InterningManager<DLClause> s_interningManager=new InterningManager<DLClause>() {
-        protected boolean equal(DLClause object1,DLClause object2) {
+        protected boolean equal(@Nonnull DLClause object1, @Nonnull DLClause object2) {
             if (object1.m_headAtoms.length!=object2.m_headAtoms.length || object1.m_bodyAtoms.length!=object2.m_bodyAtoms.length)
                 return false;
             for (int index=object1.m_headAtoms.length-1;index>=0;--index)
@@ -243,7 +251,7 @@ public class DLClause implements Serializable {
                     return false;
             return true;
         }
-        protected int getHashCode(DLClause object) {
+        protected int getHashCode(@Nonnull DLClause object) {
             int hashCode=0;
             for (int index=object.m_bodyAtoms.length-1;index>=0;--index)
                 hashCode+=object.m_bodyAtoms[index].hashCode();
@@ -253,6 +261,7 @@ public class DLClause implements Serializable {
         }
     };
 
+    @Nullable
     public static DLClause create(Atom[] headAtoms,Atom[] bodyAtoms) {
         return s_interningManager.intern(new DLClause(headAtoms,bodyAtoms));
     }

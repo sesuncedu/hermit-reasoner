@@ -17,6 +17,7 @@
 */
 package org.semanticweb.HermiT.hierarchy;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -69,16 +70,19 @@ public class HierarchyNode<E> {
     public Set<HierarchyNode<E>> getChildNodes() {
         return Collections.unmodifiableSet(m_childNodes);
     }
+    @Nonnull
     public Set<HierarchyNode<E>> getAncestorNodes() {
         return getAncestorNodes(Collections.singleton(this));
     }
+    @Nonnull
     public Set<HierarchyNode<E>> getDescendantNodes() {
         return getDescendantNodes(Collections.singleton(this));
     }
     public String toString() {
         return m_equivalentElements.toString();
     }
-    public static <T> Set<HierarchyNode<T>> getAncestorNodes(Set<HierarchyNode<T>> inputNodes) {
+    @Nonnull
+    public static <T> Set<HierarchyNode<T>> getAncestorNodes(@Nonnull Set<HierarchyNode<T>> inputNodes) {
         Set<HierarchyNode<T>> result=new HashSet<HierarchyNode<T>>();
         Queue<HierarchyNode<T>> toVisit=new LinkedList<HierarchyNode<T>>(inputNodes);
         while (!toVisit.isEmpty()) {
@@ -88,7 +92,8 @@ public class HierarchyNode<E> {
         }
         return result;
     }
-    public static <T> Set<HierarchyNode<T>> getDescendantNodes(Set<HierarchyNode<T>> inputNodes) {
+    @Nonnull
+    public static <T> Set<HierarchyNode<T>> getDescendantNodes(@Nonnull Set<HierarchyNode<T>> inputNodes) {
         Set<HierarchyNode<T>> result=new HashSet<HierarchyNode<T>>();
         Queue<HierarchyNode<T>> toVisit=new LinkedList<HierarchyNode<T>>(inputNodes);
         while (!toVisit.isEmpty()) {

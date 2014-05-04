@@ -2,6 +2,8 @@ package org.semanticweb.HermiT.monitor;
 
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 
+import javax.annotation.Nonnull;
+
 public class MemoryConsumptionMonitor extends CountingMonitor {
     private static final long serialVersionUID = -483824095933491230L;
     
@@ -18,7 +20,7 @@ public class MemoryConsumptionMonitor extends CountingMonitor {
         super.isSatisfiableStarted(reasoningTaskDescription);
         m_testNumber++;
     }
-    public void isSatisfiableFinished(ReasoningTaskDescription reasoningTaskDescription,boolean result) {
+    public void isSatisfiableFinished(@Nonnull ReasoningTaskDescription reasoningTaskDescription,boolean result) {
         super.isSatisfiableFinished(reasoningTaskDescription, result);
         m_binaryTableMem=m_tableau.getExtensionManager().getBinaryExtensionTable().sizeInMemory()/1024;
         m_ternaryTableMem=m_tableau.getExtensionManager().getTernaryExtensionTable().sizeInMemory()/1024;

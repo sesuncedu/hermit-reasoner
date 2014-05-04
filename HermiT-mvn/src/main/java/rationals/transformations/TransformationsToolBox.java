@@ -11,6 +11,8 @@ import rationals.Automaton;
 import rationals.State;
 import rationals.Transition;
 
+import javax.annotation.Nonnull;
+
 /**
  * A set of utility methods used in transformations of automaton.
  * 
@@ -19,7 +21,7 @@ import rationals.Transition;
  */
 public class TransformationsToolBox {
 
-  public static boolean containsATerminalState(Set s) {
+  public static boolean containsATerminalState(@Nonnull Set s) {
     Iterator i = s.iterator() ;
     while(i.hasNext()) {
       try {
@@ -30,7 +32,7 @@ public class TransformationsToolBox {
     return false ;
   } 
 
-  public static boolean containsAnInitialState(Set s) {
+  public static boolean containsAnInitialState(@Nonnull Set s) {
     Iterator i = s.iterator() ;
     while(i.hasNext()) {
       try {
@@ -51,7 +53,7 @@ public class TransformationsToolBox {
    * @return a - possibly empty - set of states reachable from <code>s</code> through
    * epsilon transitions. 
    */
-  public static Set<State> epsilonClosure(Set<State> s, Automaton a) {
+  public static Set<State> epsilonClosure(@Nonnull Set<State> s, @Nonnull Automaton a) {
       Set<State> exp = a.getStateFactory().stateSet();
       exp.addAll(s); /* set of states to visit */
       Set<State> view = a.getStateFactory().stateSet(); /* set of states visited */
@@ -91,7 +93,8 @@ public class TransformationsToolBox {
    * @param ts a Set of Transition objects.
    * @return a Map from Object - transition labels - to Set of State objects. 
    */
-  public static Map mapAlphabet(Set ts,Automaton a) {
+  @Nonnull
+  public static Map mapAlphabet(@Nonnull Set ts, @Nonnull Automaton a) {
       Map am = new HashMap();
       List tas =new ArrayList(ts);
       /* compute set of states for each letter */

@@ -17,6 +17,8 @@
 */
 package org.semanticweb.HermiT.datatypes.rdfplainliteral;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class RDFPlainLiteralLengthInterval {
@@ -36,7 +38,8 @@ public class RDFPlainLiteralLengthInterval {
     /**
      * Computes the intersection of this interval with the supplied one. If the two intervals do not intersect, the result is null.
      */
-    public RDFPlainLiteralLengthInterval intersectWith(RDFPlainLiteralLengthInterval that) {
+    @Nullable
+    public RDFPlainLiteralLengthInterval intersectWith(@Nonnull RDFPlainLiteralLengthInterval that) {
         if (m_languageTagMode!=that.m_languageTagMode)
             return null;
         int newMinLength=Math.max(m_minLength,that.m_minLength);
@@ -77,14 +80,14 @@ public class RDFPlainLiteralLengthInterval {
             return total;
         }
     }
-    public boolean contains(String value) {
+    public boolean contains(@Nonnull String value) {
         return
             m_languageTagMode==LanguageTagMode.ABSENT &&
             m_minLength<=value.length() &&
             value.length()<=m_maxLength &&
             RDFPlainLiteralPatternValueSpaceSubset.s_xsdString.run(value);
     }
-    public boolean contains(RDFPlainLiteralDataValue value) {
+    public boolean contains(@Nonnull RDFPlainLiteralDataValue value) {
         String string=value.getString();
         String languageTag=value.getLanguageTag();
         return
@@ -94,7 +97,7 @@ public class RDFPlainLiteralLengthInterval {
             RDFPlainLiteralPatternValueSpaceSubset.s_xsdString.run(string) &&
             RDFPlainLiteralPatternValueSpaceSubset.s_languageTag.run(languageTag);
     }
-    public void enumerateValues(Collection<Object> values) {
+    public void enumerateValues(@Nonnull Collection<Object> values) {
         if (m_maxLength==Integer.MAX_VALUE || m_languageTagMode==LanguageTagMode.PRESENT)
             throw new IllegalStateException("Internal error: the data range is infinite!");
         if (m_minLength==0)
@@ -102,7 +105,7 @@ public class RDFPlainLiteralLengthInterval {
         char[] temp=new char[m_maxLength];
         processPosition(temp,values,0);
     }
-    protected void processPosition(char[] temp,Collection<Object> values,int position) {
+    protected void processPosition(@Nonnull char[] temp, @Nonnull Collection<Object> values,int position) {
         if (position<m_maxLength) {
             for (int c=0;c<=0xFFFF;c++)
                 if (isRDFPlainLiteralCharacter((char)c)) {
@@ -113,6 +116,7 @@ public class RDFPlainLiteralLengthInterval {
                 }
         }
     }
+    @Nonnull
     public String toString() {
         StringBuffer buffer=new StringBuffer();
         buffer.append('[');

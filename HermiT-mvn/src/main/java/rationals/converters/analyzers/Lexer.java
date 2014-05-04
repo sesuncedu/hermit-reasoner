@@ -37,6 +37,8 @@ package rationals.converters.analyzers;
 
 import rationals.converters.ConverterException;
 
+import javax.annotation.Nonnull;
+
 /**
  * Interface lifting lexical analysis.
  * This interface allows customization of parsing of RE, in particular to
@@ -102,6 +104,7 @@ public interface Lexer {
      * 
      * @return an Object which is a label for a transition.
      */
+    @Nonnull
     public abstract Object label();
 
     /**

@@ -21,14 +21,21 @@ import java.util.Set;
 
 import org.semanticweb.HermiT.model.DatatypeRestriction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Implements the functions needed for a particular datatype.
  */
 public interface DatatypeHandler {
+    @Nonnull
     Set<String> getManagedDatatypeURIs();
+    @Nullable
     Object parseLiteral(String lexicalForm,String datatypeURI) throws MalformedLiteralException;
     void validateDatatypeRestriction(DatatypeRestriction datatypeRestriction) throws UnsupportedFacetException;
+    @Nullable
     ValueSpaceSubset createValueSpaceSubset(DatatypeRestriction datatypeRestriction);
+    @Nullable
     ValueSpaceSubset conjoinWithDR(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction);
     ValueSpaceSubset conjoinWithDRNegation(ValueSpaceSubset valueSpaceSubset,DatatypeRestriction datatypeRestriction);
     boolean isSubsetOf(String subsetDatatypeURI,String supersetDatatypeURI);
