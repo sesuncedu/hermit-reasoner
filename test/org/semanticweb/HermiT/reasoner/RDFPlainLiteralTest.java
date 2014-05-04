@@ -22,7 +22,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         super(name);
     }
     public void testInvalidStringLiterals() throws Exception {
-        assertEquals("blah",DatatypeRegistry.parseLiteral("blah@",RDF_PLAIN_LITERAL));
+        assertEquals("blah", DatatypeRegistry.parseLiteral("blah@", RDF_PLAIN_LITERAL));
         assertEquals(new RDFPlainLiteralDataValue("blah","en"),DatatypeRegistry.parseLiteral("blah@en",RDF_PLAIN_LITERAL));
         assertEquals("blah blah",DatatypeRegistry.parseLiteral("blah blah",XSD_NS+"token"));
         try {
@@ -58,7 +58,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     }
     public void testLength_2() throws Exception {
         assertDRSatisfiable(false,
-            DR("xsd:string","xsd:length",INT("3")),
+            DR("xsd:string", "xsd:length", INT("3")),
             OO(STR("ab"))
         );
     }
@@ -90,7 +90,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     }
     public void testSize_2() throws Exception {
         assertDRSatisfiable(false,2,
-            DR("xsd:string","xsd:length",INT("0"))
+            DR("xsd:string", "xsd:length", INT("0"))
         );
     }
     public void testSize_3() throws Exception {
@@ -106,16 +106,16 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         );
     }
     public void testIntersection_2() throws Exception {
-        assertDRSatisfiable(false,2,
-            DR("xsd:string","xsd:minLength",INT("0")),
-            NOT(DR("xsd:string","xsd:minLength",INT("1")))
+        assertDRSatisfiable(false, 2,
+                DR("xsd:string", "xsd:minLength", INT("0")),
+                NOT(DR("xsd:string", "xsd:minLength", INT("1")))
         );
     }
     public void testExplicitSize() throws Exception {
         RDFPlainLiteralLengthInterval imax2=interval(0,1);
         assertEquals(10000000,imax2.subtractSizeFrom(10000000+1+RDFPlainLiteralLengthInterval.CHARACTER_COUNT));
         RDFPlainLiteralLengthInterval imin1max2=interval(1,1);
-        assertEquals(10000000,imin1max2.subtractSizeFrom(10000000+RDFPlainLiteralLengthInterval.CHARACTER_COUNT));
+        assertEquals(10000000, imin1max2.subtractSizeFrom(10000000 + RDFPlainLiteralLengthInterval.CHARACTER_COUNT));
     }
     public void testEnumerate() throws Exception {
         RDFPlainLiteralLengthInterval imax1=interval(0,0);
@@ -137,7 +137,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     public void testPattern1_2() throws Exception {
         assertDRSatisfiable(false,2,
             DR("xsd:string","xsd:pattern",STR("ab(c+)")),
-            OO(STR("abc"),STR("abbb"))
+            OO(STR("abc"), STR("abbb"))
         );
     }
     public void testPattern2_1() throws Exception {
@@ -147,18 +147,18 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     }
     public void testPattern2_2() throws Exception {
         assertDRSatisfiable(false,4,
-            DR("xsd:string","xsd:pattern",STR("ab(c|d|e)"))
+            DR("xsd:string", "xsd:pattern", STR("ab(c|d|e)"))
         );
     }
     public void testPattern3() throws Exception {
         assertDRSatisfiable(false,
             DR("xsd:string","xsd:pattern",STR("ab(c|d|e)")),
-            NOT(OO(STR("abc"),STR("abd"),STR("abe")))
+            NOT(OO(STR("abc"), STR("abd"), STR("abe")))
         );
     }
     public void testPatternAndLength1_1() throws Exception {
         assertDRSatisfiable(true,
-            DR("xsd:string","xsd:pattern",STR("ab(c+)"),"xsd:length",INT("5"))
+            DR("xsd:string", "xsd:pattern", STR("ab(c+)"), "xsd:length", INT("5"))
         );
     }
     public void testPatternAndLength1_2() throws Exception {
@@ -169,8 +169,8 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     }
     public void testPatternAndLength1_3() throws Exception {
         assertDRSatisfiable(true,
-            DR("xsd:string","xsd:pattern",STR("ab(c+)"),"xsd:minLength",INT("4")),
-            NOT(OO(STR("abcc"),STR("abccc")))
+                DR("xsd:string", "xsd:pattern", STR("ab(c+)"), "xsd:minLength", INT("4")),
+                NOT(OO(STR("abcc"), STR("abccc")))
         );
     }
     public void testPatternAndLength2() throws Exception {
@@ -191,7 +191,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         assertFalse(subset.hasCardinalityAtLeast(7));
         Set<Object> values=new HashSet<Object>();
         subset.enumerateDataValues(values);
-        assertContainsAll(values,"abccc","abcccc","abccccc","abcccccc","abccccccc","abcccccccc");
+        assertContainsAll(values, "abccc", "abcccc", "abccccc", "abcccccc", "abccccccc", "abcccccccc");
     }
     public void testPatternComplement1_1() throws Exception {
         assertDRSatisfiable(true,3,
@@ -201,15 +201,15 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
     }
     public void testPatternComplement1_2() throws Exception {
         assertDRSatisfiable(false,4,
-            DR("xsd:string","xsd:pattern",STR("ab(c*)")),
-            NOT(DR("xsd:string","xsd:minLength",INT("5")))
+            DR("xsd:string", "xsd:pattern", STR("ab(c*)")),
+            NOT(DR("xsd:string", "xsd:minLength", INT("5")))
         );
     }
     public void testPatternComplement1_3() throws Exception {
         assertDRSatisfiable(false,
-            DR("xsd:string","xsd:pattern",STR("ab(c*)")),
-            NOT(DR("xsd:string","xsd:minLength",INT("5"))),
-            NOT(OO(STR("ab"),STR("abc"),STR("abcc")))
+                DR("xsd:string", "xsd:pattern", STR("ab(c*)")),
+                NOT(DR("xsd:string", "xsd:minLength", INT("5"))),
+                NOT(OO(STR("ab"), STR("abc"), STR("abcc")))
         );
     }
     public void testComplement2() throws Exception {
@@ -220,7 +220,7 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         assertFalse(intersection.hasCardinalityAtLeast(4));
         Set<Object> values=new HashSet<Object>();
         intersection.enumerateDataValues(values);
-        assertContainsAll(values,"ab","abc","abcc");
+        assertContainsAll(values, "ab", "abc", "abcc");
     }
     public void testComplement3() throws Exception {
         ValueSpaceSubset main=subset("rdf:PlainLiteral");
@@ -237,15 +237,15 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         ValueSpaceSubset intersection=DatatypeRegistry.conjoinWithDRNegation(main,restriction);
         assertFalse(intersection.containsDataValue("aaaaa"));
         assertTrue(intersection.containsDataValue("aaaa"));
-        assertTrue(intersection.containsDataValue(new RDFPlainLiteralDataValue("aaaaaaaa","en")));
-        assertFalse(intersection.containsDataValue(new RDFPlainLiteralDataValue("aaaaaaaa","123")));
+        assertTrue(intersection.containsDataValue(new RDFPlainLiteralDataValue("aaaaaaaa", "en")));
+        assertFalse(intersection.containsDataValue(new RDFPlainLiteralDataValue("aaaaaaaa", "123")));
     }
     public void testLangRange1() throws Exception {
         ValueSpaceSubset main=subset("rdf:PlainLiteral","rdf:langRange",STR_C("en"));
         assertFalse(main.containsDataValue("abc"));
-        assertFalse(main.containsDataValue(new RDFPlainLiteralDataValue("abc","de")));
+        assertFalse(main.containsDataValue(new RDFPlainLiteralDataValue("abc", "de")));
         assertTrue(main.containsDataValue(new RDFPlainLiteralDataValue("abc","en")));
-        assertFalse(main.containsDataValue(new RDFPlainLiteralDataValue("abc","enn")));
+        assertFalse(main.containsDataValue(new RDFPlainLiteralDataValue("abc", "enn")));
         assertTrue(main.containsDataValue(new RDFPlainLiteralDataValue("abc","en-us")));
     }
     public void testLangRange2() throws Exception {
@@ -255,6 +255,27 @@ public class RDFPlainLiteralTest extends AbstractReasonerTest {
         assertTrue(main.containsDataValue(new RDFPlainLiteralDataValue("abc","en")));
         assertTrue(main.containsDataValue(new RDFPlainLiteralDataValue("abc","enn")));
         assertTrue(main.containsDataValue(new RDFPlainLiteralDataValue("abc","en-us")));
+    }
+    public void testLangRange3() throws Exception {
+        /*
+            Test cases from RFC 4647 sec.  3.3.2 (extended filtering)
+            -- Only testing "de-DE", and not "de-*-DE",
+            since OWL 2 requires langRange to be basic, though filtering is extended.
+         */
+
+        matchAllAgainstRange("de-DE", true,
+                "de-DE", "de-de", "de-Latn-DE", "de-Latf-DE", "de-DE-x-goethe", "de-Latn-DE-1996", "de-Deva-DE");
+
+        matchAllAgainstRange("de-DE", false,
+                "de", "de-x-DE", "de-Deva");
+    }
+
+    private void matchAllAgainstRange(String rangeString, boolean expected, String... tags) {
+        ValueSpaceSubset main=subset("rdf:PlainLiteral","rdf:langRange",STR_C(rangeString));
+        for (String tag : tags) {
+            String message = "match " + rangeString + " against " + tag;
+            assertEquals(message, expected, main.containsDataValue(new RDFPlainLiteralDataValue("a string",tag)));
+        }
     }
     protected static DatatypeRestriction restriction(String datatypeURI,Object... arguments) {
         String[] facetURIs=new String[arguments.length/2];
