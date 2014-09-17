@@ -15,6 +15,7 @@ public class ClassificationTest extends AbstractReasonerTest {
     }
     public void testPizza() throws Exception {
         loadReasonerFromResource("res/pizza.xml");
+        assertTrue(m_reasoner.isConsistent());
         assertHierarchies("res/pizza.xml.txt");
     }
     public void testPropreo() throws Exception {
